@@ -1,6 +1,11 @@
 %{
 	#include "tokens.h"
+	int lineNumber = 1;
 }%
+
+
+%x C_COMMENT
+
 
 %%
 
@@ -16,23 +21,38 @@
 "output" { return TK_PR_OUTPUT; }
 "return" { return TK_PR_RETURN; }
 "for" { return TK_PR_FOR; }
+
 "<=" { return TK_OC_LE; }
 ">+" { return TK_OC_GE; }
 "==" { return TK_OC_EQ; }
 "!=" { return TK_OC_NE; }
 "&&" { return TK_OC_AND; }
 "||" { return TK_OC_OR; }
- { return TK_LIT_INT; }
- { return TK_LIT_FLOAT; }
- { return TK_LIT_FALSE; }
- { return TK_LIT_TRUE; }
- { return TK_LIT_CHAR; }
- { return TK_IDENTIFICADOR; }
- { return TK_ERRO; }
+
+[0-9]+ { return TK_LIT_INT; }
+(([0-9]+"."[0-9]+)|("."[0-9]+)|([0-9]+".")) { return TK_LIT_FLOAT; }
+"false" { return TK_LIT_FALSE; }
+"true" { return TK_LIT_TRUE; }
+'.' { return TK_LIT_CHAR; }
+[A-Za-z_][A-Za-z_0-9]* { return TK_IDENTIFICADOR; }
+. { return TK_ERRO; }
+
+[!-~_] return yytext[0];
+
+"\n" {++lineNumber
+
+"//".* { }
+
+"/*"            { BEGIN(C_COMMENT); }
+<C_COMMENT>"*/" { BEGIN(INITIAL); }
+<C_COMMENT>"\n"   { ++lineNumber; }
+<C_COMMENT>.    { }
+
+
 
 %%
 
-int Get_LineNumber()
+int getLineNumber()
 {
-	return l;
+	return lineNumber;
 }
