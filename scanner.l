@@ -29,12 +29,13 @@
 "||" { return TK_OC_OR; }
 
 [0-9]+ { return TK_LIT_INT; }
-(([0-9]+"."[0-9]+)|("."[0-9]+)|([0-9]+".")) { return TK_LIT_FLOAT; }
+(([0-9]+"."[0-9]+)|("."[0-9]+)|([0-9]+".")|([0-9]+"."+([eE][+-]?[0-9]+)?)) { return TK_LIT_FLOAT; }
 "false" { return TK_LIT_FALSE; }
 "true" { return TK_LIT_TRUE; }
 '.' { return TK_LIT_CHAR; }
 [A-Za-z_][A-Za-z_0-9]* { return TK_IDENTIFICADOR; }
 . { return TK_ERRO; }
+[\-+*/,;:()\[\]{}*<>=v.~&$#] return (int)yytext[0];
 
 
 [ \n]+ { lineNumber++; }
