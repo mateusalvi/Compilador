@@ -1,4 +1,9 @@
 %{
+
+/* 
+	Alunos: Mateus Luiz Salvi e Matheus Saueressig
+*/
+
 	#include "tokens.h"
 	int lineNumber = 1;
 %}
@@ -31,17 +36,18 @@
 "&&" { return TK_OC_AND; } //ok
 "||" { return TK_OC_OR; } //ok
 
-
 ^[+-]?[0-9][0-9]*|0$ { return TK_LIT_INT; } //ok
 (([0-9]+"."[0-9]+)|("."[0-9]+)|([0-9]+".")|([0-9]+"."+([eE][+-]?[0-9]+)?)) { return TK_LIT_FLOAT; }  //ok para float, sem notacao cientifica
+
 "false" { return TK_LIT_FALSE; } //ok
 "true" { return TK_LIT_TRUE; } //ok
 '.' { return TK_LIT_CHAR; }
+
 [A-Za-z_][A-Za-z_0-9]* { return TK_IDENTIFICADOR; } //ok
 
 
 [!-~_] return (int)yytext[0]; //ok
-
+[ \t]+ { }
 
 \n { lineNumber++; }
 
