@@ -45,6 +45,8 @@
 
 \n { lineNumber++; }
 
+"//".* { }
+
 
 "/*"            { BEGIN(COMMENT); }
 <COMMENT>"*/" { BEGIN(INITIAL); }
