@@ -21,6 +21,7 @@ int main (int argc, char **argv) {
   int token = 0, retorno = 0;
   while ((token = yylex()) && retorno == 0) {
     retorno = print_token(token);
+    printf("%d", get_line_number());
   }
   yylex_destroy();
   return 0;

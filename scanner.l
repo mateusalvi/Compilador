@@ -4,52 +4,57 @@
 %}
 
 
-%x C_COMMENT
+%x COMMENT
 
 
 %%
-"int" { return TK_PR_INT; }
-"float" { return TK_PR_FLOAT; }
-"bool" { return TK_PR_BOOL; }
-"char" { return TK_PR_CHAR; }
-"if" { return TK_PR_IF; }
-"then" { return TK_PR_THEN; }
-"else" { return TK_PR_ELSE; }
-"while" { return TK_PR_WHILE; }
-"input" { return TK_PR_INPUT; }
-"output" { return TK_PR_OUTPUT; }
-"return" { return TK_PR_RETURN; }
-"for" { return TK_PR_FOR; }
 
-"<=" { return TK_OC_LE; }
-">+" { return TK_OC_GE; }
-"==" { return TK_OC_EQ; }
-"!=" { return TK_OC_NE; }
-"&&" { return TK_OC_AND; }
-"||" { return TK_OC_OR; }
 
-[0-9]+ { return TK_LIT_INT; }
-(([0-9]+"."[0-9]+)|("."[0-9]+)|([0-9]+".")|([0-9]+"."+([eE][+-]?[0-9]+)?)) { return TK_LIT_FLOAT; }
-"false" { return TK_LIT_FALSE; }
-"true" { return TK_LIT_TRUE; }
+"int" { return TK_PR_INT; } //ok
+"float" { return TK_PR_FLOAT; } //ok
+"bool" { return TK_PR_BOOL; } //ok
+"char" { return TK_PR_CHAR; } //ok
+"if" { return TK_PR_IF; } //ok
+"then" { return TK_PR_THEN; } //ok
+"else" { return TK_PR_ELSE; } //ok
+"while" { return TK_PR_WHILE; } //ok
+"input" { return TK_PR_INPUT; } //ok
+"output" { return TK_PR_OUTPUT; } //ok
+"return" { return TK_PR_RETURN; } //ok
+"for" { return TK_PR_FOR; } //ok
+
+
+"<=" { return TK_OC_LE; } //ok
+">=" { return TK_OC_GE; } //ok
+"==" { return TK_OC_EQ; } //ok
+"!=" { return TK_OC_NE; } //ok
+"&&" { return TK_OC_AND; } //ok
+"||" { return TK_OC_OR; } //ok
+
+
+^[+-]?[0-9][0-9]*|0$ { return TK_LIT_INT; } //ok
+(([0-9]+"."[0-9]+)|("."[0-9]+)|([0-9]+".")|([0-9]+"."+([eE][+-]?[0-9]+)?)) { return TK_LIT_FLOAT; }  //ok para float, sem notacao cientifica
+"false" { return TK_LIT_FALSE; } //ok
+"true" { return TK_LIT_TRUE; } //ok
 '.' { return TK_LIT_CHAR; }
-[A-Za-z_][A-Za-z_0-9]* { return TK_IDENTIFICADOR; }
+[A-Za-z_][A-Za-z_0-9]* { return TK_IDENTIFICADOR; } //ok
+
+
+[!-~_] return (int)yytext[0]; //ok
+
+
+\n { lineNumber++; }
+
+
+"/*"            { BEGIN(COMMENT); }
+<COMMENT>"*/" { BEGIN(INITIAL); }
+<COMMENT>\n   { lineNumber++; }
+<COMMENT>.    { }
+
+
 . { return TK_ERRO; }
-[\-+*/,;:()\[\]{}*<>=v.~&$#] return (int)yytext[0];
 
 
-[ \n]+ { lineNumber++; }
-[ \t\r]+ { }
-"//" { }
-[/][*][^*]*[*]+([^*/][^*]*[*]+)*[/]  { }
-
-<C_COMMENT>"/*" { BEGIN(C_COMMENT); }
-<C_COMMENT>"*/" { BEGIN(INITIAL); }
-
-
-<C_COMMENT>[!-~_] return yytext[0];
-<C_COMMENT>"\n"   { return lineNumber++; }
-<C_COMMENT>.    { }
 %%
 
 int get_line_number()
