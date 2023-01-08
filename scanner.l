@@ -43,7 +43,7 @@
 "true" { return TK_LIT_TRUE; } //ok
 '.' { return TK_LIT_CHAR; }
 
-[A-Za-z_][A-Za-z_0-9]* { return TK_IDENTIFICADOR; } //ok
+[A-Za-z]+[A-Za-z]* { return TK_IDENTIFICADOR; } //Arrumado para etapa2
 
 
 [!-~_] return (int)yytext[0]; //ok

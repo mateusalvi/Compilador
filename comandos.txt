@@ -1,3 +1,5 @@
+cd /mnt/d/Facul/Compiladores/Trabalho/Compilador
+
 flex scanner.l
-gcc main.c lex.yy.c -o analisador -flf
+gcc main.c lex.yy.c -o analisador -lfl
 ./analisador < ./Entradas/entrada_0
