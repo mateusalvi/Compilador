@@ -45,8 +45,8 @@
 
 [A-Za-z]+[A-Za-z]* { return TK_IDENTIFICADOR; } //Arrumado para etapa2
 
+[,][;][:][(][)][{][}][+][-][*][/][%][^][<][>][=][!] (int)yytext[0];
 
-[!-~_] return (int)yytext[0]; //ok
 [ \t]+ { }
 
 \n { lineNumber++; }
@@ -54,14 +54,13 @@
 "//".* { }
 
 
-"/*"            { BEGIN(COMMENT); }
+"/*"          { BEGIN(COMMENT); }
 <COMMENT>"*/" { BEGIN(INITIAL); }
 <COMMENT>\n   { lineNumber++; }
 <COMMENT>.    { }
 
 
 . { return TK_ERRO; }
-
 
 %%
 

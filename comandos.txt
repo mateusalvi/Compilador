@@ -2,4 +2,4 @@ cd /mnt/d/Facul/Compiladores/Trabalho/Compilador
 
 flex scanner.l
 gcc main.c lex.yy.c -o analisador -lfl
-./analisador < ./Entradas/entrada_0
+./analisador < ./Entradas/aval_001.tesh

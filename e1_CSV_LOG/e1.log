@@ -1,5 +1,6 @@
 GrupoK
 
+FIXED
 ## GrupoK tests ## |tests/e1/2022_2/entrada_031
 ## GrupoK tests ## |
 ## GrupoK tests ## |Vou executar o comando 'timeout 1 ./etapa1 < tests/e1/2022_2/entrada_031 > /tmp/tmp.A09dtUw7TL'
@@ -9,7 +10,7 @@ GrupoK
 ## GrupoK tests ## |Esperado
 ## GrupoK tests ## |1 TK_ERRO [[]
 
-
+FIXED
 ## GrupoK tests ## |tests/e1/2022_2/entrada_032
 ## GrupoK tests ## |
 ## GrupoK tests ## |Vou executar o comando 'timeout 1 ./etapa1 < tests/e1/2022_2/entrada_032 > /tmp/tmp.PBGjkOUsTr'
