@@ -1,1 +1,0 @@
-./analisador < ./Entradas/entrada_0
