@@ -36,18 +36,18 @@
 "&&" { return TK_OC_AND; } //ok
 "||" { return TK_OC_OR; } //ok
 
-^[+-]?[0-9][0-9]*|0$|0 { return TK_LIT_INT; } //ok
-^[+-]?(([0-9]+"."[0-9]+)|("."[0-9]+)|([0-9]+".")|([0-9]+"."+([eE][+-]?[0-9]+)?)) { return TK_LIT_FLOAT; }  //ok para float, sem notacao cientifica
+[-+]?[0-9]+ { return TK_LIT_INT; } 
+[+-]?(([0-9]+"."[0-9]+)|("."[0-9]+)|([0-9]+".")|([0-9]+"."+[0-9]+([eE][+-]?[0-9]+)?)) { return TK_LIT_FLOAT; } 
 
 "false" { return TK_LIT_FALSE; } //ok
 "true" { return TK_LIT_TRUE; } //ok
 '.' { return TK_LIT_CHAR; }
 
-[A-Za-z]+[A-Za-z]* { return TK_IDENTIFICADOR; } //Arrumado para etapa2
+[A-Za-z]+[A-Za-z]* { return TK_IDENTIFICADOR; } 
 
-[-,;:(){}+*/%^<>=!]     { return yytext[0]; }
+[-,;:(){}+*/%^<>!=]     { return yytext[0]; }
 
-[ \t]+ { }
+[ \t\s]+ { }
 
 \n { lineNumber++; }
 
