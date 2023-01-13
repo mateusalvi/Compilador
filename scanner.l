@@ -3,7 +3,7 @@
 /* 
 	Alunos: Mateus Luiz Salvi e Matheus Saueressig
 */
-
+	#include "parser.tab.h"
 	#include "tokens.h"
 	int lineNumber = 1;
 %}
@@ -45,7 +45,7 @@
 
 [A-Za-z]+[A-Za-z]* { return TK_IDENTIFICADOR; } 
 
-[-,;:(){}+*/%^<>!=]     { return yytext[0]; }
+[-,;:(){}+*/%^><!=\[\]]  { return yytext[0]; }
 
 [ \t\s]+ { }
 

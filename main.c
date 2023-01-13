@@ -44,6 +44,8 @@ int print_token(int token) {
     case ')':
     case '{':
     case '}':
+	case '[':
+	case ']':
     case '+':
     case '-':
     case '*':

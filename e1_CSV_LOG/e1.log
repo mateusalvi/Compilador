@@ -270,7 +270,7 @@ FIXED
 ## GrupoK tests ## |2 TK_LIT_FLOAT [+3.10]
 ## GrupoK tests ## |3 TK_LIT_FLOAT [3.10]
 
-
+FIXED
 ## GrupoK tests ## |tests/e1/2022_2/entrada_098
 ## GrupoK tests ## |
 ## GrupoK tests ## |Vou executar o comando 'timeout 1 ./etapa1 < tests/e1/2022_2/entrada_098 > /tmp/tmp.QCPNPII5MR'
@@ -285,7 +285,7 @@ FIXED
 ## GrupoK tests ## |2 TK_LIT_FLOAT [3.10e+2]
 ## GrupoK tests ## |3 TK_LIT_FLOAT [3.10e2]
 
-
+FIXED
 ## GrupoK tests ## |tests/e1/2022_2/entrada_099
 ## GrupoK tests ## |
 ## GrupoK tests ## |Vou executar o comando 'timeout 1 ./etapa1 < tests/e1/2022_2/entrada_099 > /tmp/tmp.prJHSkFAVU'
@@ -301,7 +301,7 @@ FIXED
 ## GrupoK tests ## |2 TK_LIT_FLOAT [+3.10e+2]
 ## GrupoK tests ## |3 TK_LIT_FLOAT [3.10e2]
 
-
+FIXED
 ## GrupoK tests ## |tests/e1/2022_2/entrada_100
 ## GrupoK tests ## |
 ## GrupoK tests ## |Vou executar o comando 'timeout 1 ./etapa1 < tests/e1/2022_2/entrada_100 > /tmp/tmp.B8rL0l6R2F'
@@ -313,7 +313,7 @@ FIXED
 ## GrupoK tests ## |1 TK_IDENTIFICADOR [e]
 ## GrupoK tests ## |1 TK_LIT_INT [10]
 
-
+Não temos
 ## GrupoK tests ## |tests/e1/2022_2/entrada_103
 ## GrupoK tests ## |
 ## GrupoK tests ## |Vou executar o comando 'timeout 1 ./etapa1 < tests/e1/2022_2/entrada_103 > /tmp/tmp.UKOqyxO6RL'
@@ -327,7 +327,7 @@ FIXED
 ## GrupoK tests ## |2 TK_IDENTIFICADOR [func]
 ## GrupoK tests ## |2 TK_ERRO [_]
 
-
+Não temos
 ## GrupoK tests ## |tests/e1/2022_2/entrada_104
 ## GrupoK tests ## |
 ## GrupoK tests ## |Vou executar o comando 'timeout 1 ./etapa1 < tests/e1/2022_2/entrada_104 > /tmp/tmp.NHn7Edm2e6'

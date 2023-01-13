@@ -387,7 +387,7 @@ static const YY_CHAR yy_ec[256] =
        14,   15,    1,    1,   16,   16,   16,   16,   17,   16,
        16,   16,   16,   16,   16,   16,   16,   16,   16,   16,
        16,   16,   16,   16,   16,   16,   16,   16,   16,   16,
-        1,    1,    1,    5,    1,    1,   18,   19,   20,   16,
+        5,    1,    5,    5,    1,    1,   18,   19,   20,   16,
 
        21,   22,   16,   23,   24,   16,   16,   25,   16,   26,
        27,   28,   16,   29,   30,   31,   32,   16,   33,   16,
@@ -512,7 +512,7 @@ char *yytext;
 /* 
 	Alunos: Mateus Luiz Salvi e Matheus Saueressig
 */
-
+	#include "parser.tab.h"
 	#include "tokens.h"
 	int lineNumber = 1;
 #line 519 "lex.yy.c"
