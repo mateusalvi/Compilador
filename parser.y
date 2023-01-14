@@ -66,20 +66,26 @@ Lit: TK_LIT_INT
 	| TK_LIT_CHAR
 	;
 
-FuncList : Func FuncList | %empty
+FuncList : Func FuncList 
+	| %empty
 
 Func : RetType ID '(' ParamList ')' Block
 
-RetType : TK_PR_INT | TK_PR_FLOAT | TK_PR_BOOL | TK_PR_CHAR
+RetType : TK_PR_INT
+	| TK_PR_FLOAT
+	| TK_PR_BOOL
+	| TK_PR_CHAR
 
-ParamList : Param | Param ',' ParamList | %empty
+ParamList : Param 
+	| Param ',' ParamList
+	| %empty
 
 Param : Type ID
 
 Block : '{' CommandList '}'
 	;
 
-CommandList : ';' Command CommandList
+CommandList : Command CommandList
 	| %empty
 	;
 
@@ -112,6 +118,9 @@ ExprList : Expr ',' ExprList
 	| %empty
 
 Expr : E
+	| ID
+	| Func
+	| LitList
 	;
 
 E : E TK_OC_OR T | T
@@ -126,7 +135,13 @@ L : '(' E ')' | E
 %%
 
 int yyerror(char *err){
-	
 	fprintf(stderr, "ERROR in line = %d\n", get_line_number());
 	exit(3);
+}
+
+int main() {
+    if (yyparse() == 0) {
+        printf("The input is grammatically correct\n");
+    }
+    return 0;
 }
