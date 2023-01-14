@@ -1,5 +1,5 @@
-int a = C;
-int b = O;
+int a;
+int b;
 
 int main()
 {

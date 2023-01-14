@@ -45,10 +45,10 @@ VarDecList : VarDec VarDecList
 
 VarDec : Type VarList ';'
 
-Type : Type TK_PR_INT
-	| Type TK_PR_FLOAT
-	| Type TK_PR_BOOL
-	| Type TK_PR_CHAR
+Type : TK_PR_INT
+	| TK_PR_FLOAT
+	| TK_PR_BOOL
+	| TK_PR_CHAR
 	;
 	
 VarList : ID Array
@@ -85,7 +85,10 @@ Param : Type ID
 Block : '{' CommandList '}'
 	;
 
-CommandList : Command CommandList
+CommandList : Command ';' CommandListEnd
+	;
+	
+CommandListEnd : ';' Command CommandListEnd
 	| %empty
 	;
 
