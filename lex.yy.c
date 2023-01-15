@@ -1981,4 +1981,3 @@ int get_line_number()
 {
 	return lineNumber;
 }
-

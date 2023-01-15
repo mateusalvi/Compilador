@@ -1,0 +1,8 @@
+int batata;
+int um, dois, tres;
+int vetor : [1^2^3^4];
+
+inf funcao (int batatinha)
+{
+	int var;
+}

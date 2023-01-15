@@ -36,27 +36,34 @@ extern int get_line_number();
 
 %%
 
-Program : VarDecList FuncList
+Program : VarDecList //FuncList COMENTADO PARA TESTAR SÓ VARIAVEIS
 	;
 
-VarDecList : VarDec VarDecList 
+VarDecList : VarDec VarDecList
 	| %empty
 	;
 
 VarDec : Type VarList ';'
+	| Type ID Array ';'
+	| Type ID ';'
+	| Type Atrib ';'
+	;
 
 Type : TK_PR_INT
 	| TK_PR_FLOAT
 	| TK_PR_BOOL
 	| TK_PR_CHAR
 	;
-	
-VarList : ID Array
-	| ID ',' VarList
-	
-Array : '[' LitList ']'
 
-LitList : Lit '^' LitList | Lit
+VarList : ID ',' VarList
+	| ID
+	;
+	
+LitList : TK_LIT_INT '^' LitList
+	| TK_LIT_INT
+	;
+
+Array: '[' LitList ']'
 	;
 
 Lit: TK_LIT_INT
@@ -66,28 +73,33 @@ Lit: TK_LIT_INT
 	| TK_LIT_CHAR
 	;
 
-FuncList : Func FuncList 
+FuncList : Func FuncList
 	| %empty
+	;
 
 Func : RetType ID '(' ParamList ')' Block
+	;
 
 RetType : TK_PR_INT
 	| TK_PR_FLOAT
 	| TK_PR_BOOL
 	| TK_PR_CHAR
+	;
 
-ParamList : Param 
+ParamList : Param
 	| Param ',' ParamList
 	| %empty
+	;
 
 Param : Type ID
+	;
 
 Block : '{' CommandList '}'
 	;
 
 CommandList : Command ';' CommandListEnd
 	;
-	
+
 CommandListEnd : ';' Command CommandListEnd
 	| %empty
 	;
@@ -101,6 +113,8 @@ Command : VarDec
 	;
 
 Atrib : ID Array TK_OC_EQ Expr
+	| ID TK_OC_EQ Array
+	;
 
 Flow : TK_PR_IF '(' Expr ')' TK_PR_THEN Command Else
 	| TK_PR_WHILE '(' Expr ')' Block
@@ -111,14 +125,18 @@ Else: TK_PR_ELSE Command
 	;
 
 Ret : "return" Expr
+	;
 
 FuncCall : ID '(' ExprList ')'
+	;
 
 ID: TK_IDENTIFICADOR
+	;
 
 ExprList : Expr ',' ExprList
 	| Expr
 	| %empty
+	;
 
 Expr : E
 	| ID
