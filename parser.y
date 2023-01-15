@@ -36,17 +36,18 @@ extern int get_line_number();
 
 %%
 
-Program : VarDecList //FuncList COMENTADO PARA TESTAR SÓ VARIAVEIS
+Program : DecList
 	;
 
-VarDecList : VarDec VarDecList
-	| %empty
+DecList : %empty
+	| Dec DecList
 	;
 
-VarDec : Type VarList ';'
+Dec : Type VarList ';'
 	| Type ID Array ';'
 	| Type ID ';'
 	| Type Atrib ';'
+	| Func
 	;
 
 Type : TK_PR_INT
@@ -59,11 +60,11 @@ VarList : ID ',' VarList
 	| ID
 	;
 	
+Array: '[' LitList ']'
+	;
+	
 LitList : TK_LIT_INT '^' LitList
 	| TK_LIT_INT
-	;
-
-Array: '[' LitList ']'
 	;
 
 Lit: TK_LIT_INT
@@ -73,8 +74,8 @@ Lit: TK_LIT_INT
 	| TK_LIT_CHAR
 	;
 
-FuncList : Func FuncList
-	| %empty
+FuncList : %empty
+	| Func FuncList
 	;
 
 Func : RetType ID '(' ParamList ')' Block
@@ -86,9 +87,9 @@ RetType : TK_PR_INT
 	| TK_PR_CHAR
 	;
 
-ParamList : Param
+ParamList :  %empty
 	| Param ',' ParamList
-	| %empty
+	| Param
 	;
 
 Param : Type ID
@@ -100,11 +101,11 @@ Block : '{' CommandList '}'
 CommandList : Command ';' CommandListEnd
 	;
 
-CommandListEnd : ';' Command CommandListEnd
-	| %empty
+CommandListEnd : %empty
+	| ';' Command CommandListEnd
 	;
 
-Command : VarDec
+Command : Dec
 	| Atrib
 	| Flow
 	| Ret
