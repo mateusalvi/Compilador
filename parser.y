@@ -1,7 +1,8 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
-int yylex(void);
+#include <string.h>
+int yylex();
 int yyerror (char *s);
 extern int get_line_number();
 %}
@@ -39,15 +40,15 @@ extern int get_line_number();
 Program : DecList
 	;
 
-DecList : %empty
-	| Dec DecList
+DecList : Dec DecList
+	|
 	;
 
 Dec : Type VarList ';'
 	| Type ID Array ';'
 	| Type ID ';'
 	| Type Atrib ';'
-	| Func
+	| Type Func
 	;
 
 Type : TK_PR_INT
@@ -60,36 +61,39 @@ VarList : ID ',' VarList
 	| ID
 	;
 	
-Array: '[' LitList ']'
+Array: 
+	| '[' ArrayDim ']'
 	;
 	
-LitList : TK_LIT_INT '^' LitList
-	| TK_LIT_INT
+ArrayDim : TK_LIT_INT ArrayDimEnd
 	;
 
-Lit: TK_LIT_INT
+ArrayDimEnd : 
+	| '^' TK_LIT_INT ArrayDimEnd
+	;
+
+Lit : TK_LIT_INT
 	| TK_LIT_FLOAT
 	| TK_LIT_FALSE
 	| TK_LIT_TRUE
 	| TK_LIT_CHAR
+	
+LitList : Lit LitListEnd
+	;
+	
+LitListEnd: 
+	| ',' Lit LitListEnd
 	;
 
-FuncList : %empty
-	| Func FuncList
+Func : ID '(' ParamList ')' Block
 	;
 
-Func : RetType ID '(' ParamList ')' Block
+ParamList :  
+	| Param ParamListEnd
 	;
 
-RetType : TK_PR_INT
-	| TK_PR_FLOAT
-	| TK_PR_BOOL
-	| TK_PR_CHAR
-	;
-
-ParamList :  %empty
-	| Param ',' ParamList
-	| Param
+ParamListEnd : 
+	| ',' Param ParamListEnd
 	;
 
 Param : Type ID
@@ -98,14 +102,15 @@ Param : Type ID
 Block : '{' CommandList '}'
 	;
 
-CommandList : Command ';' CommandListEnd
+CommandList : Command CommandListEnd
 	;
 
-CommandListEnd : %empty
+CommandListEnd : 
 	| ';' Command CommandListEnd
 	;
 
-Command : Dec
+Command : 
+	| Dec
 	| Atrib
 	| Flow
 	| Ret
@@ -113,19 +118,20 @@ Command : Dec
 	| FuncCall
 	;
 
-Atrib : ID Array TK_OC_EQ Expr
+Atrib : ID TK_OC_EQ Expr
 	| ID TK_OC_EQ Array
+	| ID Array TK_OC_EQ Expr
 	;
 
 Flow : TK_PR_IF '(' Expr ')' TK_PR_THEN Command Else
 	| TK_PR_WHILE '(' Expr ')' Block
 	;
 
-Else: TK_PR_ELSE Command
-	| %empty
+Else: 
+	| TK_PR_ELSE Command
 	;
 
-Ret : "return" Expr
+Ret : TK_PR_RETURN Expr
 	;
 
 FuncCall : ID '(' ExprList ')'
@@ -134,15 +140,17 @@ FuncCall : ID '(' ExprList ')'
 ID: TK_IDENTIFICADOR
 	;
 
-ExprList : Expr ',' ExprList
-	| Expr
-	| %empty
+Expr : ID
+	| LitList
+	| FuncCall
+	| E
+	;
+	
+ExprList : Expr ExprListEnd
 	;
 
-Expr : E
-	| ID
-	| Func
-	| LitList
+ExprListEnd : 
+	| ',' Expr ExprListEnd
 	;
 
 E : E TK_OC_OR T | T
@@ -154,16 +162,18 @@ J : J '*' K | J '/' K | J '%' K | K
 K : '-' L | '!' L
 L : '(' E ')' | E
 
+
 %%
 
 int yyerror(char *err){
 	fprintf(stderr, "ERROR in line = %d\n", get_line_number());
 	exit(3);
 }
-
+/*
 int main() {
     if (yyparse() == 0) {
         printf("The input is grammatically correct\n");
     }
     return 0;
 }
+*/

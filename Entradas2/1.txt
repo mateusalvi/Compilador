@@ -1,6 +1,7 @@
+int bah;
 int main()
 {
-	b = I;
+	ba = 4;
 	ZZ error on line 5!
 	int a = O;
 }

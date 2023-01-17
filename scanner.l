@@ -4,7 +4,7 @@
 	Alunos: Mateus Luiz Salvi e Matheus Saueressig
 */
 	#include "parser.tab.h"
-	#include "tokens.h"
+	//#include "tokens.h"
 	int lineNumber = 1;
 %}
 
