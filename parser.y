@@ -45,8 +45,7 @@ DecList : Dec DecList
 	;
 
 Dec : Type VarList ';'
-	| Type ID Array ';'
-	| Type ID ';'
+	| Type '[' ArrayDim ']' ';'
 	| Type Atrib ';'
 	| Type Func
 	;
@@ -61,9 +60,6 @@ VarList : ID ',' VarList
 	| ID
 	;
 	
-Array: 
-	| '[' ArrayDim ']'
-	;
 	
 ArrayDim : TK_LIT_INT ArrayDimEnd
 	;
@@ -78,12 +74,10 @@ Lit : TK_LIT_INT
 	| TK_LIT_TRUE
 	| TK_LIT_CHAR
 	
-LitList : Lit LitListEnd
+LitList : Lit ',' LitList
 	;
 	
-LitListEnd: 
-	| ',' Lit LitListEnd
-	;
+
 
 Func : ID '(' ParamList ')' Block
 	;
@@ -119,17 +113,15 @@ Command :
 	;
 
 Atrib : ID TK_OC_EQ Expr
-	| ID TK_OC_EQ Array
-	| ID Array TK_OC_EQ Expr
+	| ID TK_OC_EQ '[' ArrayDim ']'
+	| ID '[' ArrayDim ']' TK_OC_EQ Expr
 	;
 
-Flow : TK_PR_IF '(' Expr ')' TK_PR_THEN Command Else
+Flow : TK_PR_IF '(' Expr ')' TK_PR_THEN Command TK_PR_ELSE Command
 	| TK_PR_WHILE '(' Expr ')' Block
 	;
 
-Else: 
-	| TK_PR_ELSE Command
-	;
+
 
 Ret : TK_PR_RETURN Expr
 	;
@@ -140,10 +132,19 @@ FuncCall : ID '(' ExprList ')'
 ID: TK_IDENTIFICADOR
 	;
 
+Expr : Expr TK_OC_OR T | T
+T : T TK_OC_AND F | F
+F : F TK_OC_EQ G | F TK_OC_NE G | G
+G : G TK_OC_LE I | G TK_OC_GE I | I
+I : I '+' J | I '-' J | J
+J : J '*' K | J '/' K | J '%' K | K
+K : '-' L | '!' L
+L : '(' Expr ')' | Expr
+
+
 Expr : ID
 	| LitList
 	| FuncCall
-	| E
 	;
 	
 ExprList : Expr ExprListEnd
@@ -153,14 +154,7 @@ ExprListEnd :
 	| ',' Expr ExprListEnd
 	;
 
-E : E TK_OC_OR T | T
-T : T TK_OC_AND F | F
-F : F TK_OC_EQ G | F TK_OC_NE G | G
-G : G TK_OC_LE I | G TK_OC_GE I | I
-I : I '+' J | I '-' J | J
-J : J '*' K | J '/' K | J '%' K | K
-K : '-' L | '!' L
-L : '(' E ')' | E
+
 
 
 %%
