@@ -1,11 +1,17 @@
-int a;
+int a = b;
 int b;
+int array[1^2];
 
 int main()
 {
-	 loop (a < b)
+	a = 1;
+	if(aa || bb)
+	then
 	{
-		print "NO BLOCK END!\n";
-	}
-
-ZZ ERROR ON LINE 12
+		int a;
+	};
+	while(aa)
+	{
+		b=2;
+	};
+}

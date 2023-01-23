@@ -37,15 +37,17 @@ extern int get_line_number();
 
 %%
 
+//Problemas: while, if() then{},
+
 Program : DecList
 	;
 
-DecList : Dec DecList
-	|
+DecList : 
+	| Dec DecList
 	;
 
 Dec : Type VarList ';'
-	| Type '[' ArrayDim ']' ';'
+	| Type ID '[' ArrayDim ']' ';'
 	| Type Atrib ';'
 	| Type Func
 	;
@@ -59,8 +61,13 @@ Type : TK_PR_INT
 VarList : ID ',' VarList
 	| ID
 	;
-	
-	
+
+Lit : TK_LIT_INT
+	| TK_LIT_FLOAT
+	| TK_LIT_FALSE
+	| TK_LIT_TRUE
+	| TK_LIT_CHAR
+
 ArrayDim : TK_LIT_INT ArrayDimEnd
 	;
 
@@ -68,14 +75,10 @@ ArrayDimEnd :
 	| '^' TK_LIT_INT ArrayDimEnd
 	;
 
-
-	
-
-
 Func : ID '(' ParamList ')' Block
 	;
 
-ParamList :  
+ParamList : 
 	| Param ParamListEnd
 	;
 
@@ -97,24 +100,23 @@ CommandListEnd :
 	;
 
 Command : 
-	| Dec
-	| Atrib
 	| Flow
+	| Atrib
+	| Dec
 	| Ret
-	| Block
 	| FuncCall
 	;
 
-Atrib : ID TK_OC_EQ Expr
-	| ID TK_OC_EQ '[' ArrayDim ']'
-	| ID '[' ArrayDim ']' TK_OC_EQ Expr
+Atrib : ID '=' Expr
+	| ID '=' ID
+	| ID '=' Lit
+	| ID '[' ExprList ']' '=' Expr
 	;
 
-Flow : TK_PR_IF '(' Expr ')' TK_PR_THEN Command TK_PR_ELSE Command
-	| TK_PR_WHILE '(' Expr ')' Block
+Flow : TK_PR_WHILE '(' Expr ')' Block
+	| TK_PR_IF '(' Expr ')' TK_PR_THEN Block
+	| TK_PR_IF '(' Expr ')' TK_PR_THEN Block TK_PR_ELSE Block
 	;
-
-
 
 Ret : TK_PR_RETURN Expr
 	;
@@ -131,11 +133,9 @@ F : F TK_OC_EQ G | F TK_OC_NE G | G
 G : G TK_OC_LE I | G TK_OC_GE I | I
 I : I '+' J | I '-' J | J
 J : J '*' K | J '/' K | J '%' K | K
-K : '-' L | '!' L
-L : '(' Expr ')' | ID | FuncCall
+K : '-' L | '!' L | L
+L : '(' Expr ')' | FuncCall | Lit | ID '[' ArrayDim ']' | ID
 
-
-	
 ExprList : Expr ExprListEnd
 	;
 
@@ -143,20 +143,9 @@ ExprListEnd :
 	| ',' Expr ExprListEnd
 	;
 
-
-
-
 %%
 
 int yyerror(char *err){
 	fprintf(stderr, "ERROR in line = %d\n", get_line_number());
 	exit(3);
 }
-/*
-int main() {
-    if (yyparse() == 0) {
-        printf("The input is grammatically correct\n");
-    }
-    return 0;
-}
-*/
