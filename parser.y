@@ -68,14 +68,7 @@ ArrayDimEnd :
 	| '^' TK_LIT_INT ArrayDimEnd
 	;
 
-Lit : TK_LIT_INT
-	| TK_LIT_FLOAT
-	| TK_LIT_FALSE
-	| TK_LIT_TRUE
-	| TK_LIT_CHAR
-	
-LitList : Lit ',' LitList
-	;
+
 	
 
 
@@ -139,13 +132,9 @@ G : G TK_OC_LE I | G TK_OC_GE I | I
 I : I '+' J | I '-' J | J
 J : J '*' K | J '/' K | J '%' K | K
 K : '-' L | '!' L
-L : '(' Expr ')' | Expr
+L : '(' Expr ')' | ID | FuncCall
 
 
-Expr : ID
-	| LitList
-	| FuncCall
-	;
 	
 ExprList : Expr ExprListEnd
 	;
