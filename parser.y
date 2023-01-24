@@ -62,18 +62,19 @@ VarList : ID ',' VarList
 	| ID
 	;
 
+ArrayDim : TK_LIT_INT '^' ArrayDimEnd
+    ;
+
+ArrayDimEnd : TK_LIT_INT '^' ArrayDimEnd
+    | TK_LIT_INT
+    ;
+
 Lit : TK_LIT_INT
-	| TK_LIT_FLOAT
-	| TK_LIT_FALSE
-	| TK_LIT_TRUE
-	| TK_LIT_CHAR
-
-ArrayDim : TK_LIT_INT ArrayDimEnd
-	;
-
-ArrayDimEnd : 
-	| '^' TK_LIT_INT ArrayDimEnd
-	;
+    | TK_LIT_FLOAT
+    | TK_LIT_FALSE
+    | TK_LIT_TRUE
+    | TK_LIT_CHAR
+    ;
 
 Func : ID '(' ParamList ')' Block
 	;
@@ -108,8 +109,6 @@ Command :
 	;
 
 Atrib : ID '=' Expr
-	| ID '=' ID
-	| ID '=' Lit
 	| ID '[' ExprList ']' '=' Expr
 	;
 
@@ -134,7 +133,7 @@ G : G TK_OC_LE I | G TK_OC_GE I | I
 I : I '+' J | I '-' J | J
 J : J '*' K | J '/' K | J '%' K | K
 K : '-' L | '!' L | L
-L : '(' Expr ')' | FuncCall | Lit | ID '[' ArrayDim ']' | ID
+L : '(' Expr ')' | FuncCall | ID '[' ArrayDim ']' | ID | Lit
 
 ExprList : Expr ExprListEnd
 	;
