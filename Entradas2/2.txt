@@ -13,5 +13,5 @@ int main()
 	while(aa)
 	{
 		b=2;
-	};
+	}
 }
