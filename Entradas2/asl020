@@ -1,2 +1,0 @@
-//INCORRECT
-class AST_t [ protected int a ];

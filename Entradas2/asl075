@@ -1,6 +1,0 @@
-//INCORRECT
-int f()
-{
-  int a;
-  a = f() %>% g(., a) %|% z(.);
-}

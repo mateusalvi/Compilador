@@ -1,9 +1,0 @@
-//INCORRECT
-class ASL_t [ public int a ];
-int f()
-{
-  int b;
-  b = 3;
-  AST_t xis;
-  xis$a >> b+2;
-}

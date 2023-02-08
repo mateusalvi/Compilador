@@ -1,5 +1,0 @@
-//INCORRECT
-int f()
-{
-  for (case 123: : x : x = x+1) { };
-}

@@ -1,5 +1,0 @@
-//INCORRECT
-int main() {
-  foreach( x: ) {
-  };
-}

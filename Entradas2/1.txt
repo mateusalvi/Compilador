@@ -1,7 +1,0 @@
-int bah;
-int main()
-{
-	ba = 4;
-	ZZ error on line 5!
-	int a = O;
-}

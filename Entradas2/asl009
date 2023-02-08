@@ -1,3 +1,0 @@
-//INCORRECT
-class ASL_t [ public int x ];
-v ASL_t;
