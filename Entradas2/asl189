@@ -1,7 +1,0 @@
-//CORRECT
-int main ()
-{
-  int a;
-  a = 12 && 1 || 0 && 43;
-  return 0;
-}

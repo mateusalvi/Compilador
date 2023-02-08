@@ -1,8 +1,0 @@
-int batata;
-int um, dois, tres;
-int vetor[1^2^3^4];
-
-int funcao (int batatinha)
-{
-	int variavel;
-}

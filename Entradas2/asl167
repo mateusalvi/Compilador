@@ -1,5 +1,0 @@
-//INCORRECT
-int main ()
-{
-  if (false) { x = 2; } else { x = 3; };
-}

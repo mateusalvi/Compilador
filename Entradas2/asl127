@@ -1,8 +1,0 @@
-//INCORRECT
-int main()
-{
-  switch ( ) {
-    case 'a':
-      y = 2;
-  };
-}
