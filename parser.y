@@ -4,6 +4,8 @@
 #include <string.h>
 int yylex();
 int yyerror (char *s);
+ extern int yydebug;
+ yydebug = 1;
 extern int get_line_number();
 %}
 
@@ -37,143 +39,149 @@ extern int get_line_number();
 
 %%
 
-Program : DecList
+//Problemas: while, if() then{},
+
+Program : DecList { $$ = $1; }
 	;
 
-DecList : Dec DecList
-	|
+DecList : 
+	| Dec DecList {$$ = $1; add_child($$,$2);}
 	;
 
-Dec : Type VarList ';'
-	| Type ID Array ';'
-	| Type ID ';'
-	| Type Atrib ';'
-	| Type Func
+Dec : Type VarList ';' {$$ = $1; add_child($$,$2);}
+	| Type Func {$$ = $1; add_child($$,$2);}
 	;
 
+DecLocal: Type VarListLocal {$$ = $1; add_child($$,$2);}
+
+VarListLocal :
+          ID ',' VarListLocal {$$ = $1; add_child($$,$3);}
+        | ID TK_OC_LE Lit ',' VarListLocal 
+	| ID { $$ = $1; }
+        | ID TK_OC_LE Lit { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); }
+	;
+     
+     
 Type : TK_PR_INT
 	| TK_PR_FLOAT
 	| TK_PR_BOOL
 	| TK_PR_CHAR
 	;
 
-VarList : ID ',' VarList
-	| ID
-	;
-	
-Array: 
-	| '[' ArrayDim ']'
-	;
-	
-ArrayDim : TK_LIT_INT ArrayDimEnd
+VarList : ID ',' VarList {$$ = $1; add_child($$,$3);}
+        | ID '[' ArrayDimDec ']' ',' VarList
+	| ID { $$ = $1; }
+        | ID '[' ArrayDimDec ']'
 	;
 
-ArrayDimEnd : 
-	| '^' TK_LIT_INT ArrayDimEnd
-	;
+ArrayDimDec: TK_LIT_INT '^' ArrayDimDecEnd 
+			| TK_LIT_INT;
+ArrayDimDecEnd: TK_LIT_INT '^' ArrayDimDecEnd 
+				| TK_LIT_INT;
+
+ArrayDim : Expr '^' ArrayDimEnd  {$$ = $1; add_child($$,$3);}
+	| Expr { $$ = $1; }
+    ;
+
+ArrayDimEnd : Expr '^' ArrayDimEnd {$$ = $1; add_child($$,$3);}
+    | Expr { $$ = $1; }
+    ;
 
 Lit : TK_LIT_INT
-	| TK_LIT_FLOAT
-	| TK_LIT_FALSE
-	| TK_LIT_TRUE
-	| TK_LIT_CHAR
-	
-LitList : Lit LitListEnd
-	;
-	
-LitListEnd: 
-	| ',' Lit LitListEnd
+    | TK_LIT_FLOAT
+    | TK_LIT_FALSE
+    | TK_LIT_TRUE
+    | TK_LIT_CHAR
+    ;
+
+Func : ID '(' ParamList ')' Block 
+		| ID '(' ')' Block { $$ = asd_new("( )"); asd_add_child($$, $1); asd_add_child($$, $3); }
 	;
 
-Func : ID '(' ParamList ')' Block
-	;
-
-ParamList :  
-	| Param ParamListEnd
+ParamList : Param ParamListEnd {$$ = $1; add_child($$,$2);}
 	;
 
 ParamListEnd : 
-	| ',' Param ParamListEnd
+	| ',' Param ParamListEnd {$$ = $2; add_child($$,$3);}
 	;
 
-Param : Type ID
+Param : Type ID { asd_add_child($$, $1); asd_add_child($$, $2); }
 	;
 
-Block : '{' CommandList '}'
+Block : '{' CommandList '}'  { $$ = $2; }
+		| '{' '}'
 	;
 
-CommandList : Command CommandListEnd
+CommandList : Command CommandListEnd {$$ = $1; add_child($$,$3);}
 	;
 
-CommandListEnd : 
-	| ';' Command CommandListEnd
+CommandListEnd : ';'
+	| ';' Command CommandListEnd {$$ = $2; add_child($$,$3);}
 	;
 
-Command : 
-	| Dec
-	| Atrib
-	| Flow
-	| Ret
-	| Block
-	| FuncCall
+Command : Block { $$ = $1; }
+	| Flow { $$ = $1; }
+	| Atrib { $$ = $1; }
+	| DecLocal { $$ = $1; }
+	| Ret { $$ = $1; }
+	| FuncCall { $$ = $1; }
 	;
 
-Atrib : ID TK_OC_EQ Expr
-	| ID TK_OC_EQ Array
-	| ID Array TK_OC_EQ Expr
+Atrib : ID '=' Expr { $$ = asd_new("="); asd_add_child($$, $1); asd_add_child($$, $3); }
+	| ID '[' ArrayDim ']' '=' Expr { $$ = asd_new("="); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $5);  }
 	;
 
-Flow : TK_PR_IF '(' Expr ')' TK_PR_THEN Command Else
-	| TK_PR_WHILE '(' Expr ')' Block
+Flow : TK_PR_WHILE '(' Expr ')' Block
+	| TK_PR_IF '(' Expr ')' TK_PR_THEN Block
+	| TK_PR_IF '(' Expr ')' TK_PR_THEN Block TK_PR_ELSE Block
 	;
 
-Else: 
-	| TK_PR_ELSE Command
+Ret : TK_PR_RETURN Expr {$$ = $2;}
 	;
 
-Ret : TK_PR_RETURN Expr
-	;
-
-FuncCall : ID '(' ExprList ')'
+FuncCall : ID '(' ExprList ')' { $$ = asd_new("( )"); asd_add_child($$, $1); asd_add_child($$, $3); }
+		| ID '(' ')' { $$ = $1; }
 	;
 
 ID: TK_IDENTIFICADOR
 	;
 
-Expr : ID
-	| LitList
-	| FuncCall
-	| E
-	;
-	
-ExprList : Expr ExprListEnd
+Expr : Expr TK_OC_OR T  { $$ = asd_new("or"); asd_add_child($$, $1); asd_add_child($$, $3); }
+	| T { $$ = $1; }
+T : T TK_OC_AND F { $$ = asd_new("and"); asd_add_child($$, $1); asd_add_child($$, $3); }
+	| F { $$ = $1; }
+F : F TK_OC_EQ G { $$ = asd_new("=="); asd_add_child($$, $1); asd_add_child($$, $3); }
+	| F TK_OC_NE G { $$ = asd_new("!="); asd_add_child($$, $1); asd_add_child($$, $3); }
+	| G { $$ = $1; }
+G : G TK_OC_LE I { $$ = asd_new(">="); asd_add_child($$, $1); asd_add_child($$, $3); }
+	| G TK_OC_GE I { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); }
+	| I { $$ = $1; }
+I : I '+' J { $$ = asd_new("+"); asd_add_child($$, $1); asd_add_child($$, $3); }
+	| I '-' J { $$ = asd_new("-"); asd_add_child($$, $1); asd_add_child($$, $3); }
+	| J { $$ = $1; }
+J : J '*' K { $$ = asd_new("*"); asd_add_child($$, $1); asd_add_child($$, $3); } 
+	| J '/' K { $$ = asd_new("/"); asd_add_child($$, $1); asd_add_child($$, $3); }
+	| J '%' K { $$ = asd_new("%"); asd_add_child($$, $1); asd_add_child($$, $3); } 
+	| K { $$ = $1; }
+K : '-' L { $$ = $2; }
+	| '!' L { $$ = $2; }
+	| L { $$ = $1; }
+L : '(' Expr ')' { $$ = $2; }
+	| FuncCall  { $$ = $1; }
+	| ID '[' ArrayDim ']' 
+	| ID { $$ = $1; }
+	| Lit { $$ = $1; }
+
+ExprList : Expr ExprListEnd {$$ = $1; add_child($$,$3);}
 	;
 
 ExprListEnd : 
-	| ',' Expr ExprListEnd
+	| ',' Expr ExprListEnd {$$ = $2; add_child($$,$3);}
 	;
-
-E : E TK_OC_OR T | T
-T : T TK_OC_AND F | F
-F : F TK_OC_EQ G | F TK_OC_NE G | G
-G : G TK_OC_LE I | G TK_OC_GE I | I
-I : I '+' J | I '-' J | J
-J : J '*' K | J '/' K | J '%' K | K
-K : '-' L | '!' L
-L : '(' E ')' | E
-
 
 %%
 
 int yyerror(char *err){
 	fprintf(stderr, "ERROR in line = %d\n", get_line_number());
-	exit(3);
+	return 0;
 }
-/*
-int main() {
-    if (yyparse() == 0) {
-        printf("The input is grammatically correct\n");
-    }
-    return 0;
-}
-*/

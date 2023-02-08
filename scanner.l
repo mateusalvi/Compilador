@@ -45,7 +45,7 @@
 
 [A-Za-z]+[A-Za-z]* { return TK_IDENTIFICADOR; } 
 
-[-,;:(){}+*/%^><!=\[\]]  { return yytext[0]; }
+[-,;:(){}+*/%\^><!=\[\]]  { return yytext[0]; }
 
 [ \t\s]+ { }
 
