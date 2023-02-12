@@ -53,7 +53,7 @@ extern void *arvore
 %token<valor_lexico.tipo> TK_LIT_TRUE
 %token<valor_lexico.tipo> TK_LIT_CHAR
 
-%token TK_IDENTIFICADOR
+%token<asd_tree> TK_IDENTIFICADOR
 %token TK_ERRO
 
 %type<asd_tree> Program
@@ -63,18 +63,17 @@ extern void *arvore
 %type<asd_tree> VarListLocal
 %type<asd_tree> Type
 %type<asd_tree> VarList
-%type<asd_tree> ArrayDimDec
-%type<asd_tree> ArrayDimDecEnd
+%type<asd_tree> ArrayDimEnd
 %type<asd_tree> ArrayDim
 %type<asd_tree> Lit
 %type<asd_tree> Func
 %type<asd_tree> ParamList
 %type<asd_tree> ParamListEnd
 %type<asd_tree> Param
-%type<asd_tree> Block
-%type<asd_tree> CommandList
-%type<asd_tree> CommandListEnd
 %type<asd_tree> Command
+%type<asd_tree> CommandListEnd
+%type<asd_tree> CommandList
+%type<asd_tree> Block
 %type<asd_tree> Atrib
 %type<asd_tree> Flow
 %type<asd_tree> Ret
@@ -115,7 +114,6 @@ VarListLocal :
         | ID TK_OC_LE Lit { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); }
 	;
      
-     
 Type : TK_PR_INT
 	| TK_PR_FLOAT
 	| TK_PR_BOOL
@@ -123,16 +121,16 @@ Type : TK_PR_INT
 	;
 
 VarList : ID ',' VarList {$$ = $1; add_child($$,$3);}
-        | ID '[' ArrayDimDec ']' ',' VarList
+        | ID '[' ArrayDim ']' ',' VarList
 		| ID { $$ = $1; }
-    	| ID '[' ArrayDimDec ']'
+    	| ID '[' ArrayDim ']'
 	;
-
+/*
 ArrayDimDec: TK_LIT_INT '^' ArrayDimDecEnd 
 			| TK_LIT_INT;
 ArrayDimDecEnd: TK_LIT_INT '^' ArrayDimDecEnd 
 			| TK_LIT_INT;
-
+*/
 ArrayDim : Expr '^' ArrayDimEnd  {$$ = $1; add_child($$,$3);}
 	| Expr { $$ = $1; }
     ;
@@ -166,7 +164,7 @@ Block : '{' CommandList '}'  { $$ = $2; }
 	| '{' '}'
 	;
 
-CommandList : Command CommandListEnd {$$ = $1; add_child($$,$3);}
+CommandList : Command CommandListEnd {$$ = $1; add_child($$,$2);}
 	;
 
 CommandListEnd : ';'
@@ -226,11 +224,11 @@ L : '(' Expr ')' { $$ = $2; }
 	| ID { $$ = $1; }
 	| Lit { $$ = $1; }
 
-ExprList : Expr ExprListEnd {$$ = $1; add_child($$,$3);}
+ExprList : Expr ExprListEnd {$$ = $1; add_child($$,$2);}
 	;
 
 ExprListEnd : 
-	| ',' Expr ExprListEnd {$$ = $2; add_child($$,$3);}
+	| ',' Expr ExprListEnd {$$ = $2; add_child($$,$2);}
 	;
 
 %%
