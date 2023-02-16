@@ -71,7 +71,7 @@ Type : TK_PR_INT
 VarList : ID ',' VarList {$$ = $1; add_child($$,$3);}
         | ID '[' ArrayDimDec ']' ',' VarList
 	| ID { $$ = $1; }
-        | ID '[' ArrayDimDec ']'
+        | ID '[' ArrayDimDec ']' { $$ = asd_new("[]"); asd_add_child($$, $1); asd_add_child($$, $3); }
 	;
 
 ArrayDimDec: TK_LIT_INT '^' ArrayDimDecEnd 
@@ -94,8 +94,8 @@ Lit : TK_LIT_INT
     | TK_LIT_CHAR
     ;
 
-Func : ID '(' ParamList ')' Block 
-		| ID '(' ')' Block { $$ = asd_new("( )"); asd_add_child($$, $1); asd_add_child($$, $3); }
+Func : ID '(' ParamList ')' Block { $$ = asd_new("="); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $5); } 
+		| ID '(' ')' Block { $$ = asd_new("()"); asd_add_child($$, $1); asd_add_child($$, $3); }
 	;
 
 ParamList : Param ParamListEnd {$$ = $1; add_child($$,$2);}
@@ -128,7 +128,7 @@ Command : Block { $$ = $1; }
 	;
 
 Atrib : ID '=' Expr { $$ = asd_new("="); asd_add_child($$, $1); asd_add_child($$, $3); }
-	| ID '[' ArrayDim ']' '=' Expr { $$ = asd_new("="); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $5);  }
+	| ID '[' ArrayDim ']' '=' Expr { $$ = asd_new("="); node_t *col = asd_new("[]"); asd_add_child($$, col); asd_add_child($$, $6); asd_add_child(col, $1); asd_add_child(col,$3); }
 	;
 
 Flow : TK_PR_WHILE '(' Expr ')' Block
