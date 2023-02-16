@@ -1,49 +1,87 @@
 %{
-
 /* 
 	Alunos: Mateus Luiz Salvi e Matheus Saueressig
+
+
+	BACKUP SALVI (eu tenho fé):
+
+	[-+]?[0-9]+ {yylval.valor_lexico = atoi(yytext);
+			yyval.valor_lexico.tipo = INT;
+			yyval.valor_lexico.linha = get_line_number();
+			return TK_LIT_INT;} 
+
+	[+-]?(([0-9]+"."[0-9]+)|("."[0-9]+)|([0-9]+".")|([0-9]+"."+[0-9]+([eE][+-]?[0-9]+)?)) {yyval.valor_lexico = atof(valor.FLOAT, yytext);
+																						yyval.valor_lexico.tipo = FLOAT;
+																						yyval.valor_lexico.linha = get_line_number();
+																						return TK_LIT_FLOAT;}
+
+	"false" {yyval.valor_lexico.valor.INT = 0; 
+			yyval.valor_lexico.tipo = BOOL; 
+			yyval.valor_lexico.linha = get_line_number();
+			return TK_LIT_FALSE;}
+
+	"true" {yyval.valor_lexico.valor.INT = 1;
+			yyval.valor_lexico.tipo = BOOL;
+			yyval.valor_lexico.linha = get_line_number();
+			return TK_LIT_TRUE;}
+
+	'.' {yyval.valor_lexico.valor.CHAR = strcpy(yytext);
+		yyval.valor_lexico.tipo = CHAR;
+		yyval.valor_lexico.linha = get_line_number();
+		return TK_LIT_CHAR;}
+
+	[A-Za-z]+[A-Za-z]* {yylval.valor_lexico.CHAR = strcpy(yytext); 
+						yyval.valor_lexico.tipo = IDENTIFICADOR; 
+						yyval.valor_lexico.linha = get_line_number();
+						return TK_IDENTIFICADOR;}
 */
+
+	#define IDENTIFICADOR 0 
+	#define INT 1
+	#define FLOAT 2
+	#define BOOL 3
+	#define CHAR 4
+
 	#include "parser.tab.h"
-	//#include "tokens.h"
+	#include "asd.h"
+	#include "y.tab.h"
+
 	int lineNumber = 1;
 %}
 
-
 %x COMMENT
-
 
 %%
 
+"int" { return TK_PR_INT; } 
+"float" { return TK_PR_FLOAT; } 
+"bool" { return TK_PR_BOOL; } 
+"char" { return TK_PR_CHAR; } 
+"if" { return TK_PR_IF; } 
+"then" { return TK_PR_THEN; } 
+"else" { return TK_PR_ELSE; } 
+"while" { return TK_PR_WHILE; } 
+"input" { return TK_PR_INPUT; } 
+"output" { return TK_PR_OUTPUT; } 
+"return" { return TK_PR_RETURN; } 
+"for" { return TK_PR_FOR; } 
 
-"int" { return TK_PR_INT; } //ok
-"float" { return TK_PR_FLOAT; } //ok
-"bool" { return TK_PR_BOOL; } //ok
-"char" { return TK_PR_CHAR; } //ok
-"if" { return TK_PR_IF; } //ok
-"then" { return TK_PR_THEN; } //ok
-"else" { return TK_PR_ELSE; } //ok
-"while" { return TK_PR_WHILE; } //ok
-"input" { return TK_PR_INPUT; } //ok
-"output" { return TK_PR_OUTPUT; } //ok
-"return" { return TK_PR_RETURN; } //ok
-"for" { return TK_PR_FOR; } //ok
+"<=" { return TK_OC_LE; } 
+">=" { return TK_OC_GE; } 
+"==" { return TK_OC_EQ; } 
+"!=" { return TK_OC_NE; } 
+"&&" { return TK_OC_AND; } 
+"||" { return TK_OC_OR; } 
 
+[-+]?[0-9]+ { yylval.valor_lexico = atoi(yytext) ; return TK_LIT_INT; } 
+[+-]?(([0-9]+"."[0-9]+)|("."[0-9]+)|([0-9]+".")|([0-9]+"."+[0-9]+([eE][+-]?[0-9]+)?)) { yyval.valor_lexico = atof(yytext) ; return TK_LIT_FLOAT; } 
 
-"<=" { return TK_OC_LE; } //ok
-">=" { return TK_OC_GE; } //ok
-"==" { return TK_OC_EQ; } //ok
-"!=" { return TK_OC_NE; } //ok
-"&&" { return TK_OC_AND; } //ok
-"||" { return TK_OC_OR; } //ok
+"false" { yyval.valor_lexico = atoi(yytext) ; return TK_LIT_FALSE; }
+"true" { yyval.valor_lexico = atoi(yytext) ; return TK_LIT_TRUE; }
 
-[-+]?[0-9]+ { return TK_LIT_INT; } 
-[+-]?(([0-9]+"."[0-9]+)|("."[0-9]+)|([0-9]+".")|([0-9]+"."+[0-9]+([eE][+-]?[0-9]+)?)) { return TK_LIT_FLOAT; } 
+'.' { yyval.valor_lexico = strcpy(yytext) ; return TK_LIT_CHAR; }
 
-"false" { return TK_LIT_FALSE; } //ok
-"true" { return TK_LIT_TRUE; } //ok
-'.' { return TK_LIT_CHAR; }
-
-[A-Za-z]+[A-Za-z]* { return TK_IDENTIFICADOR; } 
+[A-Za-z]+[A-Za-z]* { yylval.valor_lexico = strcpy(yytext) ; return TK_IDENTIFICADOR; } 
 
 [-,;:(){}+*/%\^><!=\[\]]  { return yytext[0]; }
 
@@ -53,12 +91,10 @@
 
 "//".* { }
 
-
 "/*"          { BEGIN(COMMENT); }
 <COMMENT>"*/" { BEGIN(INITIAL); }
 <COMMENT>\n   { lineNumber++; }
 <COMMENT>.    { }
-
 
 . { return TK_ERRO; }
 

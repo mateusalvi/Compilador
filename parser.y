@@ -1,13 +1,31 @@
 %{
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <asd.h>
 int yylex();
 int yyerror (char *s);
- extern int yydebug;
- yydebug = 1;
+extern int yydebug;
+yydebug = 1;
 extern int get_line_number();
+extern void *arvore
+
 %}
+
+%union
+{
+	struct valor_lexico {
+		int linha;
+		char *tipo;
+		union valor{
+			char *CHAR;
+			int INT;
+			float FLOAT;
+		};
+	}
+	asd_tree *arvore;
+}
 
 %token TK_PR_INT
 %token TK_PR_FLOAT
@@ -21,30 +39,65 @@ extern int get_line_number();
 %token TK_PR_OUTPUT
 %token TK_PR_RETURN
 %token TK_PR_FOR
+
 %token TK_OC_LE
 %token TK_OC_GE
 %token TK_OC_EQ
 %token TK_OC_NE
 %token TK_OC_AND
 %token TK_OC_OR
-%token TK_LIT_INT
-%token TK_LIT_FLOAT
-%token TK_LIT_FALSE
-%token TK_LIT_TRUE
-%token TK_LIT_CHAR
-%token TK_IDENTIFICADOR
+
+%token<valor_lexico.tipo> TK_LIT_INT
+%token<valor_lexico.tipo> TK_LIT_FLOAT
+%token<valor_lexico.tipo> TK_LIT_FALSE
+%token<valor_lexico.tipo> TK_LIT_TRUE
+%token<valor_lexico.tipo> TK_LIT_CHAR
+
+%token<asd_tree> TK_IDENTIFICADOR
 %token TK_ERRO
+
+%type<asd_tree> Program
+%type<asd_tree> DecList
+%type<asd_tree> Dec
+%type<asd_tree> DecLocal
+%type<asd_tree> VarListLocal
+%type<asd_tree> Type
+%type<asd_tree> VarList
+%type<asd_tree> ArrayDimEnd
+%type<asd_tree> ArrayDim
+%type<asd_tree> Lit
+%type<asd_tree> Func
+%type<asd_tree> ParamList
+%type<asd_tree> ParamListEnd
+%type<asd_tree> Param
+%type<asd_tree> Command
+%type<asd_tree> CommandListEnd
+%type<asd_tree> CommandList
+%type<asd_tree> Block
+%type<asd_tree> Atrib
+%type<asd_tree> Flow
+%type<asd_tree> Ret
+%type<asd_tree> FuncCall
+%type<asd_tree> ID
+%type<asd_tree> Expr
+%type<asd_tree> T
+%type<asd_tree> F
+%type<asd_tree> G
+%type<asd_tree> I
+%type<asd_tree> J
+%type<asd_tree> K
+%type<asd_tree> L
+%type<asd_tree> ExprList
+%type<asd_tree> ExprListEnd
 
 %start Program
 
 %%
 
-//Problemas: while, if() then{},
-
 Program : DecList { $$ = $1; }
 	;
 
-DecList : 
+DecList :
 	| Dec DecList {$$ = $1; add_child($$,$2);}
 	;
 
@@ -56,12 +109,11 @@ DecLocal: Type VarListLocal {$$ = $1; add_child($$,$2);}
 
 VarListLocal :
           ID ',' VarListLocal {$$ = $1; add_child($$,$3);}
-        | ID TK_OC_LE Lit ',' VarListLocal 
-	| ID { $$ = $1; }
+        | ID TK_OC_LE Lit ',' VarListLocal
+		| ID { $$ = $1; }
         | ID TK_OC_LE Lit { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); }
 	;
-     
-     
+
 Type : TK_PR_INT
 	| TK_PR_FLOAT
 	| TK_PR_BOOL
@@ -73,12 +125,12 @@ VarList : ID ',' VarList {$$ = $1; add_child($$,$3);}
 	| ID { $$ = $1; }
         | ID '[' ArrayDimDec ']' { $$ = asd_new("[]"); asd_add_child($$, $1); asd_add_child($$, $3); }
 	;
-
-ArrayDimDec: TK_LIT_INT '^' ArrayDimDecEnd 
+/*
+ArrayDimDec: TK_LIT_INT '^' ArrayDimDecEnd
 			| TK_LIT_INT;
-ArrayDimDecEnd: TK_LIT_INT '^' ArrayDimDecEnd 
-				| TK_LIT_INT;
-
+ArrayDimDecEnd: TK_LIT_INT '^' ArrayDimDecEnd
+			| TK_LIT_INT;
+*/
 ArrayDim : Expr '^' ArrayDimEnd  {$$ = $1; add_child($$,$3);}
 	| Expr { $$ = $1; }
     ;
@@ -94,14 +146,14 @@ Lit : TK_LIT_INT
     | TK_LIT_CHAR
     ;
 
-Func : ID '(' ParamList ')' Block { $$ = asd_new("="); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $5); } 
+Func : ID '(' ParamList ')' Block { $$ = asd_new("="); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $5); }
 		| ID '(' ')' Block { $$ = asd_new("()"); asd_add_child($$, $1); asd_add_child($$, $3); }
 	;
 
 ParamList : Param ParamListEnd {$$ = $1; add_child($$,$2);}
 	;
 
-ParamListEnd : 
+ParamListEnd :
 	| ',' Param ParamListEnd {$$ = $2; add_child($$,$3);}
 	;
 
@@ -109,10 +161,10 @@ Param : Type ID { asd_add_child($$, $1); asd_add_child($$, $2); }
 	;
 
 Block : '{' CommandList '}'  { $$ = $2; }
-		| '{' '}'
+	| '{' '}'
 	;
 
-CommandList : Command CommandListEnd {$$ = $1; add_child($$,$3);}
+CommandList : Command CommandListEnd {$$ = $1; add_child($$,$2);}
 	;
 
 CommandListEnd : ';'
@@ -139,7 +191,7 @@ Flow : TK_PR_WHILE '(' Expr ')' Block
 Ret : TK_PR_RETURN Expr {$$ = $2;}
 	;
 
-FuncCall : ID '(' ExprList ')' { $$ = asd_new("( )"); asd_add_child($$, $1); asd_add_child($$, $3); }
+FuncCall : ID '(' ExprList ')' { $$ = asd_new("( )"); asd_add_child($$, $1); asd_add_child($$, $3); } // cada parentese tem que ser um nodo.
 		| ID '(' ')' { $$ = $1; }
 	;
 
@@ -159,24 +211,24 @@ G : G TK_OC_LE I { $$ = asd_new(">="); asd_add_child($$, $1); asd_add_child($$, 
 I : I '+' J { $$ = asd_new("+"); asd_add_child($$, $1); asd_add_child($$, $3); }
 	| I '-' J { $$ = asd_new("-"); asd_add_child($$, $1); asd_add_child($$, $3); }
 	| J { $$ = $1; }
-J : J '*' K { $$ = asd_new("*"); asd_add_child($$, $1); asd_add_child($$, $3); } 
+J : J '*' K { $$ = asd_new("*"); asd_add_child($$, $1); asd_add_child($$, $3); }
 	| J '/' K { $$ = asd_new("/"); asd_add_child($$, $1); asd_add_child($$, $3); }
-	| J '%' K { $$ = asd_new("%"); asd_add_child($$, $1); asd_add_child($$, $3); } 
+	| J '%' K { $$ = asd_new("%"); asd_add_child($$, $1); asd_add_child($$, $3); }
 	| K { $$ = $1; }
 K : '-' L { $$ = $2; }
 	| '!' L { $$ = $2; }
 	| L { $$ = $1; }
 L : '(' Expr ')' { $$ = $2; }
 	| FuncCall  { $$ = $1; }
-	| ID '[' ArrayDim ']' 
+	| ID '[' ArrayDim ']'
 	| ID { $$ = $1; }
 	| Lit { $$ = $1; }
 
-ExprList : Expr ExprListEnd {$$ = $1; add_child($$,$3);}
+ExprList : Expr ExprListEnd {$$ = $1; add_child($$,$2);}
 	;
 
-ExprListEnd : 
-	| ',' Expr ExprListEnd {$$ = $2; add_child($$,$3);}
+ExprListEnd :
+	| ',' Expr ExprListEnd {$$ = $2; add_child($$,$2);}
 	;
 
 %%
