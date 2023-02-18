@@ -4,6 +4,17 @@
 #include "asd.h"
 #define ARQUIVO_SAIDA "saida.dot"
 
+struct *valor_lexico
+{
+  int atLine;
+  int type;
+  union{
+    int intValue;
+    bool boolValue;
+    char charValue;
+  }
+}
+
 asd_tree_t *asd_new(const char *label)
 {
   asd_tree_t *ret = NULL;
@@ -29,6 +40,11 @@ void asd_free(asd_tree_t *tree)
   }else{
     printf("Erro: %s recebeu parâmetro tree = %p.\n", __FUNCTION__, tree);
   }
+}
+
+void asd_new_node(asd_tree_t mother, int atLine, int type, union value)
+{
+    
 }
 
 void asd_add_child(asd_tree_t *tree, asd_tree_t *child)

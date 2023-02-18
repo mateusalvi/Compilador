@@ -9,22 +9,15 @@ int yyerror (char *s);
 extern int yydebug;
 yydebug = 1;
 extern int get_line_number();
-extern void *arvore
+extern void *arvore;
+extern struct *valor_lexico;
 
 %}
 
 %union
 {
-	struct valor_lexico {
-		int linha;
-		char *tipo;
-		union valor{
-			char *CHAR;
-			int INT;
-			float FLOAT;
-		};
-	}
-	asd_tree *arvore;
+	struct valor_lexico
+	asd_tree *arvore
 }
 
 %token TK_PR_INT
@@ -47,13 +40,13 @@ extern void *arvore
 %token TK_OC_AND
 %token TK_OC_OR
 
-%token<valor_lexico.tipo> TK_LIT_INT
-%token<valor_lexico.tipo> TK_LIT_FLOAT
-%token<valor_lexico.tipo> TK_LIT_FALSE
-%token<valor_lexico.tipo> TK_LIT_TRUE
-%token<valor_lexico.tipo> TK_LIT_CHAR
+%token<valor_lexico> TK_LIT_INT
+%token<valor_lexico> TK_LIT_FLOAT
+%token<valor_lexico> TK_LIT_FALSE
+%token<valor_lexico> TK_LIT_TRUE
+%token<valor_lexico> TK_LIT_CHAR
 
-%token<asd_tree> TK_IDENTIFICADOR
+%token<valor_lexico> TK_IDENTIFICADOR
 %token TK_ERRO
 
 %type<asd_tree> Program
@@ -94,7 +87,7 @@ extern void *arvore
 
 %%
 
-Program : DecList { $$ = $1; }
+Program : DecList { $$ = $1; asd_new($$); }
 	;
 
 DecList :
@@ -121,9 +114,9 @@ Type : TK_PR_INT
 	;
 
 VarList : ID ',' VarList {$$ = $1; add_child($$,$3);}
-        | ID '[' ArrayDimDec ']' ',' VarList
+        | ID '[' ArrayDim ']' ',' VarList
 	| ID { $$ = $1; }
-        | ID '[' ArrayDimDec ']' { $$ = asd_new("[]"); asd_add_child($$, $1); asd_add_child($$, $3); }
+        | ID '[' ArrayDim ']' { $$ = asd_new("[]"); asd_add_child($$, $1); asd_add_child($$, $3); }
 	;
 /*
 ArrayDimDec: TK_LIT_INT '^' ArrayDimDecEnd
@@ -191,7 +184,7 @@ Flow : TK_PR_WHILE '(' Expr ')' Block
 Ret : TK_PR_RETURN Expr {$$ = $2;}
 	;
 
-FuncCall : ID '(' ExprList ')' { $$ = asd_new("( )"); asd_add_child($$, $1); asd_add_child($$, $3); } // cada parentese tem que ser um nodo.
+FuncCall : ID '(' ExprList ')' { $$ = asd_new("( )"); asd_add_child($$, $1); asd_add_child($$, $3); }
 		| ID '(' ')' { $$ = $1; }
 	;
 
