@@ -39,8 +39,8 @@
 [-+]?[0-9]+			{ yylval.valor_lexico.atLine, yyval.valor_lexico.type, yyval.valor_lexico.intVal = get_line_number(), INT, atoi(yytext) ; return TK_LIT_INT; } 
 [+-]?(([0-9]+"."[0-9]+)|("."[0-9]+)|([0-9]+".")|([0-9]+"."+[0-9]+([eE][+-]?[0-9]+)?)) { yyval.valor_lexico.atLine, yyval.valor_lexico.type, yyval.valor_lexico.floatVal = get_line_number(), FLOAT, atof(yytext) ; return TK_LIT_FLOAT; } 
 
-"false"				{ yyval.valor_lexico.atLine, yyval.valor_lexico.type, yyval.valor_lexico.boolVal = get_line_number(), BOOL, strdup(strcpy(yytext)) ; return TK_LIT_FALSE; }
-"true"				{ yyval.valor_lexico.atLine, yyval.valor_lexico.type, yyval.valor_lexico.boolVal = get_line_number(), BOOL, strdup(strcpy(yytext)) ; return TK_LIT_TRUE; }
+"false"				{ yyval.valor_lexico.atLine, yyval.valor_lexico.type, yyval.valor_lexico.boolVal = get_line_number(), BOOL, 0 ; return TK_LIT_FALSE; }
+"true"				{ yyval.valor_lexico.atLine, yyval.valor_lexico.type, yyval.valor_lexico.boolVal = get_line_number(), BOOL, 1 ; return TK_LIT_TRUE; }
 
 '.'					{ yyval.valor_lexico.atLine, yyval.valor_lexico.type, yyval.valor_lexico.charVal = get_line_number(), CHAR, strdup(strcpy(yytext)) ; return TK_LIT_CHAR; }
 

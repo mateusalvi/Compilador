@@ -4,16 +4,6 @@
 #include "asd.h"
 #define ARQUIVO_SAIDA "saida.dot"
 
-struct *valor_lexico
-{
-  int atLine;
-  int type;
-  union{
-    int intValue;
-    bool boolValue;
-    char charValue;
-  }
-}
 
 asd_tree_t *asd_new(const char *label)
 {
@@ -42,10 +32,11 @@ void asd_free(asd_tree_t *tree)
   }
 }
 
-void asd_new_node(asd_tree_t mother, int atLine, int type, union value)
-{
-    
+
+char* create_leaf(valor_t value){
+    return value.value.token;
 }
+
 
 void asd_add_child(asd_tree_t *tree, asd_tree_t *child)
 {
