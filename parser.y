@@ -3,13 +3,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <asd.h>
+#include "asd.h"
 int yylex();
 int yyerror (char *s);
 extern int yydebug;
 yydebug = 1;
 extern int get_line_number();
-extern void *asd_tree_t;
+extern void *arvore;
 extern struct node_t;
 
 %}
