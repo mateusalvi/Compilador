@@ -9,15 +9,15 @@ int yyerror (char *s);
 extern int yydebug;
 yydebug = 1;
 extern int get_line_number();
-extern void *arvore;
-extern struct *valor_lexico;
+extern void *asd_tree_t;
+extern struct node_t;
 
 %}
 
 %union
 {
-	struct valor_lexico;
-	asd_tree *tree;
+	node_t valor_lexico;
+	asd_tree_t *tree;
 }
 
 %token TK_PR_INT
@@ -52,6 +52,7 @@ extern struct *valor_lexico;
 %type<asd_tree> Program
 %type<asd_tree> DecList
 %type<asd_tree> Dec
+%type<asd_tree> Block
 %type<asd_tree> DecLocal
 %type<asd_tree> VarListLocal
 %type<asd_tree> Type
@@ -66,7 +67,6 @@ extern struct *valor_lexico;
 %type<asd_tree> Command
 %type<asd_tree> CommandListEnd
 %type<asd_tree> CommandList
-%type<asd_tree> Block
 %type<asd_tree> Atrib
 %type<asd_tree> Flow
 %type<asd_tree> Ret
@@ -91,21 +91,21 @@ Program : DecList { arvore = (void*)$$; $$ = $1; }
 	;
 
 DecList :
-	| Dec DecList {$$ = $1; add_child($$,$2);}
+	| Dec DecList { $$ = $1; add_child($$,$2); create_node(); }
 	;
 
-Dec : Type VarList ';' {$$ = $1; add_child($$,$2);}
-	| Type Func {$$ = $1; add_child($$,$2);}
+Dec : Type VarList ';' { $$ = $1; add_child($$,$2); }
+	| Type Func { $$ = $1; add_child($$,$2); }
 	;
 
-DecLocal: Type VarListLocal {$$ = $1; add_child($$,$2);}
+DecLocal: Type VarListLocal { $$ = $1; add_child($$,$2); }
 
 VarListLocal :
-          ID ',' VarListLocal {$$ = $1; add_child($$,$3);}
+        | ID ',' VarListLocal {$$ = $1; add_child($$,$3); }
         | ID TK_OC_LE Lit ',' VarListLocal
 		| ID { $$ = $1; }
         | ID TK_OC_LE Lit { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); }
-	;
+		;
 
 Type : TK_PR_INT
 	| TK_PR_FLOAT
@@ -115,32 +115,32 @@ Type : TK_PR_INT
 
 VarList : ID ',' VarList {$$ = $1; add_child($$,$3);}
         | ID '[' ArrayDim ']' ',' VarList
-	| ID { $$ = $1; }
+		| ID { $$ = $1; }
         | ID '[' ArrayDim ']' { $$ = asd_new("[]"); asd_add_child($$, $1); asd_add_child($$, $3); }
-	;
+		;
 /*
 ArrayDimDec: TK_LIT_INT '^' ArrayDimDecEnd
 			| TK_LIT_INT;
 ArrayDimDecEnd: TK_LIT_INT '^' ArrayDimDecEnd
 			| TK_LIT_INT;
 */
-ArrayDim : Expr '^' ArrayDimEnd  {$$ = $1; add_child($$,$3);}
+ArrayDim : Expr '^' ArrayDimEnd  { $$ = $1; add_child($$,$3); }
 	| Expr { $$ = $1; }
     ;
 
-ArrayDimEnd : Expr '^' ArrayDimEnd {$$ = $1; add_child($$,$3);}
+ArrayDimEnd : Expr '^' ArrayDimEnd { $$ = $1; add_child($$,$3); }
     | Expr { $$ = $1; }
     ;
 
-Lit : TK_LIT_INT  {node_t* new_node; new_node = calloc(1,sizeof(node_t)); char* leaf; leaf = create_leaf($1); new_node = create_node(AST_LIT_INT,leaf);
-    | TK_LIT_FLOAT {node_t* new_node; new_node = calloc(1,sizeof(node_t)); char* leaf; leaf = create_leaf($1); new_node = create_node(AST_LIT_FLOAT,leaf);
-    | TK_LIT_FALSE {node_t* new_node; new_node = calloc(1,sizeof(node_t)); char* leaf; leaf = create_leaf($1); new_node = create_node(AST_LIT_FALSE,leaf);
-    | TK_LIT_TRUE {node_t* new_node; new_node = calloc(1,sizeof(node_t)); char* leaf; leaf = create_leaf($1); new_node = create_node(AST_LIT_TRUE,leaf);
-    | TK_LIT_CHAR {node_t* new_node; new_node = calloc(1,sizeof(node_t)); char* leaf; leaf = create_leaf($1); new_node = create_node(AST_LIT_CHAR,leaf);
+Lit : TK_LIT_INT  { node_t* new_node; new_node = calloc(1,sizeof(node_t)); char* leaf; leaf = create_leaf($1); new_node = create_node(AST_LIT_INT,leaf) };
+    | TK_LIT_FLOAT { node_t* new_node; new_node = calloc(1,sizeof(node_t)); char* leaf; leaf = create_leaf($1); new_node = create_node(AST_LIT_FLOAT,leaf) };
+    | TK_LIT_FALSE { node_t* new_node; new_node = calloc(1,sizeof(node_t)); char* leaf; leaf = create_leaf($1); new_node = create_node(AST_LIT_FALSE,leaf) };
+    | TK_LIT_TRUE { node_t* new_node; new_node = calloc(1,sizeof(node_t)); char* leaf; leaf = create_leaf($1); new_node = create_node(AST_LIT_TRUE,leaf) };
+    | TK_LIT_CHAR { node_t* new_node; new_node = calloc(1,sizeof(node_t)); char* leaf; leaf = create_leaf($1); new_node = create_node(AST_LIT_CHAR,leaf) };
     ;
 
-Func : ID '(' ParamList ')' Block {char label[100] = "call ", *nome_fun; nome_fun = strdup(create_leaf($1)); strcat(label,nome_fun); $$ = create_node(AST_CALL,label); add_child($$,$3); };
-		| ID '(' ')' Block { $$ = asd_new("()"); asd_add_child($$, $1); asd_add_child($$, $3); }
+Func : ID '(' ParamList ')' Block { char label[100] = "call ", *nome_fun; nome_fun = strdup(create_leaf($1)); strcat(label,nome_fun); $$ = create_node(AST_CALL,label); add_child($$,$5); };
+	| ID '(' ')' Block { $$ = asd_new("()"); asd_add_child($$, $1); asd_add_child($$, $4); }
 	;
 
 ParamList : Param ParamListEnd {$$ = $1; add_child($$,$2);}
@@ -177,8 +177,8 @@ Atrib : ID '=' Expr { $$ = asd_new("="); asd_add_child($$, $1); asd_add_child($$
 	;
 
 Flow : TK_PR_WHILE '(' Expr ')' Block { $$ = asd_new("while"); asd_add_child($$, $3); asd_add_child($$, $5); }
-	| TK_PR_IF '(' Expr ')' TK_PR_THEN Block  { $$ = asd_new("if"); asd_add_child($$, $3); asd_add_child($$, $5); }
-	| TK_PR_IF '(' Expr ')' TK_PR_THEN Block TK_PR_ELSE Block { $$ = asd_new("if"); asd_add_child($$, $3); asd_add_child($$, $5); asd_add_child($$, $7); }
+	| TK_PR_IF '(' Expr ')' TK_PR_THEN Block  { $$ = asd_new("if"); asd_add_child($$, $3); asd_add_child($$, $6); }
+	| TK_PR_IF '(' Expr ')' TK_PR_THEN Block TK_PR_ELSE Block { $$ = asd_new("if"); asd_add_child($$, $3); asd_add_child($$, $6); asd_add_child($$, $8); }
 	;
 
 Ret : TK_PR_RETURN Expr {$$ = $2;}
@@ -188,7 +188,7 @@ FuncCall : ID '(' ExprList ')' { $$ = asd_new("( )"); asd_add_child($$, $1); asd
 		| ID '(' ')' { $$ = $1; }
 	;
 
-ID: TK_IDENTIFICADOR {node_t* new_node; new_node = calloc(1,sizeof(node_t)); char* leaf; leaf = create_leaf($1); new_node = create_node(AST_LIT_INT,leaf);
+ID: TK_IDENTIFICADOR {node_t* new_node; new_node = calloc(1,sizeof(node_t)); char* leaf; leaf = create_leaf($1); new_node = create_node(AST_LIT_INT,leaf)};
 	;
 
 Expr : Expr TK_OC_OR T  { $$ = asd_new("&&"); asd_add_child($$, $1); asd_add_child($$, $3); }

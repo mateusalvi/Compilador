@@ -1,27 +1,29 @@
 #ifndef _ARVORE_H_
 #define _ARVORE_H_
 
-typedef struct asd_tree {
+typedef struct asd_tree 
+{
   char *label;
   int number_of_children;
   struct asd_tree **children;
 } asd_tree_t;
 
-struct valor
+typedef struct node
 {
   int atLine;
   int type;
   union{
-    int intValue;
-    char charValue;
-  }
-} valor_lexico;
-
+    int valueInt;
+    char valueChar;
+  };
+} node_t;
 
 /*
  * Função asd_new, cria um nó sem filhos com o label informado.
  */
 asd_tree_t *asd_new(const char *label);
+
+node_t create_node (char valor_lexico);
 
 /*
  * Função asd_tree, libera recursivamente o nó e seus filhos.
