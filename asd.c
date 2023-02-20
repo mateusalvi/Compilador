@@ -31,20 +31,20 @@ void asd_free(asd_tree_t *tree)
   }
 }
 
-// node_t create_node (char* valor_lexico)
-// {
-//   //printf(valor_lexico);
-//   return valor_lexico;
-// }
+value_t print_node (char* valor_lexico)
+{
+  printf(valor_lexico);
+  //return valor_lexico;
+}
 
-// char* create_leaf(node_t node)
+// char* create_leaf(value_t node)
 // {
 //   return node.valueChar*;
 // }
 
-// char* create_leaf(valor_t value){
-//     return value.value.token;
-// }
+char* create_leaf(value_t value){
+    return value.valueInt;
+}
 
 void asd_add_child(asd_tree_t *tree, asd_tree_t *child)
 {

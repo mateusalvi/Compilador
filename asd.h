@@ -8,15 +8,16 @@ typedef struct asd_tree
   struct asd_tree **children;
 } asd_tree_t;
 
-typedef struct node
+typedef struct value
 {
   int atLine;
   int type;
-  union{
+  union {
     int valueInt;
-    char valueChar;
+    float valueFloat;
+    char* valueChar;
   };
-} node_t;
+} value_t;
 
 
 /*
@@ -24,7 +25,9 @@ typedef struct node
  */
 asd_tree_t *asd_new(const char *label);
 
-node_t create_node (char valor_lexico);
+value_t print_node (char* valor_lexico);
+
+char* create_leaf(value_t value);
 
 /*
  * Função asd_tree, libera recursivamente o nó e seus filhos.

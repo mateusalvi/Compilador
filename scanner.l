@@ -7,7 +7,6 @@
 
 	#include "parser.tab.h"
 	#include "asd.h"
-	#include "y.tab.h"
 
 	int lineNumber = 1;
 %}
@@ -36,15 +35,15 @@
 "&&" { return TK_OC_AND; }
 "||" { return TK_OC_OR; }
 
-[-+]?[0-9]+			{ yylval.valor_lexico.atLine, yyval.valor_lexico.type, yyval.valor_lexico.intVal = lineNumber, INT, atoi(yytext) ; return TK_LIT_INT; } 
-[+-]?(([0-9]+"."[0-9]+)|("."[0-9]+)|([0-9]+".")|([0-9]+"."+[0-9]+([eE][+-]?[0-9]+)?)) { yyval.valor_lexico.atLine, yyval.valor_lexico.type, yyval.valor_lexico.floatVal = lineNumber, FLOAT, atof(yytext) ; return TK_LIT_FLOAT; } 
+[-+]?[0-9]+			{ yylval.valor_lexico.atLine, yylval.valor_lexico.type, yylval.valor_lexico.valueInt = lineNumber, INT, atoi(yytext) ; return TK_LIT_INT; } 
+[+-]?(([0-9]+"."[0-9]+)|("."[0-9]+)|([0-9]+".")|([0-9]+"."+[0-9]+([eE][+-]?[0-9]+)?)) { yylval.valor_lexico.atLine, yylval.valor_lexico.type, yylval.valor_lexico.valueFloat = lineNumber, FLOAT, atof(yytext) ; return TK_LIT_FLOAT; } 
 
-"false"				{ yyval.valor_lexico.atLine, yyval.valor_lexico.type, yyval.valor_lexico.boolVal = lineNumber, BOOL, 0 ; return TK_LIT_FALSE; }
-"true"				{ yyval.valor_lexico.atLine, yyval.valor_lexico.type, yyval.valor_lexico.boolVal = lineNumber, BOOL, 1 ; return TK_LIT_TRUE; }
+"false"				{ yylval.valor_lexico.atLine, yylval.valor_lexico.type, yylval.valor_lexico.valueInt = lineNumber, BOOL, 0 ; return TK_LIT_FALSE; }
+"true"				{ yylval.valor_lexico.atLine, yylval.valor_lexico.type, yylval.valor_lexico.valueInt = lineNumber, BOOL, 1 ; return TK_LIT_TRUE; }
 
-'.'					{ yyval.valor_lexico.atLine, yyval.valor_lexico.type, yyval.valor_lexico.charVal = lineNumber, CHAR, strdup(strcpy(yytext)) ; return TK_LIT_CHAR; }
+'.'					{ yylval.valor_lexico.atLine, yylval.valor_lexico.type = lineNumber, CHAR; strcpy(yylval.valor_lexico.valueChar, strdup(yytext)) ; return TK_LIT_CHAR; }
 
-[A-Za-z]+[A-Za-z]*  { yylval.valor_lexico.atLine, yyval.valor_lexico.type, yyval.valor_lexico.charVal = lineNumber, IDENTIFICADOR, strdup(strcpy(yytext)) ; return TK_IDENTIFICADOR; } 
+[A-Za-z]+[A-Za-z]*  { yylval.valor_lexico.atLine, yylval.valor_lexico.type = lineNumber, IDENTIFICADOR, strcpy( yylval.valor_lexico.valueChar, strdup(yytext)) ; return TK_IDENTIFICADOR; } 
 
 [-,;:(){}+*/%\^><!=\[\]]  { return yytext[0]; }
 
