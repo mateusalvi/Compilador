@@ -4,7 +4,6 @@
 #include "asd.h"
 #define ARQUIVO_SAIDA "saida.dot"
 
-
 asd_tree_t *asd_new(const char *label)
 {
   asd_tree_t *ret = NULL;
@@ -32,11 +31,20 @@ void asd_free(asd_tree_t *tree)
   }
 }
 
+// node_t create_node (char* valor_lexico)
+// {
+//   //printf(valor_lexico);
+//   return valor_lexico;
+// }
 
-char* create_leaf(valor_t value){
-    return value.value.token;
-}
+// char* create_leaf(node_t node)
+// {
+//   return node.valueChar*;
+// }
 
+// char* create_leaf(valor_t value){
+//     return value.value.token;
+// }
 
 void asd_add_child(asd_tree_t *tree, asd_tree_t *child)
 {
