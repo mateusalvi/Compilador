@@ -17,7 +17,7 @@ extern struct node_t;
 %union
 {
 	node_t valor_lexico;
-	asd_tree_t *tree;
+	asd_tree *tree;
 }
 
 %token TK_PR_INT
