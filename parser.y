@@ -17,7 +17,7 @@ extern struct node_t;
 %union
 {
 	node_t valor_lexico;
-	asd_tree *tree;
+	asd_tree_t *tree;
 }
 
 %token TK_PR_INT
@@ -49,39 +49,39 @@ extern struct node_t;
 %token<valor_lexico> TK_IDENTIFICADOR
 %token TK_ERRO
 
-%type<asd_tree> Program
-%type<asd_tree> DecList
-%type<asd_tree> Dec
-%type<asd_tree> Block
-%type<asd_tree> DecLocal
-%type<asd_tree> VarListLocal
-%type<asd_tree> Type
-%type<asd_tree> VarList
-%type<asd_tree> ArrayDimEnd
-%type<asd_tree> ArrayDim
-%type<asd_tree> Lit
-%type<asd_tree> Func
-%type<asd_tree> ParamList
-%type<asd_tree> ParamListEnd
-%type<asd_tree> Param
-%type<asd_tree> Command
-%type<asd_tree> CommandListEnd
-%type<asd_tree> CommandList
-%type<asd_tree> Atrib
-%type<asd_tree> Flow
-%type<asd_tree> Ret
-%type<asd_tree> FuncCall
-%type<asd_tree> ID
-%type<asd_tree> Expr
-%type<asd_tree> T
-%type<asd_tree> F
-%type<asd_tree> G
-%type<asd_tree> I
-%type<asd_tree> J
-%type<asd_tree> K
-%type<asd_tree> L
-%type<asd_tree> ExprList
-%type<asd_tree> ExprListEnd
+%type<tree> Program
+%type<tree> DecList
+%type<tree> Dec
+%type<tree> Block
+%type<tree> DecLocal
+%type<tree> VarListLocal
+%type<tree> Type
+%type<tree> VarList
+%type<tree> ArrayDimEnd
+%type<tree> ArrayDim
+%type<tree> Lit
+%type<tree> Func
+%type<tree> ParamList
+%type<tree> ParamListEnd
+%type<tree> Param
+%type<tree> Command
+%type<tree> CommandListEnd
+%type<tree> CommandList
+%type<tree> Atrib
+%type<tree> Flow
+%type<tree> Ret
+%type<tree> FuncCall
+%type<tree> ID
+%type<tree> Expr
+%type<tree> T
+%type<tree> F
+%type<tree> G
+%type<tree> I
+%type<tree> J
+%type<tree> K
+%type<tree> L
+%type<tree> ExprList
+%type<tree> ExprListEnd
 
 %start Program
 
