@@ -18,6 +18,7 @@ typedef struct node
   };
 } node_t;
 
+
 /*
  * Função asd_new, cria um nó sem filhos com o label informado.
  */
