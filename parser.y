@@ -1,4 +1,4 @@
-%{
+%code requires {
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,8 +11,7 @@ yydebug = 1;
 extern int get_line_number();
 extern void *arvore;
 extern struct node_t;
-
-%}
+}
 
 %union
 {
