@@ -12,11 +12,7 @@ typedef struct value
 {
   int atLine;
   int type;
-  union {
-    int valueInt;
-    float valueFloat;
-    char* valueChar;
-  };
+  char* tvalue;
 } value_t;
 
 

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "hash.h"
 
 #define CAPACITY 50000 // Size of the HashTable.
 
