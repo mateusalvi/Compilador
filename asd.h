@@ -28,7 +28,7 @@ typedef struct value
  */
 asd_tree_t *asd_new(const char *label);
 
-value_t print_node (char* valor_lexico);
+// value_t print_node (char* valor_lexico);
 
 char* create_leaf(value_t value);
 

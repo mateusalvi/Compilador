@@ -9,14 +9,14 @@ extern int yyparse(void);
 extern int yylex_destroy(void);
 
 void *arvore = NULL;
-void exporta (void *arvore);
-void libera (void *arvore); 
+void asd_print_graphviz (asd_tree_t *arvore);
+void asd_free (asd_tree_t *arvore); 
 
 int main (int argc, char **argv)
 {
   int ret = yyparse(); 
-  exporta (arvore);
-  libera(arvore);
+  asd_print_graphviz(arvore);
+  asd_free(arvore);
   arvore = NULL;
   yylex_destroy();
   return ret;

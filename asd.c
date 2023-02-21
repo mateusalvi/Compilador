@@ -31,11 +31,11 @@ void asd_free(asd_tree_t *tree)
   }
 }
 
-value_t print_node (char* valor_lexico)
-{
-  printf(valor_lexico);
-  //return valor_lexico;
-}
+// value_t print_node (char* valor_lexico)
+// {
+//   printf(valor_lexico);
+//   return valor_lexico;
+// }
 
 // char* create_leaf(value_t node)
 // {
@@ -43,7 +43,7 @@ value_t print_node (char* valor_lexico)
 // }
 
 char* create_leaf(value_t value){
-    return value.valueInt;
+    return value.value.valueChar;
 }
 
 void asd_add_child(asd_tree_t *tree, asd_tree_t *child)

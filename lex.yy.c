@@ -891,32 +891,32 @@ YY_RULE_SETUP
 case 19:
 YY_RULE_SETUP
 #line 38 "scanner.l"
-{ yylval.valor_lexico.atLine, yylval.valor_lexico.type, yylval.valor_lexico.valueInt = lineNumber, INT, atoi(yytext) ; return TK_LIT_INT; } 
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type =  INT; yylval.valor_lexico.value.valueInt = atoi(yytext); return TK_LIT_INT; } 
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
 #line 39 "scanner.l"
-{ yylval.valor_lexico.atLine, yylval.valor_lexico.type, yylval.valor_lexico.valueFloat = lineNumber, FLOAT, atof(yytext) ; return TK_LIT_FLOAT; } 
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = FLOAT; yylval.valor_lexico.value.valueFloat = atof(yytext) ; return TK_LIT_FLOAT; } 
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
 #line 41 "scanner.l"
-{ yylval.valor_lexico.atLine, yylval.valor_lexico.type, yylval.valor_lexico.valueInt = lineNumber, BOOL, 0 ; return TK_LIT_FALSE; }
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = BOOL; yylval.valor_lexico.value.valueInt = 0 ; return TK_LIT_FALSE; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
 #line 42 "scanner.l"
-{ yylval.valor_lexico.atLine, yylval.valor_lexico.type, yylval.valor_lexico.valueInt = lineNumber, BOOL, 1 ; return TK_LIT_TRUE; }
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = BOOL; yylval.valor_lexico.value.valueInt = 1 ; return TK_LIT_TRUE; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
 #line 44 "scanner.l"
-{ yylval.valor_lexico.atLine, yylval.valor_lexico.type = lineNumber, CHAR; strcpy(yylval.valor_lexico.valueChar, strdup(yytext)) ; return TK_LIT_CHAR; }
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = CHAR; yylval.valor_lexico.value.valueChar = strdup(yytext) ; return TK_LIT_CHAR; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 46 "scanner.l"
-{ yylval.valor_lexico.atLine, yylval.valor_lexico.type = lineNumber, IDENTIFICADOR, strcpy( yylval.valor_lexico.valueChar, strdup(yytext)) ; return TK_IDENTIFICADOR; } 
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = IDENTIFICADOR; yylval.valor_lexico.value.valueChar = strdup(yytext) ; return TK_IDENTIFICADOR; } 
 	YY_BREAK
 case 25:
 YY_RULE_SETUP

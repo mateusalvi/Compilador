@@ -35,15 +35,15 @@
 "&&" { return TK_OC_AND; }
 "||" { return TK_OC_OR; }
 
-[-+]?[0-9]+			{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type =  INT; yylval.valor_lexico.valueInt = atoi(yytext); return TK_LIT_INT; } 
-[+-]?(([0-9]+"."[0-9]+)|("."[0-9]+)|([0-9]+".")|([0-9]+"."+[0-9]+([eE][+-]?[0-9]+)?)) { yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = FLOAT; yylval.valor_lexico.valueFloat =  atof(yytext) ; return TK_LIT_FLOAT; } 
+[-+]?[0-9]+			{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type =  INT; yylval.valor_lexico.value.valueInt = atoi(yytext); return TK_LIT_INT; } 
+[+-]?(([0-9]+"."[0-9]+)|("."[0-9]+)|([0-9]+".")|([0-9]+"."+[0-9]+([eE][+-]?[0-9]+)?)) { yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = FLOAT; yylval.valor_lexico.value.valueFloat = atof(yytext) ; return TK_LIT_FLOAT; } 
 
-"false"				{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = BOOL; yylval.valor_lexico.valueInt  = 0 ; return TK_LIT_FALSE; }
-"true"				{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = BOOL; yylval.valor_lexico.valueInt  = 1 ; return TK_LIT_TRUE; }
+"false"				{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = BOOL; yylval.valor_lexico.value.valueInt = 0 ; return TK_LIT_FALSE; }
+"true"				{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = BOOL; yylval.valor_lexico.value.valueInt = 1 ; return TK_LIT_TRUE; }
 
-'.'					{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = CHAR; strcpy(yylval.valor_lexico.valueChar, strdup(yytext)) ; return TK_LIT_CHAR; }
+'.'					{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = CHAR; yylval.valor_lexico.value.valueChar = strdup(yytext) ; return TK_LIT_CHAR; }
 
-[A-Za-z]+[A-Za-z]*  { yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type =IDENTIFICADOR; strcpy( yylval.valor_lexico.valueChar, strdup(yytext)) ; return TK_IDENTIFICADOR; } 
+[A-Za-z]+[A-Za-z]*  { yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = IDENTIFICADOR; yylval.valor_lexico.value.valueChar = strdup(yytext) ; return TK_IDENTIFICADOR; } 
 
 [-,;:(){}+*/%\^><!=\[\]]  { return yytext[0]; }
 
