@@ -8,11 +8,18 @@ typedef struct asd_tree
   struct asd_tree **children;
 } asd_tree_t;
 
+union literal {
+    int valueInt;
+    float valueFloat;
+    char* valueChar;
+  };
+
 typedef struct value
 {
   int atLine;
   int type;
-  char* tvalue;
+  union literal value;
+  
 } value_t;
 
 
