@@ -1,5 +1,7 @@
 cd /mnt/d/Facul/Compiladores/Trabalho/Compilador
 
+valgrind ./etapa3 < ./Testes/w02
+
 ETAPA1:
 flex scanner.l
 gcc main.c lex.yy.c -o etapa1 -lfl

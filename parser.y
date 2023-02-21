@@ -39,6 +39,11 @@ extern void *arvore;
 %token TK_PR_RETURN
 %token TK_PR_FOR
 
+%type<tree> TK_PR_INT
+%type<tree> TK_PR_FLOAT
+%type<tree> TK_PR_BOOL
+%type<tree> TK_PR_CHAR
+
 %token TK_OC_LE
 %token TK_OC_GE
 %token TK_OC_EQ
@@ -100,22 +105,22 @@ extern void *arvore;
 
 %%
 
-Program : DecList { arvore = (void*)$$; $$ = $1; }
+Program : DecList { printf("ola"); arvore = (void*)$$; $$ = $1; }
 	;
 
 DecList :
 	| Dec DecList { $$ = $1; asd_add_child($$,$2); }
 	;
 
-Dec : Type VarList ';' { $$ = $1; asd_add_child($$,$2); }
-	| Type Func { $$ = $1; asd_add_child($$,$2); }
+Dec : Type VarList ';' { $$ = $2; }//asd_add_child($$,$2); }
+	| Type Func { $$ = $2; }//asd_add_child($$,$2); }
 	;
 
-DecLocal: Type VarListLocal { $$ = $1; asd_add_child($$,$2); }
+DecLocal: Type VarListLocal { $$ = $2; }//asd_add_child($$,$2); }
 
 VarListLocal :
-        | ID ',' VarListLocal {$$ = $3; asd_add_child($$,$3); }
-        | ID TK_OC_LE Lit ',' VarListLocal
+        | ID ',' VarListLocal { $$ = $3; asd_add_child($$,$3); }
+        | ID TK_OC_LE Lit ',' VarListLocal { $$ = asd_new("<="); asd_tree_t* new_child; new_child = calloc(1,sizeof(asd_tree_t)); char* leaf; leaf = create_leaf($1); new_child = asd_new(leaf); asd_add_child($$, new_child); asd_add_child($$, $3); asd_add_child($$, $5); }
 		| ID { $$ = NULL; }
         | ID TK_OC_LE Lit { $$ = asd_new("<="); asd_tree_t* new_child; new_child = calloc(1,sizeof(asd_tree_t)); char* leaf; leaf = create_leaf($1); new_child = asd_new(leaf); asd_add_child($$, new_child); asd_add_child($$, $3); }
 		;
@@ -127,7 +132,7 @@ Type : TK_PR_INT
 	;
 
 VarList : ID ',' VarList {$$ = $3;}
-        | ID '[' ArrayDim ']' ',' VarList
+        | ID '[' ArrayDim ']' ',' VarList { $$ = asd_new("[]"); asd_tree_t* new_child; new_child = calloc(1,sizeof(asd_tree_t)); char* leaf; leaf = create_leaf($1); new_child = asd_new(leaf); asd_add_child($$, new_child); asd_add_child($$, $3); asd_add_child($$, $6); }
 		| ID { $$ = NULL; }
         | ID '[' ArrayDim ']' { $$ = asd_new("[]"); asd_tree_t* new_child; new_child = calloc(1,sizeof(asd_tree_t)); char* leaf; leaf = create_leaf($1); new_child = asd_new(leaf); asd_add_child($$, new_child); asd_add_child($$, $3); }
 		;
@@ -152,8 +157,8 @@ Lit : TK_LIT_INT  { asd_tree_t* new_child; new_child = calloc(1,sizeof(asd_tree_
     | TK_LIT_CHAR { asd_tree_t* new_child; new_child = calloc(1,sizeof(asd_tree_t)); char* leaf; leaf = create_leaf($1); new_child = asd_new(leaf); }
     ;
 
-Func : ID '(' ParamList ')' Block { char* leaf; leaf = create_leaf($1); asd_add_child($$,$5); };
-	| ID '(' ')' Block { $$ = asd_new("()"); asd_tree_t* new_child; new_child = calloc(1,sizeof(asd_tree_t)); char* leaf; leaf = create_leaf($1); new_child = asd_new(leaf); asd_add_child($$, new_child); asd_add_child($$, $4); }
+Func : ID '(' ParamList ')' Block { asd_tree_t* new_child; new_child = calloc(1,sizeof(asd_tree_t)); char* leaf; leaf = create_leaf($1); new_child = asd_new(leaf); asd_add_child(new_child,$3); asd_add_child(new_child,$5); $$ = new_child;};
+	| ID '(' ')' Block { asd_tree_t* new_child; new_child = calloc(1,sizeof(asd_tree_t)); char* leaf; leaf = create_leaf($1); new_child = asd_new(leaf); asd_add_child(new_child, $4); $$ = new_child; }
 	;
 
 ParamList : Param ParamListEnd {$$ = $1; asd_add_child($$,$2);}
@@ -170,11 +175,11 @@ Block : '{' CommandList '}'  { $$ = $2; }
 	| '{' '}'
 	;
 
-CommandList : Command CommandListEnd {$$ = $1; asd_add_child($$,$2);}
+CommandList : Command CommandListEnd { $$ = $1; asd_add_child($$,$2); }
 	;
 
 CommandListEnd : ';'
-	| ';' Command CommandListEnd {$$ = $2; asd_add_child($$,$3);}
+	| ';' Command CommandListEnd { $$ = $2; asd_add_child($$,$3); }
 	;
 
 Command : Block { $$ = $1; }
@@ -194,7 +199,7 @@ Flow : TK_PR_WHILE '(' Expr ')' Block { $$ = asd_new("while"); asd_add_child($$,
 	| TK_PR_IF '(' Expr ')' TK_PR_THEN Block TK_PR_ELSE Block { $$ = asd_new("if"); asd_add_child($$, $3); asd_add_child($$, $6); asd_add_child($$, $8); }
 	;
 
-Ret : TK_PR_RETURN Expr {$$ = $2;}
+Ret : TK_PR_RETURN Expr { $$ = $2; }
 	;
 
 FuncCall : ID '(' ExprList ')' { $$ = asd_new("( )"); asd_tree_t* new_child; new_child = calloc(1,sizeof(asd_tree_t)); char* leaf; leaf = create_leaf($1); new_child = asd_new(leaf); asd_add_child($$, new_child); asd_add_child($$, $3); }

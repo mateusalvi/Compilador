@@ -27,6 +27,7 @@ void asd_free(asd_tree_t *tree)
     free(tree->label);
     free(tree);
   }else{
+    printf("asd free");
     printf("Erro: %s recebeu parâmetro tree = %p.\n", __FUNCTION__, tree);
   }
 }
@@ -48,6 +49,7 @@ char* create_leaf(value_t value){
 
 void asd_add_child(asd_tree_t *tree, asd_tree_t *child)
 {
+  printf("O label atual é: %s \n", tree->label);
   if (tree != NULL && child != NULL){
     tree->number_of_children++;
     tree->children = realloc(tree->children, tree->number_of_children * sizeof(asd_tree_t*));
