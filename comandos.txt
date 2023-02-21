@@ -1,6 +1,6 @@
 cd /mnt/d/Facul/Compiladores/Trabalho/Compilador
 
-valgrind ./etapa3 < ./Testes/w02
+valgrind --leak-check=full ./etapa3 < ./Testes/w02
 
 ETAPA1:
 flex scanner.l
