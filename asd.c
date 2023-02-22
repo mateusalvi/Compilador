@@ -57,11 +57,9 @@ char* create_leaf(value_t value){
 
 void asd_add_child(asd_tree_t *tree, asd_tree_t *child)
 {
-
-  //printf("Adicionando child com label %s, que contem %d filhos \n", tree->label, tree->number_of_children);
-
   if (tree != NULL && child != NULL)
   {
+    //printf("Adicionando child com label %s, que contem %d filhos \n", tree->label, tree->number_of_children);
     tree->number_of_children++;
     tree->children = realloc(tree->children, tree->number_of_children * sizeof(asd_tree_t*));
     tree->children[tree->number_of_children-1] = child;

@@ -801,7 +801,7 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 18 "scanner.l"
-{ return TK_PR_INT; }
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = INT; yylval.valor_lexico.value.valueChar = strdup(yytext) ; return TK_PR_INT; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
