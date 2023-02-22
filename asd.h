@@ -19,7 +19,6 @@ typedef struct value
   int atLine;
   int type;
   union literal value;
-  
 } value_t;
 
 /*

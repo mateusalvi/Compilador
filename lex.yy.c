@@ -508,19 +508,40 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "scanner.l"
 #line 2 "scanner.l"
-	#define IDENTIFICADOR 0 
-	#define INT 1
-	#define FLOAT 2
-	#define BOOL 3
-	#define CHAR 4
-
 	#include "parser.tab.h"
 	#include "asd.h"
 
+	enum types{
+		IDENTIFICADOR = 0,
+		INT = 1,
+		FLOAT = 2,
+		BOOL = 3,
+		CHAR = 4,
+		PR_INT = 5,
+		PR_FLOAT = 6,
+		PR_BOOL = 7,
+		PR_CHAR = 8,
+		PR_IF = 9,
+		PR_THEN = 10,
+		PR_ELSE = 11,
+		PR_WHILE = 12,
+		PR_INPUT = 13,
+		PR_OUTPUT = 14,
+		PR_RETURN = 15,
+		PR_FOR = 16,
+		OC_LE = 17,
+		OC_GE = 18,
+		OC_EQ = 19,
+		OC_NE = 20,
+		OC_AND = 21,
+		OC_OR = 22,
+		SPECIAL_CHARACTER = 23
+	};
+	
 	int lineNumber = 1;
-#line 522 "lex.yy.c"
+#line 543 "lex.yy.c"
 
-#line 524 "lex.yy.c"
+#line 545 "lex.yy.c"
 
 #define INITIAL 0
 #define COMMENT 1
@@ -738,10 +759,10 @@ YY_DECL
 		}
 
 	{
-#line 16 "scanner.l"
+#line 37 "scanner.l"
 
 
-#line 745 "lex.yy.c"
+#line 766 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -800,177 +821,177 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 18 "scanner.l"
-{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = INT; yylval.valor_lexico.value.valueChar = strdup(yytext) ; return TK_PR_INT; }
+#line 39 "scanner.l"
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = PR_INT; yylval.valor_lexico.value.valueChar = strdup(yytext); return TK_PR_INT; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 19 "scanner.l"
-{ return TK_PR_FLOAT; }
+#line 40 "scanner.l"
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = PR_FLOAT; yylval.valor_lexico.value.valueChar = strdup(yytext); return TK_PR_FLOAT; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 20 "scanner.l"
-{ return TK_PR_BOOL; }
+#line 41 "scanner.l"
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = PR_BOOL; yylval.valor_lexico.value.valueChar = strdup(yytext); return TK_PR_BOOL; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 21 "scanner.l"
-{ return TK_PR_CHAR; }
+#line 42 "scanner.l"
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = PR_CHAR; yylval.valor_lexico.value.valueChar = strdup(yytext); return TK_PR_CHAR; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 22 "scanner.l"
-{ return TK_PR_IF; }
+#line 43 "scanner.l"
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = PR_IF; yylval.valor_lexico.value.valueChar = strdup(yytext); return TK_PR_IF; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 23 "scanner.l"
-{ return TK_PR_THEN; }
+#line 44 "scanner.l"
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = PR_THEN; yylval.valor_lexico.value.valueChar = strdup(yytext); return TK_PR_THEN; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 24 "scanner.l"
-{ return TK_PR_ELSE; }
+#line 45 "scanner.l"
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = PR_ELSE; yylval.valor_lexico.value.valueChar = strdup(yytext); return TK_PR_ELSE; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 25 "scanner.l"
-{ return TK_PR_WHILE; }
+#line 46 "scanner.l"
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = PR_WHILE; yylval.valor_lexico.value.valueChar = strdup(yytext); return TK_PR_WHILE; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 26 "scanner.l"
-{ return TK_PR_INPUT; }
+#line 47 "scanner.l"
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = PR_INPUT; yylval.valor_lexico.value.valueChar = strdup(yytext); return TK_PR_INPUT; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 27 "scanner.l"
-{ return TK_PR_OUTPUT; }
+#line 48 "scanner.l"
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = PR_OUTPUT; yylval.valor_lexico.value.valueChar = strdup(yytext); return TK_PR_OUTPUT; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 28 "scanner.l"
-{ return TK_PR_RETURN; }
+#line 49 "scanner.l"
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = PR_RETURN; yylval.valor_lexico.value.valueChar = strdup(yytext); return TK_PR_RETURN; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 29 "scanner.l"
-{ return TK_PR_FOR; }
+#line 50 "scanner.l"
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = PR_FOR; yylval.valor_lexico.value.valueChar = strdup(yytext); return TK_PR_FOR; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 31 "scanner.l"
-{ return TK_OC_LE; }
+#line 52 "scanner.l"
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = OC_LE; yylval.valor_lexico.value.valueChar = strdup(yytext); return TK_OC_LE; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 32 "scanner.l"
-{ return TK_OC_GE; }
+#line 53 "scanner.l"
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = OC_GE; yylval.valor_lexico.value.valueChar = strdup(yytext); return TK_OC_GE; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 33 "scanner.l"
-{ return TK_OC_EQ; }
+#line 54 "scanner.l"
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = OC_EQ; yylval.valor_lexico.value.valueChar = strdup(yytext); return TK_OC_EQ; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 34 "scanner.l"
-{ return TK_OC_NE; }
+#line 55 "scanner.l"
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = OC_NE; yylval.valor_lexico.value.valueChar = strdup(yytext); return TK_OC_NE; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 35 "scanner.l"
-{ return TK_OC_AND; }
+#line 56 "scanner.l"
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = OC_AND; yylval.valor_lexico.value.valueChar = strdup(yytext); return TK_OC_AND; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 36 "scanner.l"
-{ return TK_OC_OR; }
+#line 57 "scanner.l"
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = OC_OR; yylval.valor_lexico.value.valueChar = strdup(yytext); return TK_OC_OR; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 38 "scanner.l"
+#line 59 "scanner.l"
 { yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type =  INT; yylval.valor_lexico.value.valueInt = atoi(yytext); yylval.valor_lexico.value.valueChar = strdup(yytext); return TK_LIT_INT; } 
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 39 "scanner.l"
-{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = FLOAT; yylval.valor_lexico.value.valueFloat = atof(yytext) ;yylval.valor_lexico.value.valueChar = strdup(yytext);  return TK_LIT_FLOAT; } 
+#line 60 "scanner.l"
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = FLOAT; yylval.valor_lexico.value.valueFloat = atof(yytext); yylval.valor_lexico.value.valueChar = strdup(yytext);  return TK_LIT_FLOAT; } 
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 41 "scanner.l"
-{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = BOOL; yylval.valor_lexico.value.valueInt = 0 ; yylval.valor_lexico.value.valueChar = strdup(yytext);  return TK_LIT_FALSE; }
+#line 62 "scanner.l"
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = BOOL; yylval.valor_lexico.value.valueInt = 0; yylval.valor_lexico.value.valueChar = strdup(yytext);  return TK_LIT_FALSE; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 42 "scanner.l"
-{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = BOOL; yylval.valor_lexico.value.valueInt = 1 ; yylval.valor_lexico.value.valueChar = strdup(yytext);  return TK_LIT_TRUE; }
+#line 63 "scanner.l"
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = BOOL; yylval.valor_lexico.value.valueInt = 1; yylval.valor_lexico.value.valueChar = strdup(yytext);  return TK_LIT_TRUE; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 44 "scanner.l"
-{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = CHAR; yylval.valor_lexico.value.valueChar = strdup(yytext) ; return TK_LIT_CHAR; }
+#line 65 "scanner.l"
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = CHAR; yylval.valor_lexico.value.valueChar = strdup(yytext); return TK_LIT_CHAR; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 46 "scanner.l"
-{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = IDENTIFICADOR; yylval.valor_lexico.value.valueChar = strdup(yytext) ; return TK_IDENTIFICADOR; } 
+#line 67 "scanner.l"
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = IDENTIFICADOR; yylval.valor_lexico.value.valueChar = strdup(yytext); return TK_IDENTIFICADOR; } 
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 48 "scanner.l"
-{ return yytext[0]; }
+#line 69 "scanner.l"
+{ yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = SPECIAL_CHARACTER; yylval.valor_lexico.value.valueChar = strdup(yytext); return yytext[0]; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 50 "scanner.l"
+#line 71 "scanner.l"
 { }
 	YY_BREAK
 case 27:
 /* rule 27 can match eol */
 YY_RULE_SETUP
-#line 52 "scanner.l"
+#line 73 "scanner.l"
 { lineNumber++; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 54 "scanner.l"
+#line 75 "scanner.l"
 { }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 56 "scanner.l"
+#line 77 "scanner.l"
 { BEGIN(COMMENT); }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 57 "scanner.l"
+#line 78 "scanner.l"
 { BEGIN(INITIAL); }
 	YY_BREAK
 case 31:
 /* rule 31 can match eol */
 YY_RULE_SETUP
-#line 58 "scanner.l"
+#line 79 "scanner.l"
 { lineNumber++; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 59 "scanner.l"
+#line 80 "scanner.l"
 { }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 61 "scanner.l"
+#line 82 "scanner.l"
 { return TK_ERRO; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 63 "scanner.l"
+#line 84 "scanner.l"
 ECHO;
 	YY_BREAK
-#line 974 "lex.yy.c"
+#line 995 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(COMMENT):
 	yyterminate();
@@ -1976,7 +1997,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 63 "scanner.l"
+#line 84 "scanner.l"
 
 
 int get_line_number()

@@ -91,13 +91,13 @@ extern void *arvore;
     TK_OC_NE = 273,
     TK_OC_AND = 274,
     TK_OC_OR = 275,
-    TK_ERRO = 276,
-    TK_LIT_INT = 277,
-    TK_LIT_FLOAT = 278,
-    TK_LIT_FALSE = 279,
-    TK_LIT_TRUE = 280,
-    TK_LIT_CHAR = 281,
-    TK_IDENTIFICADOR = 282
+    TK_LIT_INT = 276,
+    TK_LIT_FLOAT = 277,
+    TK_LIT_FALSE = 278,
+    TK_LIT_TRUE = 279,
+    TK_LIT_CHAR = 280,
+    TK_IDENTIFICADOR = 281,
+    TK_ERRO = 282
   };
 #endif
 

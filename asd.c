@@ -129,7 +129,7 @@ void asd_print_graphviz(asd_tree_t *tree)
   }
   
   if (tree != NULL){
-    fprintf(foutput, "digraph grafo {\n");
+    fprintf(foutput, "digraph {\n");
     _asd_print_graphviz(foutput, tree);
     fprintf(foutput, "}\n");
     fclose(foutput);
