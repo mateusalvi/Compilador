@@ -39,10 +39,6 @@ extern void *arvore;
 %token TK_PR_RETURN
 %token TK_PR_FOR
 
-%type<tree> TK_PR_INT
-%type<tree> TK_PR_FLOAT
-%type<tree> TK_PR_BOOL
-%type<tree> TK_PR_CHAR
 
 %token TK_OC_LE
 %token TK_OC_GE
@@ -66,6 +62,13 @@ extern void *arvore;
 %type<valor_lexico> TK_LIT_TRUE
 %type<valor_lexico> TK_LIT_CHAR
 %type<valor_lexico> TK_IDENTIFICADOR
+
+%type<valor_lexico>  TK_PR_INT
+%type<valor_lexico>  TK_PR_FLOAT
+%type<valor_lexico>  TK_PR_BOOL
+%type<valor_lexico>  TK_PR_CHAR
+
+
 
 %type<tree> ID
 %type<tree> Program
@@ -113,7 +116,7 @@ DecList :
 	;
 
 Dec : Type VarList ';' { $$ = $1; asd_add_child($$,$2); }
-    | Type Func { $$ = $1; asd_add_child($$,$2); }
+    | Type Func { $$ = asd_new($1); asd_add_child($$,$2); }
     ;
 
 DecLocal: Type VarListLocal { $$ = $2; }//asd_add_child($$,$2); }
@@ -125,10 +128,10 @@ VarListLocal :
         | ID TK_OC_LE Lit { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); }
 		;
 
-Type : TK_PR_INT
-	| TK_PR_FLOAT
-	| TK_PR_BOOL
-	| TK_PR_CHAR
+Type : TK_PR_INT { asd_tree_t* new_child = asd_new(create_leaf($1)); $$ = new_child; }//{value_t* new_child; n; char* leaf; leaf = create_leaf($1); new_child = asd_new(leaf); $$ = new_child; }
+	| TK_PR_FLOAT { asd_tree_t* new_child = asd_new(create_leaf($1)); $$ = new_child; }//{value_t* new_child; n; char* leaf; leaf = create_leaf($1); new_child = asd_new(leaf); $$ = new_child; }
+	| TK_PR_BOOL { asd_tree_t* new_child = asd_new(create_leaf($1)); $$ = new_child; }//{value_t* new_child; n; char* leaf; leaf = create_leaf($1); new_child = asd_new(leaf); $$ = new_child; }
+	| TK_PR_CHAR { asd_tree_t* new_child = asd_new(create_leaf($1)); $$ = new_child; }//{value_t* new_child; n; char* leaf; leaf = create_leaf($1); new_child = asd_new(leaf); $$ = new_child; }
 	;
 
 VarList : ID ',' VarList {$$ = $3;}

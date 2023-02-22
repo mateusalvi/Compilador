@@ -16,9 +16,9 @@
 %%
 
 "int" { yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = INT; yylval.valor_lexico.value.valueChar = strdup(yytext) ; return TK_PR_INT; }
-"float" { return TK_PR_FLOAT; }
-"bool" { return TK_PR_BOOL; }
-"char" { return TK_PR_CHAR; }
+"float" { yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = FLOAT; yylval.valor_lexico.value.valueChar = strdup(yytext) ; return TK_PR_FLOAT; }
+"bool" { yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = BOOL; yylval.valor_lexico.value.valueChar = strdup(yytext) ; return TK_PR_BOOL; }
+"char" { yylval.valor_lexico.atLine = get_line_number(); yylval.valor_lexico.type = CHAR; yylval.valor_lexico.value.valueChar = strdup(yytext) ; return TK_PR_CHAR; }
 "if" { return TK_PR_IF; }
 "then" { return TK_PR_THEN; }
 "else" { return TK_PR_ELSE; }
