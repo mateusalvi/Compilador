@@ -32,6 +32,8 @@ char* create_leaf(value_t value);
 
 void asd_free_node(asd_tree_t *tree);
 
+asd_tree_t *asd_new_leaf(const char *label);
+
 /*
  * Função asd_tree, libera recursivamente o nó e seus filhos.
  */

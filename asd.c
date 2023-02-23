@@ -22,6 +22,19 @@ asd_tree_t *asd_new(const char *label)
   return ret;
 }
 
+asd_tree_t *asd_new_leaf(const char *label)
+{
+  asd_tree_t *ret = NULL;
+  ret = calloc(1, sizeof(asd_tree_t));
+
+  if (ret != NULL)
+  {
+    ret->label = strdup(label);
+  }
+
+  return ret;
+}
+
 void asd_free(asd_tree_t *tree)
 {
   if (tree != NULL)
