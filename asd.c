@@ -40,16 +40,12 @@ void asd_free(asd_tree_t *tree)
   }
 }
 
-// value_t print_node (char* valor_lexico)
-// {
-//   printf(valor_lexico);
-//   return valor_lexico;
-// }
-
-// char* create_leaf(value_t node)
-// {
-//   return node.valueChar*;
-// }
+void asd_free_node(asd_tree_t *tree)
+{
+  free(tree->children);
+  free(tree->label);
+  free(tree);
+}
 
 char* create_leaf(value_t value){
     return value.value.valueChar;
@@ -89,7 +85,8 @@ static void _asd_print (FILE *foutput, asd_tree_t *tree, int profundidade)
 
 void asd_print(asd_tree_t *tree)
 {
-  FILE *foutput = stderr;
+  //FILE *foutput = stderr;
+  FILE *foutput = fopen(ARQUIVO_SAIDA, "w+");
 
   if (tree != NULL)
   {
@@ -107,8 +104,10 @@ static void _asd_print_graphviz (FILE *foutput, asd_tree_t *tree)
 
   if (tree != NULL)
   {
+    //printf("Printando como teste:  %ld [ label=\"%s\" ];\n", (long)tree, tree->label);
     fprintf(foutput, "  %ld [ label=\"%s\" ];\n", (long)tree, tree->label);
     for (i = 0; i < tree->number_of_children; i++){
+      //printf("OS FILHOS SÃO:  %ld -> %ld;\n", (long)tree, (long)tree->children[i]);
       fprintf(foutput, "  %ld -> %ld;\n", (long)tree, (long)tree->children[i]);
       _asd_print_graphviz(foutput, tree->children[i]);
     }
@@ -139,3 +138,14 @@ void asd_print_graphviz(asd_tree_t *tree)
     printf("Erro: %s recebeu parâmetro tree = %p.\n", __FUNCTION__, tree);
   }
 }
+
+// value_t print_node (char* valor_lexico)
+// {
+//   printf(valor_lexico);
+//   return valor_lexico;
+// }
+
+// char* create_leaf(value_t node)
+// {
+//   return node.valueChar*;
+// }

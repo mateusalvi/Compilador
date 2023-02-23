@@ -15,7 +15,8 @@ void asd_free (asd_tree_t *arvore);
 int main (int argc, char **argv)
 {
   int ret = yyparse(); 
-  asd_print_graphviz(arvore);
+  asd_print(arvore);
+  //asd_print_graphviz(arvore);
   asd_free(arvore);
   arvore = NULL;
   yylex_destroy();
