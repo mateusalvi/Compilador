@@ -1,12 +1,11 @@
+ETAPA 3:
+ERROS NOS TESTES w29, w68 e w69
+
 cd /mnt/d/Facul/Compiladores/Trabalho/Compilador
 
 tar -czvf etapa3.tar.gz .
 
 valgrind --leak-check=full ./etapa3 < ./Testes/w02
-
-printf("ANTES, $$: %d, $4: %d \n", $$, $4); 
-
-printf("DEPOIS \n");
 
 ETAPA1:
 flex scanner.l

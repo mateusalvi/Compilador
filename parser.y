@@ -96,10 +96,8 @@ extern void *arvore;
 %type<tree> Lit
 %type<tree> Func
 %type<tree> ParamList
-%type<tree> ParamListEnd
 %type<tree> Param
 %type<tree> Command
-%type<tree> CommandListEnd
 %type<tree> CommandList
 %type<tree> Atrib
 %type<tree> Flow
@@ -114,7 +112,6 @@ extern void *arvore;
 %type<tree> K
 %type<tree> L
 %type<tree> ExprList
-%type<tree> ExprListEnd
 
 %start Program
 
@@ -139,10 +136,10 @@ VarListLocal : ID ',' VarListLocal { $$ = $1; asd_add_child($$,$3); }
 		| ID { $$ = $1; }
 		;
 
-Type : TK_PR_INT
-	| TK_PR_FLOAT
-	| TK_PR_BOOL
-	| TK_PR_CHAR
+Type : TK_PR_INT { $$ = asd_new(create_leaf($1)); asd_free_node($$); }
+	| TK_PR_FLOAT { $$ = asd_new(create_leaf($1)); asd_free_node($$);}
+	| TK_PR_BOOL { $$ = asd_new(create_leaf($1)); asd_free_node($$); }
+	| TK_PR_CHAR { $$ = asd_new(create_leaf($1)); asd_free_node($$); }
 	;
 
 VarList : ID ',' VarList { $$ = $1; asd_add_child($$,$3); }
@@ -159,11 +156,11 @@ ArrayDimEnd : Expr '^' ArrayDimEnd { $$ = $1; asd_add_child($$,$3); }
     | Expr { $$ = $1; }
     ;
 
-Lit : TK_LIT_INT { $$ = asd_new_leaf(create_leaf($1)); }
-    | TK_LIT_FLOAT { $$ = asd_new_leaf(create_leaf($1)); }
-    | TK_LIT_FALSE { $$ = asd_new_leaf(create_leaf($1)); }
-    | TK_LIT_TRUE { $$ = asd_new_leaf(create_leaf($1)); }
-    | TK_LIT_CHAR { $$ = asd_new_leaf(create_leaf($1)); }
+Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); }
+    | TK_LIT_FLOAT { $$ = asd_new(create_leaf($1)); }
+    | TK_LIT_FALSE { $$ = asd_new(create_leaf($1)); }
+    | TK_LIT_TRUE { $$ = asd_new(create_leaf($1)); }
+    | TK_LIT_CHAR { $$ = asd_new(create_leaf($1)); }
     ;
 
 Func : ID '(' ')' '{' '}' { $$ = $1; }

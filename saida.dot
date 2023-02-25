@@ -1,9 +1,37 @@
-0: Nó 'f' tem 1 filhos:
-1  : Nó 'if' tem 1 filhos:
-2    : Nó '>=' tem 2 filhos:
-3      : Nó '+' tem 2 filhos:
-4        : Nó 'a' tem 0 filhos:
-4        : Nó '*' tem 2 filhos:
-5          : Nó 'b' tem 0 filhos:
-5          : Nó 'c' tem 0 filhos:
-3      : Nó '10' tem 0 filhos:
+digraph {
+  0x4a514f0, 0x4a517e0;
+  0x4a517e0, 0x4a51a30;
+  0x4a51a30, 0x4a51c80;
+  0x4a51c80, 0x4a52930;
+  0x4a52930, 0x4a51e70;
+  0x4a52930, 0x4a522b0;
+  0x4a522b0, 0x4a52060;
+  0x4a522b0, 0x4a521b0;
+  0x4a52930, 0x4a52790;
+  0x4a52790, 0x4a52540;
+  0x4a52790, 0x4a52690;
+  0x4a52930, 0x4a52dd0;
+  0x4a52dd0, 0x4a52b80;
+  0x4a52dd0, 0x4a52cd0;
+  0x4a52dd0, 0x4a531c0;
+  0x4a531c0, 0x4a52f70;
+  0x4a531c0, 0x4a530c0;
+  0x4a514f0 [ label="f" ];
+  0x4a517e0 [ label="a" ];
+  0x4a51a30 [ label="b" ];
+  0x4a51c80 [ label="c" ];
+  0x4a52930 [ label="if" ];
+  0x4a51e70 [ label="a" ];
+  0x4a522b0 [ label="=" ];
+  0x4a52060 [ label="a" ];
+  0x4a521b0 [ label="b" ];
+  0x4a52790 [ label="=" ];
+  0x4a52540 [ label="a" ];
+  0x4a52690 [ label="3" ];
+  0x4a52dd0 [ label="=" ];
+  0x4a52b80 [ label="c" ];
+  0x4a52cd0 [ label="4" ];
+  0x4a531c0 [ label="=" ];
+  0x4a52f70 [ label="c" ];
+  0x4a530c0 [ label="5" ];
+}
