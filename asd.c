@@ -19,18 +19,6 @@ asd_tree_t *asd_new(const char *label)
     ret->children = NULL;
   }
 
-  return ret;
-}
-
-asd_tree_t *asd_new_leaf(const char *label)
-{
-  asd_tree_t *ret = NULL;
-  ret = calloc(1, sizeof(asd_tree_t));
-
-  if (ret != NULL)
-  {
-    ret->label = strdup(label);
-  }
 
   return ret;
 }
@@ -41,11 +29,11 @@ void asd_free(asd_tree_t *tree)
   {
     int i;
     for (i = 0; i < tree->number_of_children; i++){
-      printf("Current children in free: %p\n", tree->children[i]);
+      //printf("Current children in free: %p\n", tree->children[i]);
       asd_free(tree->children[i]);
     }
 
-    printf("Freeing node with label: %s, at adr: %p\n", tree->label, tree);
+    //printf("Freeing node with label: %s, at adr: %p\n", tree->label, tree);
     free(tree->children);
     free(tree->label);
     free(tree);
@@ -139,7 +127,7 @@ static void _asd_print_graphviz_adr (FILE *foutput, asd_tree_t *tree)
   if (tree != NULL)
   {
     for (i = 0; i < tree->number_of_children; i++){
-      fprintf(foutput, "  %p, %p;\n", tree, tree->children[i]);
+      fprintf(foutput, "  %p -> %p\n", tree, tree->children[i]);
       _asd_print_graphviz_adr(foutput, tree->children[i]);
     }
   }

@@ -137,7 +137,7 @@ VarListLocal : ID ',' VarListLocal { $$ = $1; asd_add_child($$,$3); }
 		;
 
 Type : TK_PR_INT { $$ = asd_new(create_leaf($1)); asd_free_node($$); }
-	| TK_PR_FLOAT { $$ = asd_new(create_leaf($1)); asd_free_node($$);}
+	| TK_PR_FLOAT { $$ = asd_new(create_leaf($1)); asd_free_node($$); }
 	| TK_PR_BOOL { $$ = asd_new(create_leaf($1)); asd_free_node($$); }
 	| TK_PR_CHAR { $$ = asd_new(create_leaf($1)); asd_free_node($$); }
 	;
@@ -148,11 +148,11 @@ VarList : ID ',' VarList { $$ = $1; asd_add_child($$,$3); }
 		| ID '[' ArrayDim ']' { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3); }
 		;
 
-ArrayDim : Expr '^' ArrayDimEnd  { $$ = $1; asd_add_child($$,$3); }
+ArrayDim : Expr '^' ArrayDimEnd  { $$ = asd_new("^"); asd_add_child($$,$1); asd_add_child($$,$3); }
 	| Expr { $$ = $1; }
     ;
 
-ArrayDimEnd : Expr '^' ArrayDimEnd { $$ = $1; asd_add_child($$,$3); }
+ArrayDimEnd : Expr '^' ArrayDimEnd { $$ = asd_new("^"); asd_add_child($$,$1); asd_add_child($$,$3); }
     | Expr { $$ = $1; }
     ;
 
@@ -163,23 +163,23 @@ Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); }
     | TK_LIT_CHAR { $$ = asd_new(create_leaf($1)); }
     ;
 
-Func : ID '(' ')' '{' '}' { $$ = $1; }
-	| ID '(' ParamList ')' '{' '}' { $$ = $1; asd_add_child($$,$3); }
-	| ID '(' ')' Block { $$ = $1; asd_add_child($$,$4); }
-	| ID '(' ParamList ')' Block { $$ = $1; asd_add_child($$,$3); printf("ANTES \n"); asd_add_child($$,$5); printf("DEPOIS\n"); }
+Func : ID '(' ')' Block { $$ = $1; if($4){ asd_add_child($$,$4); }; }
+	| ID '(' ParamList ')' Block { $$ = $1; asd_add_child($$,$3); if($5){ asd_add_child($$,$5); }; }
 	;
 
 ParamList : Param ',' ParamList { $$ = $1; asd_add_child($$,$3); }
 	| Param { $$ = $1; }
+	;
 
 Param : Type ID { $$ = $2; }
 	;
 
 Block : '{' CommandList '}'  { $$ = $2; }
+	| '{' '}' { $$ = NULL; }
 	;
 
-CommandList : Command ';' CommandList { $$ = $1, asd_add_child($$,$3); }
-	| Command ';' { $$ = $1; }
+CommandList : Command ';' CommandList { if($1){ $$ = $1; }; if($3){ asd_add_child($$,$3); }; }
+	| Command ';' { if($1){ $$ = $1; }; }
 
 Command : Flow { $$ = $1; }
 	| DecLocal { $$ = $1; }
@@ -191,16 +191,12 @@ Command : Flow { $$ = $1; }
 
 Atrib : ID '=' Expr { $$ = asd_new("="); asd_add_child($$,$1); asd_add_child($$,$3); }
 	| ID '[' ArrayDim ']' '=' Expr { $$ = asd_new("="); asd_tree_t *col = asd_new("[]"); asd_add_child($$, col); asd_add_child($$, $6); asd_add_child(col, $1); asd_add_child(col,$3); }
+	| ID '=' ID '[' ArrayDim ']' { $$ = asd_new("="); asd_tree_t *col = asd_new("[]"); asd_add_child($$, col); asd_add_child(col, $3); asd_add_child($$, $5); }
 	;
 
-Flow : TK_PR_WHILE '(' Expr ')' Block { $$ = asd_new("while"); asd_add_child($$, $3); asd_add_child($$, $5); }
-	| TK_PR_WHILE '(' Expr ')' '{' '}' { $$ = asd_new("while"); asd_add_child($$, $3); }
-	| TK_PR_IF '(' Expr ')' TK_PR_THEN Block  { $$ = asd_new("if"); asd_add_child($$, $3); asd_add_child($$, $6); }
-	| TK_PR_IF '(' Expr ')' TK_PR_THEN '{' '}'  { $$ = asd_new("if"); asd_add_child($$, $3); }
-	| TK_PR_IF '(' Expr ')' TK_PR_THEN Block TK_PR_ELSE Block { $$ = asd_new("if"); asd_add_child($$, $3); asd_add_child($$, $6); asd_add_child($$, $8); }
-	| TK_PR_IF '(' Expr ')' TK_PR_THEN '{' '}' TK_PR_ELSE Block { $$ = asd_new("if"); asd_add_child($$, $3); asd_add_child($$, $9); }
-	| TK_PR_IF '(' Expr ')' TK_PR_THEN Block TK_PR_ELSE '{' '}' { $$ = asd_new("if"); asd_add_child($$, $3); asd_add_child($$, $6); }
-	| TK_PR_IF '(' Expr ')' TK_PR_THEN '{' '}' TK_PR_ELSE '{' '}' { $$ = asd_new("if"); asd_add_child($$, $3); }
+Flow : TK_PR_WHILE '(' Expr ')' Block { $$ = asd_new("while"); asd_add_child($$, $3); if($5){ asd_add_child($$, $5); }; }
+	| TK_PR_IF '(' Expr ')' TK_PR_THEN Block  { $$ = asd_new("if"); asd_add_child($$, $3); if($6){ asd_add_child($$, $6); }; }
+	| TK_PR_IF '(' Expr ')' TK_PR_THEN Block TK_PR_ELSE Block { $$ = asd_new("if"); asd_add_child($$, $3); if($6){ asd_add_child($$, $6); }; if($8){ asd_add_child($$, $8); }; }
 	;
 
 Ret : TK_PR_RETURN Expr { $$ = $2; }
@@ -210,7 +206,7 @@ FuncCall : ID '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); }
 	| ID '(' ')' { $$ = $1; }
 	;
 
-ID: TK_IDENTIFICADOR { $$ = asd_new_leaf(create_leaf($1)); }
+ID: TK_IDENTIFICADOR { $$ = asd_new(create_leaf($1)); }
 	;
 
 Expr : Expr TK_OC_OR T  { $$ = asd_new("&&"); asd_add_child($$, $1); asd_add_child($$, $3); }
@@ -232,8 +228,8 @@ J : J '*' K { $$ = asd_new("*"); asd_add_child($$, $1); asd_add_child($$, $3); }
 	| J '/' K { $$ = asd_new("/"); asd_add_child($$, $1); asd_add_child($$, $3); }
 	| J '%' K { $$ = asd_new("%"); asd_add_child($$, $1); asd_add_child($$, $3); }
 	| K { $$ = $1; }
-K : '-' L { $$ = $2; }
-	| '!' L { $$ = $2; }
+K : '-' L { $$ = asd_new("-"); asd_add_child($$, $2); }
+	| '!' L { $$ = asd_new("!"); asd_add_child($$, $2); }
 	| L { $$ = $1; }
 L : '(' Expr ')' { $$ = $2; }
 	| FuncCall  { $$ = $1; }
