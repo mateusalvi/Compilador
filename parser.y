@@ -130,10 +130,10 @@ Dec : Type VarList ';' { $$ = $2; }
 
 DecLocal: Type VarListLocal { $$ = $2; }
 
-VarListLocal : ID ',' VarListLocal { $$ = $1; asd_add_child($$,$3); }
+VarListLocal : ID ',' VarListLocal { $$ = $3; }
         | ID TK_OC_LE Lit ',' VarListLocal { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $5); }
 		| ID TK_OC_LE Lit { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); }
-		| ID { $$ = $1; }
+		| ID { $$ = NULL; }
 		;
 
 Type : TK_PR_INT { $$ = asd_new(create_leaf($1)); asd_free_node($$); }
