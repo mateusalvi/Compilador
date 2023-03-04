@@ -10,18 +10,23 @@ union value_u{
     char charValue;
 };
 
-typedef struct ItemContent
-{
-    int atLine;
-    int type;
-	float size;
-    union value_u value;
-} ItemContent;
+// typedef struct ItemContent
+// {
+//     int atLine;
+//     int type;
+// 	float size;
+//     union value_u value;
+// } ItemContent;
 
 typedef struct Ht_item
 {
     char* key;
-    ItemContent** Ht_item_content;
+    int atLine;
+    int type;
+	float size;
+    char* value;
+    //union value_u value;
+    //ItemContent** Ht_item_content;
 } Ht_item;
 
 typedef struct LinkedList

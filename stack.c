@@ -32,7 +32,7 @@ void pop()
 
 void Free_Hash_Stack()
 {
-    free(HashTableStack);
+    // free(HashTableStack);
 }
 
 // void show()

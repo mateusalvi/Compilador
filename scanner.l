@@ -1,8 +1,6 @@
 %{
 	#include "parser.tab.h"
 	#include "asd.h"
-	#include "hash.h"
-	#include "stack.h"
 
 	enum types{
 		IDENTIFICADOR = 0,
@@ -132,7 +130,7 @@
 					  yylval.valor_lexico.type =  INT; 
 					  yylval.valor_lexico.value.valueInt = atoi(yytext); 
 					  yylval.valor_lexico.value.valueChar = strdup(yytext); 
-					  return TK_LIT_INT; } 
+					  return TK_LIT_INT; }
 
 [+-]?(([0-9]+"."[0-9]+)|("."[0-9]+)|([0-9]+".")|([0-9]+"."+[0-9]+([eE][+-]?[0-9]+)?)) { yylval.valor_lexico.atLine = get_line_number(); 
 					yylval.valor_lexico.type = FLOAT; 

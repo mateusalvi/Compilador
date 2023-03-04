@@ -5,7 +5,7 @@ cd /mnt/d/Facul/Compiladores/Trabalho/Compilador
 
 tar -czvf etapa4.tar.gz .
 
-valgrind --leak-check=full ./etapa3 < ./Testes/w02
+valgrind --leak-check=full ./etapa4 < ./Testes/w02
 
 ETAPA1:
 flex scanner.l

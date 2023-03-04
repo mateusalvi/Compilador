@@ -2,13 +2,6 @@
 	
 #define YYDEBUG 1
 
-#define ASD_LIT_FALSE 0
-#define ASD_LIT_TRUE 1
-#define ASD_LIT_INT 2
-#define ASD_LIT_FLOAT 3
-#define ASD_LIT_CHAR 4
-#define ASD_CALL 5
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -83,6 +76,7 @@ extern void *arvore;
 %type<valor_lexico> TK_IDENTIFICADOR
 
 %type<tree> ID
+%type<tree> FuncCallID
 %type<tree> Program
 %type<tree> DecList
 %type<tree> Dec
@@ -124,11 +118,11 @@ DecList : Dec DecList {  $$ = $1; asd_add_child($$,$2); }
 	| Dec { $$ = $1; }
 	;
 
-Dec : Type VarList ';' { $$ = $2; }
+Dec : Type VarList ';' { if($2){ $$ = $2; } }
     | Type Func { $$ = $2; }
     ;
 
-DecLocal: Type VarListLocal { $$ = $2; }
+DecLocal: Type VarListLocal { if($2){ $$ = $2; } }
 
 VarListLocal : ID ',' VarListLocal { $$ = $3; }
         | ID TK_OC_LE Lit ',' VarListLocal { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $5); }
@@ -174,7 +168,7 @@ ParamList : Param ',' ParamList { $$ = $1; asd_add_child($$,$3); }
 Param : Type ID { $$ = $2; }
 	;
 
-Block : '{' CommandList '}'  { $$ = $2; }
+Block : '{' CommandList '}'  { if($2){ $$ = $2; } }
 	| '{' '}' { $$ = NULL; }
 	;
 
@@ -183,7 +177,7 @@ CommandList : Command ';' CommandList { if($1){ $$ = $1; }; if($3){ asd_add_chil
 
 Command : Flow { $$ = $1; }
 	| DecLocal { $$ = $1; }
-	| Atrib { ; $$ = $1; }
+	| Atrib { $$ = $1; }
 	| Ret { $$ = $1; }
 	| FuncCall { $$ = $1; }
 	| Block { $$ = $1; }
@@ -199,14 +193,17 @@ Flow : TK_PR_WHILE '(' Expr ')' Block { $$ = asd_new("while"); asd_add_child($$,
 	| TK_PR_IF '(' Expr ')' TK_PR_THEN Block TK_PR_ELSE Block { $$ = asd_new("if"); asd_add_child($$, $3); if($6){ asd_add_child($$, $6); }; if($8){ asd_add_child($$, $8); }; }
 	;
 
-Ret : TK_PR_RETURN Expr { $$ = asd_new("return"); asd_add_child($$, $2); }
+Ret : TK_PR_RETURN Expr { $$ = asd_new("return"); asd_add_child($$, $2); } // Para o comando de retorno deve ser utilizado o lexema correspondente. ???
 	;
 
-FuncCall : ID '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); }
-	| ID '(' ')' { $$ = $1; }
+FuncCall : FuncCallID '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); }
+	| FuncCallID '(' ')' { $$ = $1; }
 	;
 
 ID: TK_IDENTIFICADOR { $$ = asd_new(create_leaf($1)); }
+	;
+
+FuncCallID : TK_IDENTIFICADOR { char newLabel[100] = "call "; strcat(newLabel, create_leaf($1)); $$ = asd_new(newLabel); }
 	;
 
 Expr : Expr TK_OC_OR T  { $$ = asd_new("||"); asd_add_child($$, $1); asd_add_child($$, $3); }
