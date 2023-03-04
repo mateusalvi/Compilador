@@ -199,7 +199,7 @@ Flow : TK_PR_WHILE '(' Expr ')' Block { $$ = asd_new("while"); asd_add_child($$,
 	| TK_PR_IF '(' Expr ')' TK_PR_THEN Block TK_PR_ELSE Block { $$ = asd_new("if"); asd_add_child($$, $3); if($6){ asd_add_child($$, $6); }; if($8){ asd_add_child($$, $8); }; }
 	;
 
-Ret : TK_PR_RETURN Expr { $$ = $2; }
+Ret : TK_PR_RETURN Expr { $$ = asd_new("return"); asd_add_child($$, $2); }
 	;
 
 FuncCall : ID '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); }
