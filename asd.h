@@ -1,13 +1,6 @@
 #ifndef _ARVORE_H_
 #define _ARVORE_H_
 
-typedef struct asd_tree 
-{
-  char *label;
-  int number_of_children;
-  struct asd_tree **children;
-} asd_tree_t;
-
 union literal {
     int valueInt;
     float valueFloat;
@@ -20,6 +13,14 @@ typedef struct value
   int type;
   union literal value;
 } value_t;
+
+typedef struct asd_tree 
+{
+  char *label;
+  value_t value;
+  int number_of_children;
+  struct asd_tree **children;
+} asd_tree_t;
 
 /*
  * Função asd_new, cria um nó sem filhos com o label informado.

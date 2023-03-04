@@ -49,24 +49,19 @@ extern int yydebug;
 	
 #define YYDEBUG 1
 
-#define ASD_LIT_FALSE 0
-#define ASD_LIT_TRUE 1
-#define ASD_LIT_INT 2
-#define ASD_LIT_FLOAT 3
-#define ASD_LIT_CHAR 4
-#define ASD_CALL 5
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "asd.h"
+#include "hash.h"
+#include "stack.h"
 int yylex();
 int yyerror (char *s);
 extern int yydebug;
 extern int get_line_number();
 extern void *arvore;
 
-#line 70 "parser.tab.h"
+#line 65 "parser.tab.h"
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -105,12 +100,12 @@ extern void *arvore;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 24 "parser.y"
+#line 19 "parser.y"
 
 	value_t valor_lexico;
 	asd_tree_t *tree;
 
-#line 114 "parser.tab.h"
+#line 109 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -15,30 +15,6 @@ unsigned long hash_function(char *str)
     return i % CAPACITY;
 }
 
-// Defines the HashTable item.
-typedef struct Ht_item
-{
-    char *key;
-    char *value;
-} Ht_item;
-
-// Defines the LinkedList.
-typedef struct LinkedList
-{
-    Ht_item *item;
-    LinkedList *next;
-} LinkedList;
-
-// Defines the HashTable.
-typedef struct HashTable
-{
-    // Contains an array of pointers to items.
-    Ht_item **items;
-    LinkedList **overflow_buckets;
-    int size;
-    int count;
-} HashTable;
-
 LinkedList *allocate_list()
 {
     // Allocates memory for a LinkedList pointer.

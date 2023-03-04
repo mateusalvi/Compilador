@@ -1,25 +1,33 @@
+#ifndef _HASH_H_
+#define _HASH_H_
+
+#include <stdio.h>
+#include <stdlib.h>
+
+union value_u{
+    int intValue;
+    float floatValue;
+    char charValue;
+};
 
 typedef struct ItemContent
 {
     int atLine;
     int type;
-    union{
-		int intValue;
-		char charValue;
-  }
 	float size;
-} content;
+    union value_u value;
+} ItemContent;
 
 typedef struct Ht_item
 {
     char* key;
-    content** Ht_item_content;
+    ItemContent** Ht_item_content;
 } Ht_item;
 
 typedef struct LinkedList
 {
-    Ht_item *item;
-    LinkedList *next;
+    struct Ht_item *item;
+    struct LinkedList *next;
 } LinkedList;
 
 typedef struct HashTable
@@ -64,3 +72,5 @@ void ht_delete(HashTable *table, char *key);
 void print_search(HashTable *table, char *key);
 
 void print_table(HashTable *table);
+
+#endif

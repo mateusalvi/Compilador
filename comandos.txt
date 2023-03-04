@@ -3,7 +3,7 @@ ERROS NOS TESTES w29, w68 e w69
 
 cd /mnt/d/Facul/Compiladores/Trabalho/Compilador
 
-tar -czvf etapa3.tar.gz .
+tar -czvf etapa4.tar.gz .
 
 valgrind --leak-check=full ./etapa3 < ./Testes/w02
 
