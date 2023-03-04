@@ -209,9 +209,9 @@ FuncCall : ID '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); }
 ID: TK_IDENTIFICADOR { $$ = asd_new(create_leaf($1)); }
 	;
 
-Expr : Expr TK_OC_OR T  { $$ = asd_new("&&"); asd_add_child($$, $1); asd_add_child($$, $3); }
+Expr : Expr TK_OC_OR T  { $$ = asd_new("||"); asd_add_child($$, $1); asd_add_child($$, $3); }
 	| T { $$ = $1; }
-T : T TK_OC_AND F { $$ = asd_new("||"); asd_add_child($$, $1); asd_add_child($$, $3); }
+T : T TK_OC_AND F { $$ = asd_new("&&"); asd_add_child($$, $1); asd_add_child($$, $3); }
 	| F { $$ = $1; }
 F : F TK_OC_EQ G { $$ = asd_new("=="); asd_add_child($$, $1); asd_add_child($$, $3); }
 	| F TK_OC_NE G { $$ = asd_new("!="); asd_add_child($$, $1); asd_add_child($$, $3); }
