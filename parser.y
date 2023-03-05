@@ -130,10 +130,10 @@ VarListLocal : ID ',' VarListLocal { $$ = $3; }
 		| ID { $$ = NULL; }
 		;
 
-Type : TK_PR_INT { $$ = NULL; //$$ = asd_new(create_leaf($1)); asd_free_node($$); }
-	| TK_PR_FLOAT { $$ = NULL; // $$ = asd_new(create_leaf($1)); asd_free_node($$); }
-	| TK_PR_BOOL { $$ = NULL; //$$ = asd_new(create_leaf($1)); asd_free_node($$); }
-	| TK_PR_CHAR { $$ = NULL; //$$ = asd_new(create_leaf($1)); asd_free_node($$); }
+Type : TK_PR_INT { $$ = NULL; } //$$ = asd_new(create_leaf($1)); asd_free_node($$); }
+	| TK_PR_FLOAT { $$ = NULL; } // $$ = asd_new(create_leaf($1)); asd_free_node($$); }
+	| TK_PR_BOOL { $$ = NULL; } //$$ = asd_new(create_leaf($1)); asd_free_node($$); }
+	| TK_PR_CHAR { $$ = NULL; } //$$ = asd_new(create_leaf($1)); asd_free_node($$); }
 	;
 
 VarList : ID ',' VarList { $$ = $1; asd_add_child($$,$3); }
@@ -150,16 +150,20 @@ ArrayDimEnd : Expr '^' ArrayDimEnd { $$ = asd_new("^"); asd_add_child($$,$1); as
     | Expr { $$ = $1; }
     ;
 
-Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); }
-    | TK_LIT_FLOAT { $$ = asd_new(create_leaf($1)); }
-    | TK_LIT_FALSE { $$ = asd_new(create_leaf($1)); }
-    | TK_LIT_TRUE { $$ = asd_new(create_leaf($1)); }
-    | TK_LIT_CHAR { $$ = asd_new(create_leaf($1)); }
+Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); create_item(char $$, char *value); }
+    | TK_LIT_FLOAT { $$ = asd_new(create_leaf($1)); create_item(char $$, char *value); }
+    | TK_LIT_FALSE { $$ = asd_new(create_leaf($1)); create_item(char $$, char *value); }
+    | TK_LIT_TRUE { $$ = asd_new(create_leaf($1)); create_item(char $$, char *value); }
+    | TK_LIT_CHAR { $$ = asd_new(create_leaf($1)); create_item(char $$, char *value); }
     ;
 
-Func : ID '(' ')' Block { $$ = $1; if($4){ asd_add_child($$,$4); }; }
-	| ID '(' ParamList ')' Block { $$ = $1; asd_add_child($$,$3); if($5){ asd_add_child($$,$5); }; }
+Func : ID '(' ')' PushTable Block PopTable { $$ = $1; if($4){ asd_add_child($$,$4); }; }
+	| ID '(' ParamList ')' PushTable Block PopTable { $$ = $1; asd_add_child($$,$3); if($5){ asd_add_child($$,$5); }; }
 	;
+
+PushTable:  %empty { push(tabela); }
+
+PopTable:  %empty { pop(tabela); }
 
 ParamList : Param ',' ParamList { $$ = $1; asd_add_child($$,$3); }
 	| Param { $$ = $1; }
@@ -200,10 +204,10 @@ FuncCall : FuncCallID '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); }
 	| FuncCallID '(' ')' { $$ = $1; }
 	;
 
-ID: TK_IDENTIFICADOR { $$ = asd_new(create_leaf($1)); }
+ID: TK_IDENTIFICADOR { $$ = asd_new(create_leaf($1)); create_item(char $$, char *value); }
 	;
 
-FuncCallID : TK_IDENTIFICADOR { char newLabel[100] = "call "; strcat(newLabel, create_leaf($1)); $$ = asd_new(newLabel); }
+FuncCallID : TK_IDENTIFICADOR { char newLabel[100] = "call "; strcat(newLabel, create_leaf($1)); $$ = asd_new(newLabel); create_item(char $$, char *value); }
 	;
 
 Expr : Expr TK_OC_OR T  { $$ = asd_new("||"); asd_add_child($$, $1); asd_add_child($$, $3); }
