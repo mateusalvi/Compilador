@@ -111,14 +111,14 @@ extern void *arvore;
 
 %%
 
-Program : DecList { arvore = (void*)$$; $$ = $1; }
+Program : DecList { if($1){arvore = (void*)$$; $$ = $1; }}
 	;
 
-DecList : Dec DecList {  $$ = $1; asd_add_child($$,$2); }
-	| Dec { $$ = $1; }
+DecList : Dec DecList {  $$ = $1; if($2){asd_add_child($$,$2);} }
+	| Dec { if($1){$$ = $1;} else{$$ = NULL;} }
 	;
 
-Dec : Type VarList ';' { if($2){ $$ = $2; } }
+Dec : Type VarList ';' { if($2){ $$ = $2; } else{$$ = NULL; } }
     | Type Func { $$ = $2; }
     ;
 
@@ -130,10 +130,10 @@ VarListLocal : ID ',' VarListLocal { $$ = $3; }
 		| ID { $$ = NULL; }
 		;
 
-Type : TK_PR_INT { $$ = asd_new(create_leaf($1)); asd_free_node($$); }
-	| TK_PR_FLOAT { $$ = asd_new(create_leaf($1)); asd_free_node($$); }
-	| TK_PR_BOOL { $$ = asd_new(create_leaf($1)); asd_free_node($$); }
-	| TK_PR_CHAR { $$ = asd_new(create_leaf($1)); asd_free_node($$); }
+Type : TK_PR_INT { $$ = NULL; //$$ = asd_new(create_leaf($1)); asd_free_node($$); }
+	| TK_PR_FLOAT { $$ = NULL; // $$ = asd_new(create_leaf($1)); asd_free_node($$); }
+	| TK_PR_BOOL { $$ = NULL; //$$ = asd_new(create_leaf($1)); asd_free_node($$); }
+	| TK_PR_CHAR { $$ = NULL; //$$ = asd_new(create_leaf($1)); asd_free_node($$); }
 	;
 
 VarList : ID ',' VarList { $$ = $1; asd_add_child($$,$3); }
