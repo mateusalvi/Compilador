@@ -13,7 +13,7 @@ void push(HashTable *table)
     else
     {
         top += top;
-        HashTableStack[top] = *table;
+        HashTableStack[top] = table;
     }
 }
 

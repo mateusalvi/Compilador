@@ -58,7 +58,7 @@ LinkedList **create_overflow_buckets(HashTable *table);
 
 void free_overflow_buckets(HashTable *table);
 
-Ht_item* create_item(char* key, char* value);
+Ht_item* create_item(char* key, value_t valor_lexico);
 
 HashTable* create_table(int size);
 
@@ -68,7 +68,7 @@ void free_table(HashTable* table);
 
 void handle_collision(HashTable *table, unsigned long index, Ht_item *item);
 
-void ht_insert(HashTable* table, char* key, char* value);
+void ht_insert(char* key, value_t valor_lexico);
 
 char* ht_search(HashTable* table, char* key);
 

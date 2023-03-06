@@ -1,11 +1,11 @@
 #ifndef _STACK_H_
 #define _STACK_H_
-
+#include "hash.h"
 
 #define SIZE 1000
 
-HashTable HashTableStack[SIZE];
-int top = -1;
+HashTable *HashTableStack[SIZE];
+int top = 0;
 
 //Push a table onto stack
 void push(HashTable *table);

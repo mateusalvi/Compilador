@@ -2,7 +2,7 @@
 	#include "parser.tab.h"
 	#include "asd.h"
 
-	enum types{
+	enum tk_types{
 		IDENTIFICADOR = 0,
 		INT = 1,
 		FLOAT = 2,

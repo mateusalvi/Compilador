@@ -53,13 +53,24 @@ extern int yydebug;
 #include <stdlib.h>
 #include <string.h>
 #include "asd.h"
+#include "stack.h"
+
 int yylex();
 int yyerror (char *s);
 extern int yydebug;
 extern int get_line_number();
 extern void *arvore;
 
-#line 63 "parser.tab.h"
+enum types{
+	TYPE_FLOAT	= 0,
+	TYPE_INT	= 1,
+	TYPE_CHAR	= 3,
+	TYPE_BOOL	= 4,
+	TYPE_VECTOR	= 5
+};
+
+
+#line 74 "parser.tab.h"
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -98,12 +109,12 @@ extern void *arvore;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 17 "parser.y"
+#line 28 "parser.y"
 
 	value_t valor_lexico;
 	asd_tree_t *tree;
 
-#line 107 "parser.tab.h"
+#line 118 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

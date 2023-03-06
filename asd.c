@@ -55,6 +55,19 @@ char* create_leaf(value_t value)
     return value.value.valueChar;
 }
 
+// char* return_value(value_t value)
+// {
+//   switch (value.type)
+//   {
+//   case 0:
+//     return value.
+//     break;
+  
+//   default:
+//     break;
+//   }
+// }
+
 void asd_add_child(asd_tree_t *tree, asd_tree_t *child)
 {
   if (tree != NULL && child != NULL)
@@ -127,8 +140,11 @@ static void _asd_print_graphviz_adr (FILE *foutput, asd_tree_t *tree)
   if (tree != NULL)
   {
     for (i = 0; i < tree->number_of_children; i++){
-      fprintf(foutput, "  %p -> %p\n", tree, tree->children[i]);
-      _asd_print_graphviz_adr(foutput, tree->children[i]);
+      if(tree->children[i] != NULL)
+      {
+        fprintf(foutput, "%p, %p\n", tree, tree->children[i]);
+        _asd_print_graphviz_adr(foutput, tree->children[i]);
+      }
     }
   }
   else
@@ -143,9 +159,12 @@ static void _asd_print_graphviz_lbl (FILE *foutput, asd_tree_t *tree)
 
   if (tree != NULL)
   {
-    fprintf(foutput, "  %p [ label=\"%s\" ];\n", tree, tree->label);
+    fprintf(foutput, "%p [ label=\"%s\" ];\n", tree, tree->label);
     for (i = 0; i < tree->number_of_children; i++){
-      _asd_print_graphviz_lbl(foutput, tree->children[i]);
+      if(tree->children[i] != NULL)
+      {
+        _asd_print_graphviz_lbl(foutput, tree->children[i]);
+      }
     }
   }
   else
@@ -165,6 +184,7 @@ void asd_print_graphviz(asd_tree_t *tree)
   
   if (tree != NULL){
     fprintf(foutput, "digraph {\n");
+    fprintf(foutput, "label=\"Ref\";\n");
     _asd_print_graphviz_adr(foutput, tree);
     _asd_print_graphviz_lbl(foutput, tree);
     fprintf(foutput, "}\n");

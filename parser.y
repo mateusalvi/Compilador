@@ -6,11 +6,22 @@
 #include <stdlib.h>
 #include <string.h>
 #include "asd.h"
+#include "stack.h"
+
 int yylex();
 int yyerror (char *s);
 extern int yydebug;
 extern int get_line_number();
 extern void *arvore;
+
+enum types{
+	TYPE_FLOAT	= 0,
+	TYPE_INT	= 1,
+	TYPE_CHAR	= 2,
+	TYPE_BOOL	= 3,
+	TYPE_VECTOR	= 4
+};
+
 }
 
 %union
@@ -114,15 +125,15 @@ extern void *arvore;
 Program : DecList { if($1){arvore = (void*)$$; $$ = $1; }}
 	;
 
-DecList : Dec DecList {  $$ = $1; if($2){asd_add_child($$,$2);} }
+DecList : Dec DecList { $$ = $1; if($2){asd_add_child($$,$2);} }
 	| Dec { if($1){$$ = $1;} else{$$ = NULL;} }
 	;
 
-Dec : Type VarList ';' { if($2){ $$ = $2; } else{$$ = NULL; } }
-    | Type Func { $$ = $2; }
+Dec : Type VarList ';' { if($2){ $$ = $2; } else{$$ = NULL; } } 
+    | Type Func { printf("DEBUG5\n"); $$ = $2; printf("DEBUG6\n"); }
     ;
 
-DecLocal: Type VarListLocal { if($2){ $$ = $2; } }
+DecLocal: Type VarListLocal {if($2){ $$ = $2; } }
 
 VarListLocal : ID ',' VarListLocal { $$ = $3; }
         | ID TK_OC_LE Lit ',' VarListLocal { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $5); }
@@ -130,8 +141,8 @@ VarListLocal : ID ',' VarListLocal { $$ = $3; }
 		| ID { $$ = NULL; }
 		;
 
-Type : TK_PR_INT { $$ = NULL; } //$$ = asd_new(create_leaf($1)); asd_free_node($$); }
-	| TK_PR_FLOAT { $$ = NULL; } // $$ = asd_new(create_leaf($1)); asd_free_node($$); }
+Type : TK_PR_INT { $$ = asd_new(create_leaf($1)); asd_free_node($$); }
+	| TK_PR_FLOAT { $$ = NULL; } //$$ = asd_new(create_leaf($1)); asd_free_node($$); }
 	| TK_PR_BOOL { $$ = NULL; } //$$ = asd_new(create_leaf($1)); asd_free_node($$); }
 	| TK_PR_CHAR { $$ = NULL; } //$$ = asd_new(create_leaf($1)); asd_free_node($$); }
 	;
@@ -150,20 +161,20 @@ ArrayDimEnd : Expr '^' ArrayDimEnd { $$ = asd_new("^"); asd_add_child($$,$1); as
     | Expr { $$ = $1; }
     ;
 
-Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); create_item(char $$, char *value); }
-    | TK_LIT_FLOAT { $$ = asd_new(create_leaf($1)); create_item(char $$, char *value); }
-    | TK_LIT_FALSE { $$ = asd_new(create_leaf($1)); create_item(char $$, char *value); }
-    | TK_LIT_TRUE { $$ = asd_new(create_leaf($1)); create_item(char $$, char *value); }
-    | TK_LIT_CHAR { $$ = asd_new(create_leaf($1)); create_item(char $$, char *value); }
+Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); ht_insert($$, $1->value->valueInt); }
+    | TK_LIT_FLOAT { $$ = asd_new(create_leaf($1)); ht_insert($$, $1->value->valueFloat); }
+    | TK_LIT_FALSE { $$ = asd_new(create_leaf($1)); ht_insert($$, 0); }
+    | TK_LIT_TRUE { $$ = asd_new(create_leaf($1)); ht_insert($$, 1); }
+    | TK_LIT_CHAR { $$ = asd_new(create_leaf($1)); ht_insert($$, $1->value->valueChar); }
     ;
 
-Func : ID '(' ')' PushTable Block PopTable { $$ = $1; if($4){ asd_add_child($$,$4); }; }
-	| ID '(' ParamList ')' PushTable Block PopTable { $$ = $1; asd_add_child($$,$3); if($5){ asd_add_child($$,$5); }; }
+Func : ID '(' ')' PushTable Block PopTable { $$ = $1; if($5){ asd_add_child($$,$5); }; }
+	| ID '(' ParamList ')' PushTable Block PopTable { $$ = $1; if($3){ asd_add_child($$,$3); }; if($6){ asd_add_child($$,$6); }; }
 	;
 
-PushTable:  %empty { push(tabela); }
+PushTable:  %empty { push(create_table(999)); }
 
-PopTable:  %empty { pop(tabela); }
+PopTable:  %empty { pop(create_table(999)); }
 
 ParamList : Param ',' ParamList { $$ = $1; asd_add_child($$,$3); }
 	| Param { $$ = $1; }
@@ -204,10 +215,10 @@ FuncCall : FuncCallID '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); }
 	| FuncCallID '(' ')' { $$ = $1; }
 	;
 
-ID: TK_IDENTIFICADOR { $$ = asd_new(create_leaf($1)); create_item(char $$, char *value); }
+ID: TK_IDENTIFICADOR { $$ = asd_new(create_leaf($1)); ht_insert($$, $1->value->valueChar); }
 	;
 
-FuncCallID : TK_IDENTIFICADOR { char newLabel[100] = "call "; strcat(newLabel, create_leaf($1)); $$ = asd_new(newLabel); create_item(char $$, char *value); }
+FuncCallID : TK_IDENTIFICADOR { char newLabel[100] = "call "; strcat(newLabel, create_leaf($1)); $$ = asd_new(newLabel); ht_insert($$, $1->value->valueChar); }
 	;
 
 Expr : Expr TK_OC_OR T  { $$ = asd_new("||"); asd_add_child($$, $1); asd_add_child($$, $3); }

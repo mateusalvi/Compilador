@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "hash.h"
+#include "stack.h"
+#include "asd.h"
 
 #define CAPACITY 50000 // Size of the HashTable.
 
@@ -116,14 +118,40 @@ void free_overflow_buckets(HashTable *table)
     free(buckets);
 }
 
-Ht_item *create_item(char *key, char *value)
+Ht_item *create_item(char *key, value_t valor_lexico)
 {
     // Creates a pointer to a new HashTable item.
     Ht_item *item = (Ht_item *)malloc(sizeof(Ht_item));
     item->key = (char *)malloc(strlen(key) + 1);
-    item->value = (char *)malloc(strlen(value) + 1);
+    item->value = (char *)malloc(strlen(valor_lexico.value.valueChar) + 1);
+    item->atLine = valor_lexico.atLine;
+    item->type = valor_lexico.type;
     strcpy(item->key, key);
-    strcpy(item->value, value);
+    strcpy(item->value, valor_lexico.value.valueChar);
+
+    //Switch-case para o tamanho
+    switch (item->type)
+    {
+    case 0: //Float
+        item->size = 8;
+        break;
+    case 1: //Int
+        item->size = 4;
+        break;
+    case 2: //Char
+        item->size = 1;
+        break;
+    case 3: //Bool
+        item->size = 1;
+        break;
+    case 4: //Vetor[NxN] (Tipo * N * N)
+        printf("TAMANHO DE VETORES AINDA NÃO IMPLEMENTADO, FINALIZANDO PROGRAMA.");
+        exit(0);
+        break;
+    default:
+        break;
+    }
+
     return item;
 }
 
@@ -188,10 +216,13 @@ void handle_collision(HashTable *table, unsigned long index, Ht_item *item)
     }
 }
 
-void ht_insert(HashTable *table, char *key, char *value)
+void ht_insert(char *key, value_t valor_lexico)
 {
     // Creates the item.
-    Ht_item *item = create_item(key, value);
+
+    HashTable *table = HashTableStack[top];
+
+    Ht_item *item = create_item(key, valor_lexico);
 
     // Computes the index.
     int index = hash_function(key);
@@ -218,7 +249,7 @@ void ht_insert(HashTable *table, char *key, char *value)
         // Scenario 1: Update the value.
         if (strcmp(current_item->key, key) == 0)
         {
-            strcpy(table->items[index]->value, value);
+            strcpy(table->items[index]->value, valor_lexico.value.valueChar);
             return;
         }
         else
