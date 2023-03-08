@@ -168,8 +168,8 @@ Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); ht_insert($$, $1->value->value
     | TK_LIT_CHAR { $$ = asd_new(create_leaf($1)); ht_insert($$, $1->value->valueChar); }
     ;
 
-Func : ID '(' ')' PushTable Block PopTable { $$ = $1; if($5){ asd_add_child($$,$5); }; }
-	| ID '(' ParamList ')' PushTable Block PopTable { $$ = $1; if($3){ asd_add_child($$,$3); }; if($6){ asd_add_child($$,$6); }; }
+Func : ID PushTable '(' ')' Block PopTable { $$ = $1; if($5){ asd_add_child($$,$5); }; }
+	| ID PushTable '(' ParamList ')' Block PopTable { $$ = $1; if($3){ asd_add_child($$,$3); }; if($6){ asd_add_child($$,$6); }; }
 	;
 
 PushTable:  %empty { push(create_table(999)); }
@@ -215,7 +215,7 @@ FuncCall : FuncCallID '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); }
 	| FuncCallID '(' ')' { $$ = $1; }
 	;
 
-ID: TK_IDENTIFICADOR { $$ = asd_new(create_leaf($1)); ht_insert($$, $1->value->valueChar); }
+ID: TK_IDENTIFICADOR { $$ = asd_new(create_leaf($1)); ht_search($1, (create_leaf($1)); ht_insert($$, $1->value->valueChar); }
 	;
 
 FuncCallID : TK_IDENTIFICADOR { char newLabel[100] = "call "; strcat(newLabel, create_leaf($1)); $$ = asd_new(newLabel); ht_insert($$, $1->value->valueChar); }
@@ -246,7 +246,7 @@ K : '-' L { $$ = asd_new("-"); asd_add_child($$, $2); }
 L : '(' Expr ')' { $$ = $2; }
 	| FuncCall  { $$ = $1; }
 	| ID '[' ArrayDim ']'
-	| ID { $$ = $1; } 
+	| ID { $$ = $1;} 
 	| Lit { $$ = $1; }
 
 ExprList : Expr ',' ExprList {$$ = $1; asd_add_child($$,$3);}
