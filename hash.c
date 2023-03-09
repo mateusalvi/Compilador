@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "asd.h"
 #include "hash.h"
 #include "stack.h"
-#include "asd.h"
 
 #define CAPACITY 50000 // Size of the HashTable.
 
@@ -285,79 +285,79 @@ char *ht_search(HashTable *table, char *key)
     return NULL;
 }
 
-void ht_delete(HashTable *table, char *key)
-{
-    // Deletes an item from the table.
-    int index = hash_function(key);
-    Ht_item *item = table->items[index];
-    LinkedList *head = table->overflow_buckets[index];
+// void ht_delete(HashTable *table, value_t value)
+// {
+//     // Deletes an item from the table.
+//     int index = hash_function(key);
+//     Ht_item *item = table->items[index];
+//     LinkedList *head = table->overflow_buckets[index];
 
-    if (item == NULL)
-    {
-        // Does not exist.
-        return;
-    }
-    else
-    {
-        if (head == NULL && strcmp(item->key, key) == 0)
-        {
-            // Collision chain does not exist.
-            // Remove the item.
-            // Set table index to NULL.
-            table->items[index] = NULL;
-            free_item(item);
-            table->count--;
-            return;
-        }
-        else if (head != NULL)
-        {
-            // Collision chain exists.
-            if (strcmp(item->key, key) == 0)
-            {
-                // Remove this item.
-                // Set the head of the list as the new item.
-                free_item(item);
-                LinkedList *node = head;
-                head = head->next;
-                node->next = NULL;
-                table->items[index] = create_item(node->item->key, node->item->value);
-                free_linkedlist(node);
-                table->overflow_buckets[index] = head;
-                return;
-            }
+//     if (item == NULL)
+//     {
+//         // Does not exist.
+//         return;
+//     }
+//     else
+//     {
+//         if (head == NULL && strcmp(item->key, key) == 0)
+//         {
+//             // Collision chain does not exist.
+//             // Remove the item.
+//             // Set table index to NULL.
+//             table->items[index] = NULL;
+//             free_item(item);
+//             table->count--;
+//             return;
+//         }
+//         else if (head != NULL)
+//         {
+//             // Collision chain exists.
+//             if (strcmp(item->key, key) == 0)
+//             {
+//                 // Remove this item.
+//                 // Set the head of the list as the new item.
+//                 free_item(item);
+//                 LinkedList *node = head;
+//                 head = head->next;
+//                 node->next = NULL;
+//                 table->items[index] = create_item(node->item->key, node->item->value->value);
+//                 free_linkedlist(node);
+//                 table->overflow_buckets[index] = head;
+//                 return;
+//             }
 
-            LinkedList *curr = head;
-            LinkedList *prev = NULL;
+//             LinkedList *curr = head;
+//             LinkedList *prev = NULL;
 
-            while (curr)
-            {
-                if (strcmp(curr->item->key, key) == 0)
-                {
-                    if (prev == NULL)
-                    {
-                        // First element of the chain.
-                        // Remove the chain.
-                        free_linkedlist(head);
-                        table->overflow_buckets[index] = NULL;
-                        return;
-                    }
-                    else
-                    {
-                        // This is somewhere in the chain.
-                        prev->next = curr->next;
-                        curr->next = NULL;
-                        free_linkedlist(curr);
-                        table->overflow_buckets[index] = head;
-                        return;
-                    }
-                }
+//             while (curr)
+//             {
+//                 if (strcmp(curr->item->key, key) == 0)
+//                 {
+//                     if (prev == NULL)
+//                     {
+//                         // First element of the chain.
+//                         // Remove the chain.
+//                         free_linkedlist(head);
+//                         table->overflow_buckets[index] = NULL;
+//                         return;
+//                     }
+//                     else
+//                     {
+//                         // This is somewhere in the chain.
+//                         prev->next = curr->next;
+//                         curr->next = NULL;
+//                         free_linkedlist(curr);
+//                         table->overflow_buckets[index] = head;
+//                         return;
+//                     }
+//                 }
 
-                curr = curr->next;
-                prev = curr;
-            }
-        }
-    }
-}
+//                 curr = curr->next;
+//                 prev = curr;
+//             }
+//         }
+//     }
+// }
 
 void print_search(HashTable *table, char *key)
 {

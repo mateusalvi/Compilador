@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "asd.h"
 
 union value_u{
     int intValue;

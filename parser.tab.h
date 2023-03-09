@@ -64,9 +64,9 @@ extern void *arvore;
 enum types{
 	TYPE_FLOAT	= 0,
 	TYPE_INT	= 1,
-	TYPE_CHAR	= 3,
-	TYPE_BOOL	= 4,
-	TYPE_VECTOR	= 5
+	TYPE_CHAR	= 2,
+	TYPE_BOOL	= 3,
+	TYPE_VECTOR	= 4
 };
 
 

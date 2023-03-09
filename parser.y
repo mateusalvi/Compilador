@@ -93,10 +93,8 @@ enum types{
 %type<tree> Dec
 %type<tree> Block
 %type<tree> DecLocal
-%type<tree> VarListLocal
 %type<tree> Type
 %type<tree> VarList
-%type<tree> ArrayDimEnd
 %type<tree> ArrayDim
 %type<tree> Lit
 %type<tree> Func
@@ -104,6 +102,7 @@ enum types{
 %type<tree> Param
 %type<tree> Command
 %type<tree> CommandList
+%type<tree> VarListLocal
 %type<tree> Atrib
 %type<tree> Flow
 %type<tree> Ret
@@ -153,23 +152,19 @@ VarList : ID ',' VarList { $$ = $1; asd_add_child($$,$3); }
 		| ID '[' ArrayDim ']' { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3); }
 		;
 
-ArrayDim : Expr '^' ArrayDimEnd  { $$ = asd_new("^"); asd_add_child($$,$1); asd_add_child($$,$3); }
+ArrayDim : Expr '^' ArrayDim  { $$ = asd_new("^"); asd_add_child($$,$1); asd_add_child($$,$3); }
 	| Expr { $$ = $1; }
     ;
 
-ArrayDimEnd : Expr '^' ArrayDimEnd { $$ = asd_new("^"); asd_add_child($$,$1); asd_add_child($$,$3); }
-    | Expr { $$ = $1; }
-    ;
-
-Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); ht_insert($$, $1->value->valueInt); }
-    | TK_LIT_FLOAT { $$ = asd_new(create_leaf($1)); ht_insert($$, $1->value->valueFloat); }
-    | TK_LIT_FALSE { $$ = asd_new(create_leaf($1)); ht_insert($$, 0); }
-    | TK_LIT_TRUE { $$ = asd_new(create_leaf($1)); ht_insert($$, 1); }
-    | TK_LIT_CHAR { $$ = asd_new(create_leaf($1)); ht_insert($$, $1->value->valueChar); }
+Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); }// ht_insert($$, $1); }
+    | TK_LIT_FLOAT { $$ = asd_new(create_leaf($1)); }// ht_insert($$, $1); }
+    | TK_LIT_FALSE { $$ = asd_new(create_leaf($1)); }//ht_insert($$, 0); }
+    | TK_LIT_TRUE { $$ = asd_new(create_leaf($1)); }//ht_insert($$, 1); }
+    | TK_LIT_CHAR { $$ = asd_new(create_leaf($1)); }//ht_insert($$, $1); }
     ;
 
 Func : ID PushTable '(' ')' Block PopTable { $$ = $1; if($5){ asd_add_child($$,$5); }; }
-	| ID PushTable '(' ParamList ')' Block PopTable { $$ = $1; if($3){ asd_add_child($$,$3); }; if($6){ asd_add_child($$,$6); }; }
+	| ID PushTable '(' ParamList ')' Block PopTable { $$ = $1; if($4){ asd_add_child($$,$4); }; if($6){ asd_add_child($$,$6); }; }
 	;
 
 PushTable:  %empty { push(create_table(999)); }
@@ -215,10 +210,10 @@ FuncCall : FuncCallID '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); }
 	| FuncCallID '(' ')' { $$ = $1; }
 	;
 
-ID: TK_IDENTIFICADOR { $$ = asd_new(create_leaf($1)); ht_search($1, (create_leaf($1)); ht_insert($$, $1->value->valueChar); }
+ID: TK_IDENTIFICADOR { $$ = asd_new(create_leaf($1)); ht_search($1 , (create_leaf($1))); ht_insert(HashTableStack[top], $1); }
 	;
 
-FuncCallID : TK_IDENTIFICADOR { char newLabel[100] = "call "; strcat(newLabel, create_leaf($1)); $$ = asd_new(newLabel); ht_insert($$, $1->value->valueChar); }
+FuncCallID : TK_IDENTIFICADOR { char newLabel[100] = "call "; strcat(newLabel, create_leaf($1)); $$ = asd_new(newLabel); ht_insert(HashTableStack[top], $1); }
 	;
 
 Expr : Expr TK_OC_OR T  { $$ = asd_new("||"); asd_add_child($$, $1); asd_add_child($$, $3); }
