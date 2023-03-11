@@ -9,7 +9,7 @@
 
 int undeclared_err (value_t value1)
 {
-	while(i != -1 or ht_search != NULL;)
+	while(i != -1 or ht_search == NULL;)
 		ht_search(value1);
 	
 	return ERR_UNDECLARED;
@@ -17,7 +17,7 @@ int undeclared_err (value_t value1)
 
 int declared_err (value_t value1)
 {
-	while(i != -1 or ht_search != NULL;)
+	while(i != -1 or ht_search == NULL;)
 		ht_search(value1);
 	
 	return ERR_DECLARED;
@@ -25,7 +25,7 @@ int declared_err (value_t value1)
 
 int variable_err (value_t value1)
 {
-	
+	return ERR_VARIABLE
 }
 
 int array_err (value_t value1)
