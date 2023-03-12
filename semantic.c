@@ -6,7 +6,7 @@
  #include "semantic.h"
 
 
-
+/*
 int undeclared_err (value_t value1)
  {
  	while(i != -1 or ht_search == NULL;)

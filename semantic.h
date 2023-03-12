@@ -8,7 +8,7 @@
 #define ERR_CHAR_TO_BOOL 33 //2.4
 #define ERR_CHAR_VECTOR 34 //2.4
 #define ERR_X_TO_CHAR 35 //2.4
-
+/*
 int undeclared_err (value_t value1);
 
 int declared_err (value_t value1);
