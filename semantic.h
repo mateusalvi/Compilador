@@ -28,3 +28,5 @@ int char_to_bool (value_t value1, value_t value2);
 int char_vector (value_t value1, value_t value2);
 
 int x_to_char (value_t value1, value_t value2);
+
+*/

@@ -64,3 +64,4 @@ int char_to_float (value_t value1, value_t value2)
  	if(Ht_item1.type != Ht_item2.type)
  		return ERR_X_TO_CHAR;
  }
+*/ 
