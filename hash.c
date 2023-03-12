@@ -280,8 +280,6 @@ char *ht_search(HashTable *table, char *key)
     return NULL;
 }
 
-HashTable *HashTableStack[SIZE];
-int top = 0;
 
 bool search_stack(Ht_item *item) 
 {    
