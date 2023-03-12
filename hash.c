@@ -1,9 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "asd.h"
 #include "hash.h"
-#include "stack.h"
 
 #define CAPACITY 50000 // Size of the HashTable.
 
@@ -283,6 +278,16 @@ char *ht_search(HashTable *table, char *key)
     }
 
     return NULL;
+}
+
+bool search_stack(Ht_item *item) 
+{    
+	for(int i = top; i != -1; i--)
+    {
+        if(ht_search(HashTableStack[i], item->value))
+            return true;
+	}
+	return false;
 }
 
 // void ht_delete(HashTable *table, value_t value)

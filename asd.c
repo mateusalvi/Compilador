@@ -1,7 +1,3 @@
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdbool.h>
 #include "asd.h"
 #define ARQUIVO_SAIDA "saida.dot"
 

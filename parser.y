@@ -6,21 +6,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include "asd.h"
-#include "stack.h"
 
 int yylex();
 int yyerror (char *s);
 extern int yydebug;
 extern int get_line_number();
 extern void *arvore;
-
-enum types{
-	TYPE_FLOAT	= 0,
-	TYPE_INT	= 1,
-	TYPE_CHAR	= 2,
-	TYPE_BOOL	= 3,
-	TYPE_VECTOR	= 4
-};
 
 }
 
@@ -167,9 +158,9 @@ Func : ID PushTable '(' ')' Block PopTable { $$ = $1; if($5){ asd_add_child($$,$
 	| ID PushTable '(' ParamList ')' Block PopTable { $$ = $1; if($4){ asd_add_child($$,$4); }; if($6){ asd_add_child($$,$6); }; }
 	;
 
-PushTable:  %empty { push(create_table(999)); }
+PushTable:  %empty //{ push(create_table(999)); }
 
-PopTable:  %empty { pop(create_table(999)); }
+PopTable:  %empty //{ pop(create_table(999)); }
 
 ParamList : Param ',' ParamList { $$ = $1; asd_add_child($$,$3); }
 	| Param { $$ = $1; }
@@ -210,10 +201,10 @@ FuncCall : FuncCallID '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); }
 	| FuncCallID '(' ')' { $$ = $1; }
 	;
 
-ID: TK_IDENTIFICADOR { $$ = asd_new(create_leaf($1)); ht_search($1 , (create_leaf($1))); ht_insert(HashTableStack[top], $1); }
+ID: TK_IDENTIFICADOR { $$ = asd_new(create_leaf($1)); }//ht_search($1 , (create_leaf($1))); ht_insert(HashTableStack[top], $1); }
 	;
 
-FuncCallID : TK_IDENTIFICADOR { char newLabel[100] = "call "; strcat(newLabel, create_leaf($1)); $$ = asd_new(newLabel); ht_insert(HashTableStack[top], $1); }
+FuncCallID : TK_IDENTIFICADOR { char newLabel[100] = "call "; strcat(newLabel, create_leaf($1)); $$ = asd_new(newLabel); }// ht_insert(HashTableStack[top], $1); }
 	;
 
 Expr : Expr TK_OC_OR T  { $$ = asd_new("||"); asd_add_child($$, $1); asd_add_child($$, $3); }

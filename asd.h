@@ -1,6 +1,11 @@
 #ifndef _ARVORE_H_
 #define _ARVORE_H_
 
+#include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdbool.h>
+
 union literal {
     int valueInt;
     float valueFloat;

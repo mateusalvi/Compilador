@@ -3,7 +3,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "asd.h"
+#include "stack.h"
 
 union value_u{
     int intValue;
@@ -78,5 +80,7 @@ void ht_delete(HashTable *table, char *key);
 void print_search(HashTable *table, char *key);
 
 void print_table(HashTable *table);
+
+bool search_stack(Ht_item *item);
 
 #endif
