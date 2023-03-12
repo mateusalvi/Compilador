@@ -7,7 +7,7 @@
 #include <string.h>
 #include "asd.h"
 #include "hash.h"
-#include "stack.h"
+
 
 
 int yylex();

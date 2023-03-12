@@ -5,8 +5,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "asd.h"
-#include "stack.h"
-
+#define SIZE 1000
 union value_u{
     int intValue;
     float floatValue;
@@ -82,5 +81,21 @@ void print_search(HashTable *table, char *key);
 void print_table(HashTable *table);
 
 bool search_stack(Ht_item *item);
+
+
+HashTable *HashTableStack[SIZE];
+int top = 0;
+
+//Push a table onto stack
+void push(HashTable *table);
+
+//Pop a table from stack
+void pop();
+
+//Print the whole stack to console
+void show();
+
+//Free stack alloc from memory
+void Free_Hash_Stack();
 
 #endif

@@ -6,7 +6,7 @@
 #include <stddef.h>
 #include "asd.h"
 #include "hash.h"
-#include "stack.h"
+
 
 extern int yyparse(void);
 extern int yylex_destroy(void);
