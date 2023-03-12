@@ -1,3 +1,4 @@
+#include "hash.h"
 #include "stack.h"
 
 void push(HashTable *table)
