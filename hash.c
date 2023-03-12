@@ -2,6 +2,9 @@
 
 #define CAPACITY 50000 // Size of the HashTable.
 
+HashTable *HashTableStack[SIZE];
+int top = 0;
+
 unsigned long hash_function(char *str)
 {
     unsigned long i = 0;
