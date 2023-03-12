@@ -219,7 +219,7 @@ void ht_insert(char *key, value_t valor_lexico)
     // Creates the item.
 
     HashTable *table = HashTableStack[top];
-
+    printf("%d ", HashTableStack[top]->items[1]->atLine);
     Ht_item *item = create_item(key, valor_lexico);
 
     // Computes the index.
@@ -233,7 +233,6 @@ void ht_insert(char *key, value_t valor_lexico)
         if (table->count == table->size)
         {
             // HashTable is full.
-            printf("Insert Error: Hash Table is full\n");
             free_item(item);
             return;
         }
@@ -282,7 +281,6 @@ char *ht_search(HashTable *table, char *key)
 
     return NULL;
 }
-
 
 bool search_stack(Ht_item *item) 
 {    

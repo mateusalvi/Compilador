@@ -123,7 +123,7 @@ DecList : Dec DecList { $$ = $1; if($2){asd_add_child($$,$2);} }
 	;
 
 Dec : Type VarList ';' { if($2){ $$ = $2; } else{$$ = NULL; } } 
-    | Type Func { printf("DEBUG5\n"); $$ = $2; printf("DEBUG6\n"); }
+    | Type Func { $$ = $2; }
     ;
 
 DecLocal: Type VarListLocal {if($2){ $$ = $2; } }
@@ -150,20 +150,20 @@ ArrayDim : Expr '^' ArrayDim  { $$ = asd_new("^"); asd_add_child($$,$1); asd_add
 	| Expr { $$ = $1; }
     ;
 
-Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); }// ht_insert($$, $1); }
-    | TK_LIT_FLOAT { $$ = asd_new(create_leaf($1)); }// ht_insert($$, $1); }
-    | TK_LIT_FALSE { $$ = asd_new(create_leaf($1)); }//ht_insert($$, 0); }
-    | TK_LIT_TRUE { $$ = asd_new(create_leaf($1)); }//ht_insert($$, 1); }
-    | TK_LIT_CHAR { $$ = asd_new(create_leaf($1)); }//ht_insert($$, $1); }
+Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); ht_insert(create_leaf($1), $1); }
+    | TK_LIT_FLOAT { $$ = asd_new(create_leaf($1)); ht_insert(create_leaf($1), $1); }
+    | TK_LIT_FALSE { $$ = asd_new(create_leaf($1)); ht_insert(create_leaf($1), $1); }
+    | TK_LIT_TRUE { $$ = asd_new(create_leaf($1)); ht_insert(create_leaf($1), $1); }
+    | TK_LIT_CHAR { $$ = asd_new(create_leaf($1)); ht_insert(create_leaf($1), $1); }
     ;
 
 Func : ID PushTable '(' ')' Block PopTable { $$ = $1; if($5){ asd_add_child($$,$5); }; }
 	| ID PushTable '(' ParamList ')' Block PopTable { $$ = $1; if($4){ asd_add_child($$,$4); }; if($6){ asd_add_child($$,$6); }; }
 	;
 
-PushTable:  %empty //{ push(create_table(999)); }
+PushTable:  %empty { push(create_table(999)); }
 
-PopTable:  %empty //{ pop(create_table(999)); }
+PopTable:  %empty { pop(create_table(999)); }
 
 ParamList : Param ',' ParamList { $$ = $1; asd_add_child($$,$3); }
 	| Param { $$ = $1; }
