@@ -46,7 +46,8 @@ typedef struct HashTable
     int count;
 } HashTable;
 
-
+HashTable *HashTableStack[SIZE];
+int top = 0;
 
 unsigned long hash_function(char* str);
 
