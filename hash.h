@@ -46,6 +46,9 @@ typedef struct HashTable
     int count;
 } HashTable;
 
+HashTable *HashTableStack[SIZE];
+int top = 0;
+
 unsigned long hash_function(char* str);
 
 LinkedList *allocate_list();
@@ -81,10 +84,6 @@ void print_search(HashTable *table, char *key);
 void print_table(HashTable *table);
 
 bool search_stack(Ht_item *item);
-
-
-HashTable *HashTableStack[SIZE];
-int top = 0;
 
 //Push a table onto stack
 void push(HashTable *table);
