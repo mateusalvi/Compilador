@@ -6,6 +6,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include "asd.h"
+#include "hash.h"
+#include "stack.h"
+
 
 int yylex();
 int yyerror (char *s);
