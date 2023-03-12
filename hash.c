@@ -287,7 +287,7 @@ bool search_stack(Ht_item *item)
 {    
 	for(int i = top; i != -1; i--)
     {
-        if(ht_search(*HashTableStack[i], item->value))
+        if(ht_search(HashTableStack[i], item->value))
             return true;
 	}
 	return false;
