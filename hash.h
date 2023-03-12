@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include "asd.h"
 #define SIZE 1000
+
 union value_u{
     int intValue;
     float floatValue;
@@ -46,8 +47,8 @@ typedef struct HashTable
     int count;
 } HashTable;
 
-HashTable *HashTableStack[SIZE];
-int top = 0;
+extern HashTable *HashTableStack[];
+extern int top;
 
 unsigned long hash_function(char* str);
 
@@ -84,6 +85,7 @@ void print_search(HashTable *table, char *key);
 void print_table(HashTable *table);
 
 bool search_stack(Ht_item *item);
+
 
 //Push a table onto stack
 void push(HashTable *table);

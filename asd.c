@@ -1,7 +1,6 @@
+#include <stdio.h>
 #include "asd.h"
 #define ARQUIVO_SAIDA "saida.dot"
-
-bool enableDebug = false;
 
 asd_tree_t *asd_new(const char *label)
 {
