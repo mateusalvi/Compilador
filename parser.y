@@ -204,8 +204,8 @@ Flow : TK_PR_WHILE '(' Expr ')' Block { $$ = asd_new("while"); asd_add_child($$,
 Ret : TK_PR_RETURN Expr { $$ = asd_new("return"); asd_add_child($$, $2); } // Para o comando de retorno deve ser utilizado o lexema correspondente. ???
 	;
 
-FuncCall : FuncCallID '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); }
-	| FuncCallID '(' ')' { $$ = $1; }
+FuncCall : FuncCallID '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); if(search_stack(create_leaf($1))){return ERR_DECLARED;} else {/*   TODO  */} }
+	| FuncCallID '(' ')' { $$ = $1; if(search_stack(create_leaf($1))){return ERR_DECLARED;} else {/*   TODO  */}}
 	;
 
 ID: TK_IDENTIFICADOR { $$ = asd_new(create_leaf($1)); }//ht_search($1 , (create_leaf($1))); ht_insert(HashTableStack[top], $1); }
