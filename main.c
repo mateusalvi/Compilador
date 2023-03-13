@@ -17,6 +17,7 @@ void asd_free (asd_tree_t *arvore);
 
 int main (int argc, char **argv)
 {
+	printf("aloquei memória"); push(create_table(999));
   int ret = yyparse(); 
   //asd_print(arvore);
   asd_print_graphviz(arvore);
