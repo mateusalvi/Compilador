@@ -432,12 +432,12 @@ void print_stack()
 	for (int j = top; j >= 0; j--)
 	{ printf("\nHash Table\n-------------------\n");
 		printf("Hash Table index = %d", j);
-		HashTable table = HashTableStack[j];
+		HashTable table = *HashTableStack[j];
 		for (int i = 0; i < table.size; i++)
 		{
 			if (table.items[i])
 			{
-				printf("Index:%d, Key:%s, Value:%s\n", i, table.items[i].key, table.items[i].value);
+				printf("Index:%d, Key:%s, Value:%s\n", i, table.items[i]->key, table.items[i]->value);
 			}
 		}
 	
