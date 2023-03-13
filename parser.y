@@ -185,10 +185,10 @@ Command : Flow { $$ = $1; }
 	
 DecLocal: Type VarListLocal { if($2){ $$ = $2; } }
 
-VarListLocal : ID ',' VarListLocal { $$ = $3; if(search_stack(create_leaf($1))){return ERR_DECLARED;} else {ht_insert(create_leaf($1), $1);}}
-        | ID TK_OC_LE Lit ',' VarListLocal { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $5); if(search_stack(create_leaf($1))){return ERR_DECLARED;} else {ht_insert(create_leaf($1), $1);} }
-		| ID TK_OC_LE Lit { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); if(search_stack(create_leaf($1))){return ERR_DECLARED;} else {ht_insert(create_leaf($1), $1);} }
-		| ID { $$ = NULL; if(search_stack(create_leaf($1))){return ERR_DECLARED;} else {ht_insert(create_leaf($1), $1);} }
+VarListLocal : ID ',' VarListLocal { $$ = $3; if((search_stack($1->label))){return ERR_DECLARED;} else {ht_insert($1->label, $1);}}
+        | ID TK_OC_LE Lit ',' VarListLocal { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $5); if(search_stack($1->label)){return ERR_DECLARED;} else {ht_insert($1->label, $1);} }
+		| ID TK_OC_LE Lit { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); if(search_stack($1->label){return ERR_DECLARED;} else {ht_insert($1->label, $1);} }
+		| ID { $$ = NULL; if(search_stack($1->label)){return ERR_DECLARED;} else {ht_insert($1->label, $1);} }
 		;
 
 Atrib : ID '=' Expr { $$ = asd_new("="); asd_add_child($$,$1); asd_add_child($$,$3); if((search_stack($1->label)))}//{   TODO } else {return ERR_UNDECLARED;}} 
