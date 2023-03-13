@@ -216,46 +216,49 @@ void handle_collision(HashTable *table, unsigned long index, Ht_item *item)
 
 void ht_insert(char *key, value_t valor_lexico)
 {
-    // Check if key or value is null
-    if (key == NULL || valor_lexico.value == NULL) {
-        fprintf(stderr, "Error: invalid input\n");
-        return;
-    }
+
+	
+    // Creates the item.
+	
+    HashTable *table = HashTableStack[top];
+    printf("%d ", HashTableStack[top]->items[1]->atLine);
+    Ht_item *item = create_item(key, valor_lexico);
 
     // Computes the index.
     int index = hash_function(key);
 
-    // Check if index is out of bounds
-    if (index < 0 || index >= HASH_SIZE) {
-        fprintf(stderr, "Error: invalid index %d\n", index);
-        return;
-    }
-
-    // Get the current table and item
-    HashTable *table = HashTableStack[top];
     Ht_item *current_item = table->items[index];
 
-    // Check if table or current_item is null
-    if (table == NULL || current_item == NULL) {
-        fprintf(stderr, "Error: table or item is null\n");
-        return;
-    }
-
-    // Creates the item.
-    Ht_item *item = create_item(key, valor_lexico);
-
-    if (strcmp(current_item->key, key) == 0)
+    if (current_item == NULL)
     {
-        // Scenario 1: Update the value.
-        strcpy(table->items[index]->value, valor_lexico.value.valueChar);
+        // Key does not exist.
+        if (table->count == table->size)
+        {
+            // HashTable is full.
+            free_item(item);
+            return;
+        }
+
+        // Insert directly.
+        table->items[index] = item;
+        table->count++;
     }
     else
     {
-        // Scenario 2: Handle the collision.
-        handle_collision(table, index, item);
+        // Scenario 1: Update the value.
+        if (strcmp(current_item->key, key) == 0)
+        {
+            strcpy(table->items[index]->value, valor_lexico.value.valueChar);
+            return;
+        }
+        else
+        {
+            // Scenario 2: Handle the collision.
+            handle_collision(table, index, item);
+            return;
+        }
     }
 }
-
 
 char *ht_search(HashTable *table, char *key)
 {
