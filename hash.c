@@ -426,6 +426,26 @@ void pop()
     }
 }
 
+void print_stack()
+{
+    printf("\nStack \n-------------------------------------------\n");
+	for (int j = top; j >= 0; i--)
+	{ printf("\nHash Table\n-------------------\n");
+		printf("Hash Table index = %d", j);
+		HashTable table = HashTableStack[j];
+		for (int i = 0; i < table -> size; i++)
+		{
+			if (table -> items[i])
+			{
+				printf("Index:%d, Key:%s, Value:%s\n", i, table -> items[i] -> key, table -> items[i] -> value);
+			}
+		}
+	
+		printf("-------------------\n\n");
+	}
+	printf("-------------------------------------------\n\n");
+}
+
 void Free_Hash_Stack()
 {
     // free(HashTableStack);
