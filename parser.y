@@ -205,7 +205,7 @@ Ret : TK_PR_RETURN Expr { $$ = asd_new("return"); asd_add_child($$, $2); } // Pa
 	;
 
 FuncCall : FuncCallID '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); if(search_stack(create_leaf($1))){return ERR_DECLARED;} }
-	| FuncCallID '(' ')' { $$ = $1; if(search_stack(create_leaf($1))){return ERR_DECLARED;} }}
+	| FuncCallID '(' ')' { $$ = $1; if(search_stack(create_leaf($1))){return ERR_DECLARED;} }
 	;
 
 ID: TK_IDENTIFICADOR { $$ = asd_new(create_leaf($1)); }//ht_search($1 , (create_leaf($1))); ht_insert(HashTableStack[top], $1); }
