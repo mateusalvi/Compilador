@@ -146,11 +146,11 @@ ArrayDim : Expr '^' ArrayDim  { $$ = asd_new("^"); asd_add_child($$,$1); asd_add
 	| Expr { $$ = $1; }
     ;
 
-Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); ht_insert($1.label, $1.valor_lexico); }
-    | TK_LIT_FLOAT { $$ = asd_new(create_leaf($1)); ht_insert($1.label, $1.value); }
-    | TK_LIT_FALSE { $$ = asd_new(create_leaf($1)); ht_insert($1.label, $1.value); }
-    | TK_LIT_TRUE { $$ = asd_new(create_leaf($1));  ht_insert($1.label, $1.value);}
-    | TK_LIT_CHAR { $$ = asd_new(create_leaf($1)); ht_insert($1.label, $1.value);  }
+Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); ht_insert($1.value.valueChar, $1); }
+    | TK_LIT_FLOAT { $$ = asd_new(create_leaf($1)); ht_insert($1.value.valueChar, $1); }
+    | TK_LIT_FALSE { $$ = asd_new(create_leaf($1)); ht_insert($1.value.valueChar, $1); }
+    | TK_LIT_TRUE { $$ = asd_new(create_leaf($1));  ht_insert($1.value.valueChar, $1);}
+    | TK_LIT_CHAR { $$ = asd_new(create_leaf($1)); ht_insert($1.value.valueChar, $1);  }
     ;
 
 Func : ID PushTable '(' ')' Block PopTable { $$ = $1; if($5){ asd_add_child($$,$5); }; }
