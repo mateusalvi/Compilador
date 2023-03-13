@@ -146,7 +146,7 @@ ArrayDim : Expr '^' ArrayDim  { $$ = asd_new("^"); asd_add_child($$,$1); asd_add
 	| Expr { $$ = $1; }
     ;
 
-Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); ht_insert($1.value.valueChar, $1); }
+Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); printf($.value.valueChar) ht_insert($1.value.valueChar, $1); }
     | TK_LIT_FLOAT { $$ = asd_new(create_leaf($1)); ht_insert($1.value.valueChar, $1); }
     | TK_LIT_FALSE { $$ = asd_new(create_leaf($1)); ht_insert($1.value.valueChar, $1); }
     | TK_LIT_TRUE { $$ = asd_new(create_leaf($1));  ht_insert($1.value.valueChar, $1);}
@@ -157,7 +157,7 @@ Func : ID PushTable '(' ')' Block PopTable { $$ = $1; if($5){ asd_add_child($$,$
 	| ID PushTable '(' ParamList ')' Block PopTable { $$ = $1; if($4){ asd_add_child($$,$4); }; if($6){ asd_add_child($$,$6); }; }
 	;
 
-PushTable:  %empty { push(create_table(999)); }
+PushTable:  %empty { printf("aloquei memória"); push(create_table(999)); }
 
 PopTable:  %empty { print_stack(); pop(); }
 
