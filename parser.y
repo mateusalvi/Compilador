@@ -150,7 +150,7 @@ Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); ht_insert(create_leaf($1), $1)
     | TK_LIT_FLOAT { $$ = asd_new(create_leaf($1)); ht_insert(create_leaf($1), $1); }
     | TK_LIT_FALSE { $$ = asd_new(create_leaf($1)); ht_insert(create_leaf($1), $1); }
     | TK_LIT_TRUE { $$ = asd_new(create_leaf($1)); ht_insert(create_leaf($1), $1); }
-    | TK_LIT_CHAR { $$ = asd_new(create_leaf($1)); ht_insert(create_leaf($1), $1); }
+    | TK_LIT_CHAR { $$ = asd_new(create_leaf($1));  }
     ;
 
 Func : ID PushTable '(' ')' Block PopTable { $$ = $1; if($5){ asd_add_child($$,$5); }; }
