@@ -115,7 +115,7 @@ extern void *arvore;
 
 %%
 
-Program : PushTable DecList { if($1){arvore = (void*)$$; $$ = $1; }}
+Program : PushTable DecList { if($2){arvore = (void*)$$; $$ = $2; }}
 	;
 
 DecList : Dec DecList { $$ = $1; if($2){asd_add_child($$,$2);} }
@@ -126,10 +126,10 @@ Dec : Type VarList ';' { if($2){ $$ = $2; } else{$$ = NULL; } }
     | Type Func { $$ = $2; }
     ;
 
-VarList : ID ',' VarList {  $$ = $1; asd_add_child($$,$3); if(search_stack(create_leaf($1))){return ERR_DECLARED;} else {ht_insert(create_leaf($1), $1);} }//Variáveis globais não são inicializadas}
-		| ID { $$ = $1; if(search_stack(create_leaf($1))){return ERR_DECLARED;} else {ht_insert(create_leaf($1), $1);} }
-		| ID '[' ArrayDim ']' ',' VarList { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $6); if(search_stack(create_leaf($1))){return ERR_DECLARED;} else {ht_insert(create_leaf($1), $1);} }
-		| ID '[' ArrayDim ']' { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3); if(search_stack(create_leaf($1))){return ERR_DECLARED;} else {ht_insert(create_leaf($1), $1);}}
+VarList : ID ',' VarList {  $$ = $1; asd_add_child($$,$3); if(search_stack($1->label)){return ERR_DECLARED;} else {ht_insert($1->label, $1->value);} }
+		| ID { $$ = $1; if(search_stack($1->label)){return ERR_DECLARED;} else {ht_insert($1->label, $1->value);} }
+		| ID '[' ArrayDim ']' ',' VarList { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $6); if(search_stack($1->label)){return ERR_DECLARED;} else {ht_insert($1->label, $1->value);} }
+		| ID '[' ArrayDim ']' { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3); if(search_stack($1->label)){return ERR_DECLARED;} else {ht_insert($1->label, $1->value);}}
 		;
 
 
