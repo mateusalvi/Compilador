@@ -191,9 +191,9 @@ VarListLocal : ID ',' VarListLocal { $$ = $3; if(search_stack(create_leaf($1))){
 		| ID { $$ = NULL; if(search_stack(create_leaf($1))){return ERR_DECLARED;} else {ht_insert(create_leaf($1), $1);} }
 		;
 
-Atrib : ID '=' Expr { $$ = asd_new("="); asd_add_child($$,$1); asd_add_child($$,$3); if(search_stack(create_leaf($1))){/*   TODO  */} else {return ERR_UNDECLARED;} }
-	| ID '[' ArrayDim ']' '=' Expr { $$ = asd_new("="); asd_tree_t *col = asd_new("[]"); asd_add_child($$, col); asd_add_child($$, $6); asd_add_child(col, $1); asd_add_child(col,$3); if(search_stack(create_leaf($1))){/*   TODO  */} else {return ERR_UNDECLARED;}}
-	| ID '=' ID '[' ArrayDim ']' { $$ = asd_new("="); asd_tree_t *col = asd_new("[]"); asd_add_child($$, col); asd_add_child(col, $3); asd_add_child($$, $5); if(search_stack(create_leaf($1))){/*   TODO  */} else {return ERR_UNDECLARED;}}
+Atrib : ID '=' Expr { $$ = asd_new("="); asd_add_child($$,$1); asd_add_child($$,$3); if(search_stack(create_leaf($1)))}//{   TODO } else {return ERR_UNDECLARED;}} 
+	| ID '[' ArrayDim ']' '=' Expr { $$ = asd_new("="); asd_tree_t *col = asd_new("[]"); asd_add_child($$, col); asd_add_child($$, $6); asd_add_child(col, $1); asd_add_child(col,$3); if(search_stack(create_leaf($1)))} //{   TODO  } else {return ERR_UNDECLARED;}}
+	| ID '=' ID '[' ArrayDim ']' { $$ = asd_new("="); asd_tree_t *col = asd_new("[]"); asd_add_child($$, col); asd_add_child(col, $3); asd_add_child($$, $5); if(search_stack(create_leaf($1)))} //{   TODO  } else {return ERR_UNDECLARED;}}
 	;
 
 Flow : TK_PR_WHILE '(' Expr ')' Block { $$ = asd_new("while"); asd_add_child($$, $3); if($5){ asd_add_child($$, $5); }; }
@@ -204,8 +204,8 @@ Flow : TK_PR_WHILE '(' Expr ')' Block { $$ = asd_new("while"); asd_add_child($$,
 Ret : TK_PR_RETURN Expr { $$ = asd_new("return"); asd_add_child($$, $2); } // Para o comando de retorno deve ser utilizado o lexema correspondente. ???
 	;
 
-FuncCall : FuncCallID '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); if(search_stack(create_leaf($1))){return ERR_DECLARED;} else {/*   TODO  */} }
-	| FuncCallID '(' ')' { $$ = $1; if(search_stack(create_leaf($1))){return ERR_DECLARED;} else {/*   TODO  */}}
+FuncCall : FuncCallID '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); if(search_stack(create_leaf($1))){return ERR_DECLARED;} }
+	| FuncCallID '(' ')' { $$ = $1; if(search_stack(create_leaf($1))){return ERR_DECLARED;} }}
 	;
 
 ID: TK_IDENTIFICADOR { $$ = asd_new(create_leaf($1)); }//ht_search($1 , (create_leaf($1))); ht_insert(HashTableStack[top], $1); }

@@ -429,7 +429,7 @@ void pop()
 void print_stack()
 {
     printf("\nStack \n-------------------------------------------\n");
-	for (int j = top; j >= 0; i--)
+	for (int j = top; j >= 0; j--)
 	{ printf("\nHash Table\n-------------------\n");
 		printf("Hash Table index = %d", j);
 		HashTable table = HashTableStack[j];
