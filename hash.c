@@ -216,8 +216,10 @@ void handle_collision(HashTable *table, unsigned long index, Ht_item *item)
 
 void ht_insert(char *key, value_t valor_lexico)
 {
-    // Creates the item.
 
+	
+    // Creates the item.
+	
     HashTable *table = HashTableStack[top];
     printf("%d ", HashTableStack[top]->items[1]->atLine);
     Ht_item *item = create_item(key, valor_lexico);
@@ -282,11 +284,11 @@ char *ht_search(HashTable *table, char *key)
     return NULL;
 }
 
-bool search_stack(Ht_item *item) 
+bool search_stack(char* key) 
 {    
 	for(int i = top; i != -1; i--)
     {
-        if(ht_search(HashTableStack[i], item->value))
+        if(ht_search(HashTableStack[i], key))
             return true;
 	}
 	return false;

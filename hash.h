@@ -80,11 +80,11 @@ char* ht_search(HashTable* table, char* key);
 
 void ht_delete(HashTable *table, char *key);
 
-void print_search(HashTable *table, char *key);
+void print_search(HashTable *table, char* key);
 
 void print_table(HashTable *table);
 
-bool search_stack(Ht_item *item);
+bool search_stack(char *key);
 
 
 //Push a table onto stack

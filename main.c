@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stddef.h>
 #include "asd.h"
+#include "hash.h"
 
 
 extern int yyparse(void);

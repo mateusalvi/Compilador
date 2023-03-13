@@ -115,7 +115,7 @@ extern void *arvore;
 
 %%
 
-Program : DecList { if($1){arvore = (void*)$$; $$ = $1; }}
+Program : PushTable DecList { if($1){arvore = (void*)$$; $$ = $1; }}
 	;
 
 DecList : Dec DecList { $$ = $1; if($2){asd_add_child($$,$2);} }
@@ -126,13 +126,13 @@ Dec : Type VarList ';' { if($2){ $$ = $2; } else{$$ = NULL; } }
     | Type Func { $$ = $2; }
     ;
 
-DecLocal: Type VarListLocal {if($2){ $$ = $2; } }
-
-VarListLocal : ID ',' VarListLocal { $$ = $3; }
-        | ID TK_OC_LE Lit ',' VarListLocal { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $5); }
-		| ID TK_OC_LE Lit { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); }
-		| ID { $$ = NULL; }
+VarList : ID ',' VarList {  $$ = $1; asd_add_child($$,$3); if(search_stack(create_leaf($1))){return ERR_DECLARED;} else {ht_insert(create_leaf($1), $1);} }//Variáveis globais não são inicializadas}
+		| ID { $$ = $1; if(search_stack(create_leaf($1))){return ERR_DECLARED;} else {ht_insert(create_leaf($1), $1);} }
+		| ID '[' ArrayDim ']' ',' VarList { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $6); if(search_stack(create_leaf($1))){return ERR_DECLARED;} else {ht_insert(create_leaf($1), $1);} }
+		| ID '[' ArrayDim ']' { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3); if(search_stack(create_leaf($1))){return ERR_DECLARED;} else {ht_insert(create_leaf($1), $1);}}
 		;
+
+
 
 Type : TK_PR_INT { $$ = asd_new(create_leaf($1)); asd_free_node($$); }
 	| TK_PR_FLOAT { $$ = NULL; } //$$ = asd_new(create_leaf($1)); asd_free_node($$); }
@@ -140,11 +140,7 @@ Type : TK_PR_INT { $$ = asd_new(create_leaf($1)); asd_free_node($$); }
 	| TK_PR_CHAR { $$ = NULL; } //$$ = asd_new(create_leaf($1)); asd_free_node($$); }
 	;
 
-VarList : ID ',' VarList { $$ = $1; asd_add_child($$,$3); }
-		| ID { $$ = $1; }
-		| ID '[' ArrayDim ']' ',' VarList { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $6); }
-		| ID '[' ArrayDim ']' { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3); }
-		;
+
 
 ArrayDim : Expr '^' ArrayDim  { $$ = asd_new("^"); asd_add_child($$,$1); asd_add_child($$,$3); }
 	| Expr { $$ = $1; }
@@ -163,7 +159,7 @@ Func : ID PushTable '(' ')' Block PopTable { $$ = $1; if($5){ asd_add_child($$,$
 
 PushTable:  %empty { push(create_table(999)); }
 
-PopTable:  %empty { pop(create_table(999)); }
+PopTable:  %empty { pop(); }
 
 ParamList : Param ',' ParamList { $$ = $1; asd_add_child($$,$3); }
 	| Param { $$ = $1; }
@@ -186,6 +182,14 @@ Command : Flow { $$ = $1; }
 	| FuncCall { $$ = $1; }
 	| Block { $$ = $1; }
 	;
+	
+DecLocal: Type VarListLocal { if($2){ $$ = $2; } }
+
+VarListLocal : ID ',' VarListLocal { $$ = $3; if(search_stack(create_leaf($1))){return ERR_DECLARED;} else {ht_insert(create_leaf($1), $1);}}
+        | ID TK_OC_LE Lit ',' VarListLocal { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $5); if(search_stack(create_leaf($1))){return ERR_DECLARED;} else {ht_insert(create_leaf($1), $1);} }
+		| ID TK_OC_LE Lit { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); if(search_stack(create_leaf($1))){return ERR_DECLARED;} else {ht_insert(create_leaf($1), $1);} }
+		| ID { $$ = NULL; if(search_stack(create_leaf($1))){return ERR_DECLARED;} else {ht_insert(create_leaf($1), $1);} }
+		;
 
 Atrib : ID '=' Expr { $$ = asd_new("="); asd_add_child($$,$1); asd_add_child($$,$3); }
 	| ID '[' ArrayDim ']' '=' Expr { $$ = asd_new("="); asd_tree_t *col = asd_new("[]"); asd_add_child($$, col); asd_add_child($$, $6); asd_add_child(col, $1); asd_add_child(col,$3); }
