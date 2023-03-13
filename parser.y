@@ -159,7 +159,7 @@ Func : ID PushTable '(' ')' Block PopTable { $$ = $1; if($5){ asd_add_child($$,$
 
 PushTable:  %empty { push(create_table(999)); }
 
-PopTable:  %empty { pop(); }
+PopTable:  %empty { print_stack(); pop(); }
 
 ParamList : Param ',' ParamList { $$ = $1; asd_add_child($$,$3); }
 	| Param { $$ = $1; }
