@@ -6,6 +6,8 @@
 
 value_t * hash_table[TABLE_SIZE];
 
+hash_da_pilha * pilha[TABLE_SIZE];
+
  unsigned int hash(char *key) {
 	 int length = strnlen(key, MAX_KEY);
 	 unsigned int hash_value = 0;
@@ -21,6 +23,8 @@ value_t * hash_table[TABLE_SIZE];
 		 hash_table[i] = NULL;
 	 }
  }
+ 
+ 
 	 
 	 void print_table() {
 		 printf("pq n printa");
@@ -53,3 +57,21 @@ value_t * hash_table[TABLE_SIZE];
 			 return NULL;
 		 }
 	 }
+	 
+	  void init_stack() {
+	 for (int i=0; i < TABLE_SIZE; i++) {
+		 hash_da_pilha[i] = NULL;
+	 }
+ }
+ 
+ char* generate_random_key(int length) {
+    char* key = malloc(sizeof(char) * (length + 1)); // Allocate memory for the key
+    srand(time(NULL)); // Seed the random number generator with the current time
+
+    for (int i = 0; i < length; i++) {
+        key[i] = 'a' + rand() % 26; // Generate a random lowercase letter
+    }
+    key[length] = '\0'; // Add a null terminator at the end of the string
+
+    return key;
+}

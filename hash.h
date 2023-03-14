@@ -4,8 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <time.h>
 #include "asd.h"
-#define TABLE_SIZE 10
+#define TABLE_SIZE 20
 
 #define ERR_UNDECLARED 10 //2.2
 #define ERR_DECLARED 11 //2.2
@@ -18,7 +19,11 @@
 #define ERR_CHAR_VECTOR 34 //2.4
 #define ERR_X_TO_CHAR 35 //2.4
 
-
+typedef struct hash_da_pilha {
+	
+	value_t * hash_table[TABLE_SIZE];
+	
+} hash_da_pilha;
 
 unsigned int hash(char *key);
 
@@ -29,5 +34,7 @@ void print_table();
 bool hash_table_insert(value_t *v);
 
 value_t *hash_table_lookup (char *key);
+
+char* generate_random_key(int length);
 
 #endif
