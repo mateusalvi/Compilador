@@ -214,7 +214,7 @@ void handle_collision(HashTable *table, unsigned long index, Ht_item *item)
     }
 }
 
-void ht_insert(char *key, value_t valor_lexico)
+void ht_insert(char *key)
 {
 
 	
