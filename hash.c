@@ -41,9 +41,13 @@ hash_da_pilha * pilha[TABLE_SIZE];
 		 if (hash_table[index] != NULL) {
 			 return false;
 		 }
-		 hash_table[index] = v;
-		 printf("Success!\n");
-		 return true;
+		 hash_table[index] = malloc(sizeof(value_t)); // Allocate memory for the struct
+		memcpy(hash_table[index], v, sizeof(value_t)); // Copy the struct into the allocated memory
+		hash_table[index]->value.valueChar = malloc(strlen(v->value.valueChar) + 1); // Allocate memory for the string
+		strcpy(hash_table[index]->value.valueChar, v->value.valueChar); // Copy the string into the allocated memory
+		hash_table[index]->key = index;
+		printf("Success!\n");
+		return true;
 	 }
 	 
 	 value_t *hash_table_lookup (char *key) {
