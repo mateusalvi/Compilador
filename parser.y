@@ -146,7 +146,7 @@ ArrayDim : Expr '^' ArrayDim  { $$ = asd_new("^"); asd_add_child($$,$1); asd_add
 	| Expr { $$ = $1; }
     ;
 
-Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1));  printf("Contents of structure are %d, %d\n", $1.atLine, $1.type); $1.key = generate_random_key(10); hash_table_insert(&$1); print_table();}
+Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1));  printf("Contents of structure are %d, %d\n", $1.atLine, $1.type); $1.key = generate_random_key(10); printf("%d\n", hash_table_insert(&$1)); print_table();}
     | TK_LIT_FLOAT { $$ = asd_new(create_leaf($1));  }
     | TK_LIT_FALSE { $$ = asd_new(create_leaf($1));  }
     | TK_LIT_TRUE { $$ = asd_new(create_leaf($1));  }
