@@ -42,7 +42,6 @@ hash_da_pilha * pilha[TABLE_SIZE];
 			 return false;
 		 }
 		 hash_table[index] = v;
-		 strcpy(v->key, v->value.valueChar);
 		 printf("Success!\n");
 		 return true;
 	 }
