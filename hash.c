@@ -220,22 +220,16 @@ void ht_insert(char *key)
 	
     // Creates the item.
 	printf("yo");
-    HashTable *table = HashTableStack[top];
+
     printf("%d ", HashTableStack[top]->items[1]->atLine);
-    Ht_item *item = create_item(key, valor_lexico);
+    
 
     // Computes the index.
-    int index = hash_function(key);
+  
 	printf("Index: %d\n", index);
-printf("Item key: %s, value: %s\n", item->key, item->value);
 
-    Ht_item *current_item = table->items[index];
-	printf("Key already exists: %d\n", strcmp(current_item->key, key) == 0);
-	if (current_item == NULL) {
-  printf("Current item is NULL\n");
-} else {
-  printf("Current item key: %s, value: %s\n", current_item->key, current_item->value);
-}
+
+
 
     if (current_item == NULL)
     {
