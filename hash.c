@@ -24,6 +24,7 @@ value_t * hash_table[TABLE_SIZE];
  }
 	 
 	 void print_table() {
+		 printf("pq n printa");
 		 for (int i=0; i < TABLE_SIZE; i++) {
 			 if (hash_table[i] == NULL) {
 				 printf("\t%i\t---\n");
