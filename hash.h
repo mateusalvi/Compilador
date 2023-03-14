@@ -18,7 +18,7 @@
 #define ERR_CHAR_VECTOR 34 //2.4
 #define ERR_X_TO_CHAR 35 //2.4
 
-value_t * hash_table[TABLE_SIZE];
+
 
 unsigned int hash(char *key);
 

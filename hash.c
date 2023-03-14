@@ -5,7 +5,7 @@
 #define MAX_KEY 256
 
 
-
+value_t * hash_table[TABLE_SIZE];
 
  unsigned int hash(char *key) {
 	 int length = strnlen(key, MAX_KEY);
