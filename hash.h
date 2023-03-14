@@ -21,7 +21,6 @@
 #ifndef HASH_HEADER
 #define HASH_HEADER
 #define HASH_SIZE 997
-#include "ast.h"
 
 typedef struct hash_ent{
    valor_t valor_lexico; // dados acerca do simbolo

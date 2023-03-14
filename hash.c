@@ -1,5 +1,5 @@
 #include "hash.h"
-#include "ast.h"
+#include "asd.h"
 #include "parser.tab.h"
 #include <stdio.h>
 #include <stdlib.h>
