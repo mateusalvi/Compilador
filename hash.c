@@ -9,7 +9,7 @@
 
  unsigned int hash(char *key) {
 	 int length = strnlen(key, MAX_KEY);
-	 unsigned in hahs_value = 0;
+	 unsigned int hash_value = 0;
 	 for (int i=0; i < length; i++) {
 		 hash_value += key[i];
 		 hash_value = (hash_value * key[i]) % TABLE_SIZE;
@@ -21,10 +21,11 @@
 	 for (int i=0; i < TABLE_SIZE; i++) {
 		 hash_table[i] = NULL;
 	 }
+ }
 	 
 	 void print_table() {
 		 for (int i=0; i < TABLE_SIZE; i++) {
-			 if (hash_table[i] == NULL {
+			 if (hash_table[i] == NULL) {
 				 printf("\t%1\t---")
 			 } else {
 				 printf("\t%i\t%s\n", hash_table[i]->name);
@@ -33,7 +34,7 @@
 	 }
 	 
 	 bool hash_table_insert(value_t *v) {
-		 if (p == NULL) return false;
+		 if (v == NULL) return false;
 		 int index = hash(v->value);
 		 if (hash_table[index] != NULL) {
 			 return false;
