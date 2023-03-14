@@ -228,8 +228,9 @@ void ht_insert(char *key, value_t valor_lexico)
     int index = hash_function(key);
 	printf("Index: %d\n", index);
 printf("Item key: %s, value: %s\n", item->key, item->value);
-printf("Key already exists: %d\n", strcmp(current_item->key, key) == 0);
+
     Ht_item *current_item = table->items[index];
+	printf("Key already exists: %d\n", strcmp(current_item->key, key) == 0);
 	if (current_item == NULL) {
   printf("Current item is NULL\n");
 } else {
