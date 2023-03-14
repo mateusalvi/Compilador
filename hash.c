@@ -214,25 +214,60 @@ void handle_collision(HashTable *table, unsigned long index, Ht_item *item)
     }
 }
 
-void ht_insert(char *key)
+void ht_insert(char *key, value_t valor_lexico)
 {
 
 	
     // Creates the item.
-	printf("yo");
-
-    
-    
+	
+    //HashTable *table = HashTableStack[top];
+    //printf("%d ", HashTableStack[top]->items[1]->atLine);
+    Ht_item *item = create_item(key, valor_lexico);
 
     // Computes the index.
-  
+    int index = hash_function(key);
 	printf("Index: %d\n", index);
+printf("Item key: %s, value: %s\n", item->key, item->value);
 
-
-
-
-    
+    Ht_item *current_item = table->items[index];
+	printf("Key already exists: %d\n", strcmp(current_item->key, key) == 0);
+	if (current_item == NULL) {
+  printf("Current item is NULL\n");
+} else {
+  printf("Current item key: %s, value: %s\n", current_item->key, current_item->value);
 }
+
+    if (current_item == NULL)
+    {
+        // Key does not exist.
+        if (table->count == table->size)
+        {
+            // HashTable is full.
+            free_item(item);
+            return;
+        }
+
+        // Insert directly.
+        table->items[index] = item;
+        table->count++;
+    }
+    else
+    {
+        // Scenario 1: Update the value.
+        if (strcmp(current_item->key, key) == 0)
+        {
+            strcpy(table->items[index]->value, valor_lexico.value.valueChar);
+            return;
+        }
+        else
+        {
+            // Scenario 2: Handle the collision.
+            handle_collision(table, index, item);
+            return;
+        }
+    }
+}
+
 
 char *ht_search(HashTable *table, char *key)
 {
