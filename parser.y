@@ -152,7 +152,7 @@ valor_lexico.type = 4;
 valor_lexico.atLine = 42;
 valor_lexico.value.valueInt = 123;
 
-ht_insert(key);}
+ht_insert("hi");}
     | TK_LIT_FLOAT { $$ = asd_new(create_leaf($1)); ht_insert($1.value.valueChar); }
     | TK_LIT_FALSE { $$ = asd_new(create_leaf($1)); ht_insert($1.value.valueChar); }
     | TK_LIT_TRUE { $$ = asd_new(create_leaf($1));  ht_insert($1.value.valueChar);}
