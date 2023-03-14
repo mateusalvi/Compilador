@@ -150,7 +150,7 @@ Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1));  printf("Contents of structure
 value_t valor_lexico;
 valor_lexico.type = 4;
 valor_lexico.atLine = 42;
-valor_lexico.value.valueInt. = 123;
+valor_lexico.value.valueInt = 123;
 
 ht_insert(key, valor_lexico);}
     | TK_LIT_FLOAT { $$ = asd_new(create_leaf($1)); ht_insert($1.value.valueChar, $1); }
