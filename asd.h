@@ -15,6 +15,7 @@ union literal {
 typedef struct value
 {
   int atLine;
+  char* key;
   int type;
   union literal value;
 } value_t;
