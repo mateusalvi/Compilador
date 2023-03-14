@@ -32,7 +32,7 @@ hash_da_pilha * pilha[TABLE_SIZE];
 			 if (hash_table[i] == NULL) {
 				 printf("\t%i\t---\n",i);
 			 } else {
-				 printf("\t%i\t%s\n",i, hash_table[i]->value.valueChar);
+				 printf("\t%i\t%s\n",i, hash_table[i]->value.valueChar); printf("Contents of structure are %d, %d\n", hash_table[i]->atLine, hash_table[i]->type);
 			 }
 		 }
 	 }
