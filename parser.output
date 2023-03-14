@@ -6,85 +6,88 @@ Terminals unused in grammar
     TK_ERRO
 
 
+State 148 conflicts: 1 reduce/reduce
+
+
 Grammar
 
     0 $accept: Program $end
 
-    1 Program: DecList
+    1 Program: PushTable DecList
 
-    2 DecList: %empty
-    3        | Dec DecList
+    2 DecList: Dec DecList
+    3        | Dec
 
     4 Dec: Type VarList ';'
     5    | Type Func
 
-    6 DecLocal: Type VarListLocal
+    6 VarList: ID ',' VarList
+    7        | ID
+    8        | ID '[' ArrayDim ']' ',' VarList
+    9        | ID '[' ArrayDim ']'
 
-    7 VarListLocal: ID ',' VarListLocal
-    8             | ID TK_OC_LE Lit ',' VarListLocal
-    9             | ID
-   10             | ID TK_OC_LE Lit
+   10 Type: TK_PR_INT
+   11     | TK_PR_FLOAT
+   12     | TK_PR_BOOL
+   13     | TK_PR_CHAR
 
-   11 Type: TK_PR_INT
-   12     | TK_PR_FLOAT
-   13     | TK_PR_BOOL
-   14     | TK_PR_CHAR
+   14 ArrayDim: Expr '^' ArrayDim
+   15         | Expr
 
-   15 VarList: ID ',' VarList
-   16        | ID '[' ArrayDim ']' ',' VarList
-   17        | ID
-   18        | ID '[' ArrayDim ']'
+   16 Lit: TK_LIT_INT
+   17    | TK_LIT_FLOAT
+   18    | TK_LIT_FALSE
+   19    | TK_LIT_TRUE
+   20    | TK_LIT_CHAR
 
-   19 ArrayDim: Expr '^' ArrayDimEnd
-   20         | Expr
+   21 Func: ID PushTable '(' ')' Block PopTable
+   22     | ID PushTable '(' ParamList ')' Block PopTable
 
-   21 ArrayDimEnd: Expr '^' ArrayDimEnd
-   22            | Expr
+   23 PushTable: ε
 
-   23 Lit: TK_LIT_INT
-   24    | TK_LIT_FLOAT
-   25    | TK_LIT_FALSE
-   26    | TK_LIT_TRUE
-   27    | TK_LIT_CHAR
+   24 PopTable: ε
 
-   28 Func: ID '(' ParamList ')' Block
-   29     | ID '(' ')' Block
+   25 ParamList: Param ',' ParamList
+   26          | Param
 
-   30 ParamList: Param ParamListEnd
+   27 Param: Type ID
 
-   31 ParamListEnd: %empty
-   32             | ',' Param ParamListEnd
+   28 Block: '{' CommandList '}'
+   29      | '{' '}'
 
-   33 Param: Type ID
+   30 CommandList: Command ';' CommandList
+   31            | Command ';'
 
-   34 Block: '{' CommandList '}'
-   35      | '{' '}'
+   32 Command: Flow
+   33        | DecLocal
+   34        | Atrib
+   35        | Ret
+   36        | FuncCall
+   37        | Block
 
-   36 CommandList: Command CommandListEnd
+   38 DecLocal: Type VarListLocal
 
-   37 CommandListEnd: ';'
-   38               | ';' Command CommandListEnd
+   39 VarListLocal: ID ',' VarListLocal
+   40             | ID TK_OC_LE Lit ',' VarListLocal
+   41             | ID TK_OC_LE Lit
+   42             | ID
 
-   39 Command: Block
-   40        | Flow
-   41        | Atrib
-   42        | DecLocal
-   43        | Ret
-   44        | FuncCall
+   43 Atrib: ID '=' Expr
+   44      | ID '[' ArrayDim ']' '=' Expr
+   45      | ID '=' ID '[' ArrayDim ']'
 
-   45 Atrib: ID '=' Expr
-   46      | ID '[' ArrayDim ']' '=' Expr
+   46 Flow: TK_PR_WHILE '(' Expr ')' Block
+   47     | TK_PR_IF '(' Expr ')' TK_PR_THEN Block
+   48     | TK_PR_IF '(' Expr ')' TK_PR_THEN Block TK_PR_ELSE Block
 
-   47 Flow: TK_PR_WHILE '(' Expr ')' Block
-   48     | TK_PR_IF '(' Expr ')' TK_PR_THEN Block
-   49     | TK_PR_IF '(' Expr ')' TK_PR_THEN Block TK_PR_ELSE Block
+   49 Ret: TK_PR_RETURN Expr
 
-   50 Ret: TK_PR_RETURN Expr
+   50 FuncCall: FuncCallID '(' ExprList ')'
+   51         | FuncCallID '(' ')'
 
-   51 FuncCall: ID '(' ExprList ')'
-   52         | ID '(' ')'
+   52 ID: TK_IDENTIFICADOR
 
-   53 ID: TK_IDENTIFICADOR
+   53 FuncCallID: TK_IDENTIFICADOR
 
    54 Expr: Expr TK_OC_OR T
    55     | T
@@ -98,565 +101,584 @@ Grammar
 
    61 G: G TK_OC_LE I
    62  | G TK_OC_GE I
-   63  | I
+   63  | G '>' I
+   64  | G '<' I
+   65  | I
 
-   64 I: I '+' J
-   65  | I '-' J
-   66  | J
+   66 I: I '+' J
+   67  | I '-' J
+   68  | J
 
-   67 J: J '*' K
-   68  | J '/' K
-   69  | J '%' K
-   70  | K
+   69 J: J '*' K
+   70  | J '/' K
+   71  | J '%' K
+   72  | K
 
-   71 K: '-' L
-   72  | '!' L
-   73  | L
+   73 K: '-' L
+   74  | '!' L
+   75  | L
 
-   74 L: '(' Expr ')'
-   75  | FuncCall
-   76  | ID '[' ArrayDim ']'
-   77  | ID
-   78  | Lit
+   76 L: '(' Expr ')'
+   77  | FuncCall
+   78  | ID '[' ArrayDim ']'
+   79  | ID
+   80  | Lit
 
-   79 ExprList: Expr ExprListEnd
-
-   80 ExprListEnd: %empty
-   81            | ',' Expr ExprListEnd
+   81 ExprList: Expr ',' ExprList
+   82         | Expr
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
-    '!' (33) 72
-    '%' (37) 69
-    '(' (40) 28 29 47 48 49 51 52 74
-    ')' (41) 28 29 47 48 49 51 52 74
-    '*' (42) 67
-    '+' (43) 64
-    ',' (44) 7 8 15 16 32 81
-    '-' (45) 65 71
-    '/' (47) 68
-    ';' (59) 4 37 38
-    '=' (61) 45 46
-    '[' (91) 16 18 46 76
-    ']' (93) 16 18 46 76
-    '^' (94) 19 21
-    '{' (123) 34 35
-    '}' (125) 34 35
+    '!' (33) 74
+    '%' (37) 71
+    '(' (40) 21 22 46 47 48 50 51 76
+    ')' (41) 21 22 46 47 48 50 51 76
+    '*' (42) 69
+    '+' (43) 66
+    ',' (44) 6 8 25 39 40 81
+    '-' (45) 67 73
+    '/' (47) 70
+    ';' (59) 4 30 31
+    '<' (60) 64
+    '=' (61) 43 44 45
+    '>' (62) 63
+    '[' (91) 8 9 44 45 78
+    ']' (93) 8 9 44 45 78
+    '^' (94) 14
+    '{' (123) 28 29
+    '}' (125) 28 29
     error (256)
-    TK_PR_INT (258) 11
-    TK_PR_FLOAT (259) 12
-    TK_PR_BOOL (260) 13
-    TK_PR_CHAR (261) 14
-    TK_PR_IF (262) 48 49
-    TK_PR_THEN (263) 48 49
-    TK_PR_ELSE (264) 49
-    TK_PR_WHILE (265) 47
-    TK_PR_INPUT (266)
-    TK_PR_OUTPUT (267)
-    TK_PR_RETURN (268) 50
-    TK_PR_FOR (269)
-    TK_OC_LE (270) 8 10 61
-    TK_OC_GE (271) 62
-    TK_OC_EQ (272) 58
-    TK_OC_NE (273) 59
-    TK_OC_AND (274) 56
-    TK_OC_OR (275) 54
-    TK_LIT_INT <valor_lexico> (276) 23
-    TK_LIT_FLOAT <valor_lexico> (277) 24
-    TK_LIT_FALSE <valor_lexico> (278) 25
-    TK_LIT_TRUE <valor_lexico> (279) 26
-    TK_LIT_CHAR <valor_lexico> (280) 27
-    TK_IDENTIFICADOR <valor_lexico> (281) 53
+    TK_PR_INT <valor_lexico> (258) 10
+    TK_PR_FLOAT <valor_lexico> (259) 11
+    TK_PR_BOOL <valor_lexico> (260) 12
+    TK_PR_CHAR <valor_lexico> (261) 13
+    TK_PR_IF <valor_lexico> (262) 47 48
+    TK_PR_THEN <valor_lexico> (263) 47 48
+    TK_PR_ELSE <valor_lexico> (264) 48
+    TK_PR_WHILE <valor_lexico> (265) 46
+    TK_PR_INPUT <valor_lexico> (266)
+    TK_PR_OUTPUT <valor_lexico> (267)
+    TK_PR_RETURN <valor_lexico> (268) 49
+    TK_PR_FOR <valor_lexico> (269)
+    TK_OC_LE <valor_lexico> (270) 40 41 61
+    TK_OC_GE <valor_lexico> (271) 62
+    TK_OC_EQ <valor_lexico> (272) 58
+    TK_OC_NE <valor_lexico> (273) 59
+    TK_OC_AND <valor_lexico> (274) 56
+    TK_OC_OR <valor_lexico> (275) 54
+    TK_LIT_INT <valor_lexico> (276) 16
+    TK_LIT_FLOAT <valor_lexico> (277) 17
+    TK_LIT_FALSE <valor_lexico> (278) 18
+    TK_LIT_TRUE <valor_lexico> (279) 19
+    TK_LIT_CHAR <valor_lexico> (280) 20
+    TK_IDENTIFICADOR <valor_lexico> (281) 52 53
     TK_ERRO (282)
 
 
 Nonterminals, with rules where they appear
 
-    $accept (44)
+    $accept (46)
         on left: 0
-    Program <asd_tree> (45)
+    Program <tree> (47)
         on left: 1
         on right: 0
-    DecList <asd_tree> (46)
+    DecList <tree> (48)
         on left: 2 3
-        on right: 1 3
-    Dec <asd_tree> (47)
+        on right: 1 2
+    Dec <tree> (49)
         on left: 4 5
-        on right: 3
-    DecLocal <asd_tree> (48)
-        on left: 6
-        on right: 42
-    VarListLocal <asd_tree> (49)
-        on left: 7 8 9 10
-        on right: 6 7 8
-    Type <asd_tree> (50)
-        on left: 11 12 13 14
-        on right: 4 5 6 33
-    VarList <asd_tree> (51)
-        on left: 15 16 17 18
-        on right: 4 15 16
-    ArrayDim <asd_tree> (52)
-        on left: 19 20
-        on right: 16 18 46 76
-    ArrayDimEnd <asd_tree> (53)
+        on right: 2 3
+    VarList <tree> (50)
+        on left: 6 7 8 9
+        on right: 4 6 8
+    Type <tree> (51)
+        on left: 10 11 12 13
+        on right: 4 5 27 38
+    ArrayDim <tree> (52)
+        on left: 14 15
+        on right: 8 9 14 44 45 78
+    Lit <tree> (53)
+        on left: 16 17 18 19 20
+        on right: 40 41 80
+    Func <tree> (54)
         on left: 21 22
-        on right: 19 21
-    Lit <asd_tree> (54)
-        on left: 23 24 25 26 27
-        on right: 8 10 78
-    Func <asd_tree> (55)
-        on left: 28 29
         on right: 5
-    ParamList <asd_tree> (56)
-        on left: 30
-        on right: 28
-    ParamListEnd <asd_tree> (57)
-        on left: 31 32
-        on right: 30 32
-    Param <asd_tree> (58)
-        on left: 33
-        on right: 30 32
-    Block <asd_tree> (59)
-        on left: 34 35
-        on right: 28 29 39 47 48 49
-    CommandList <asd_tree> (60)
-        on left: 36
+    PushTable (55)
+        on left: 23
+        on right: 1 21 22
+    PopTable (56)
+        on left: 24
+        on right: 21 22
+    ParamList <tree> (57)
+        on left: 25 26
+        on right: 22 25
+    Param <tree> (58)
+        on left: 27
+        on right: 25 26
+    Block <tree> (59)
+        on left: 28 29
+        on right: 21 22 37 46 47 48
+    CommandList <tree> (60)
+        on left: 30 31
+        on right: 28 30
+    Command <tree> (61)
+        on left: 32 33 34 35 36 37
+        on right: 30 31
+    DecLocal <tree> (62)
+        on left: 38
+        on right: 33
+    VarListLocal <tree> (63)
+        on left: 39 40 41 42
+        on right: 38 39 40
+    Atrib <tree> (64)
+        on left: 43 44 45
         on right: 34
-    CommandListEnd <asd_tree> (61)
-        on left: 37 38
-        on right: 36 38
-    Command <asd_tree> (62)
-        on left: 39 40 41 42 43 44
-        on right: 36 38
-    Atrib <asd_tree> (63)
-        on left: 45 46
-        on right: 41
-    Flow <asd_tree> (64)
-        on left: 47 48 49
-        on right: 40
-    Ret <asd_tree> (65)
-        on left: 50
-        on right: 43
-    FuncCall <asd_tree> (66)
-        on left: 51 52
-        on right: 44 75
-    ID <asd_tree> (67)
+    Flow <tree> (65)
+        on left: 46 47 48
+        on right: 32
+    Ret <tree> (66)
+        on left: 49
+        on right: 35
+    FuncCall <tree> (67)
+        on left: 50 51
+        on right: 36 77
+    ID <tree> (68)
+        on left: 52
+        on right: 6 7 8 9 21 22 27 39 40 41 42 43 44 45 78 79
+    FuncCallID <tree> (69)
         on left: 53
-        on right: 7 8 9 10 15 16 17 18 28 29 33 45 46 51 52 76 77
-    Expr <asd_tree> (68)
+        on right: 50 51
+    Expr <tree> (70)
         on left: 54 55
-        on right: 19 20 21 22 45 46 47 48 49 50 54 74 79 81
-    T <asd_tree> (69)
+        on right: 14 15 43 44 46 47 48 49 54 76 81 82
+    T <tree> (71)
         on left: 56 57
         on right: 54 55 56
-    F <asd_tree> (70)
+    F <tree> (72)
         on left: 58 59 60
         on right: 56 57 58 59
-    G <asd_tree> (71)
-        on left: 61 62 63
-        on right: 58 59 60 61 62
-    I <asd_tree> (72)
-        on left: 64 65 66
-        on right: 61 62 63 64 65
-    J <asd_tree> (73)
-        on left: 67 68 69 70
-        on right: 64 65 66 67 68 69
-    K <asd_tree> (74)
-        on left: 71 72 73
-        on right: 67 68 69 70
-    L <asd_tree> (75)
-        on left: 74 75 76 77 78
-        on right: 71 72 73
-    ExprList <asd_tree> (76)
-        on left: 79
-        on right: 51
-    ExprListEnd <asd_tree> (77)
-        on left: 80 81
-        on right: 79 81
+    G <tree> (73)
+        on left: 61 62 63 64 65
+        on right: 58 59 60 61 62 63 64
+    I <tree> (74)
+        on left: 66 67 68
+        on right: 61 62 63 64 65 66 67
+    J <tree> (75)
+        on left: 69 70 71 72
+        on right: 66 67 68 69 70 71
+    K <tree> (76)
+        on left: 73 74 75
+        on right: 69 70 71 72
+    L <tree> (77)
+        on left: 76 77 78 79 80
+        on right: 73 74 75
+    ExprList <tree> (78)
+        on left: 81 82
+        on right: 50 81
 
 
 State 0
 
-    0 $accept: . Program $end
+    0 $accept: • Program $end
 
-    TK_PR_INT    shift, and go to state 1
-    TK_PR_FLOAT  shift, and go to state 2
-    TK_PR_BOOL   shift, and go to state 3
-    TK_PR_CHAR   shift, and go to state 4
+    $default  reduce using rule 23 (PushTable)
 
-    $default  reduce using rule 2 (DecList)
-
-    Program  go to state 5
-    DecList  go to state 6
-    Dec      go to state 7
-    Type     go to state 8
+    Program    go to state 1
+    PushTable  go to state 2
 
 
 State 1
 
-   11 Type: TK_PR_INT .
+    0 $accept: Program • $end
 
-    $default  reduce using rule 11 (Type)
+    $end  shift, and go to state 3
 
 
 State 2
 
-   12 Type: TK_PR_FLOAT .
+    1 Program: PushTable • DecList
 
-    $default  reduce using rule 12 (Type)
+    TK_PR_INT    shift, and go to state 4
+    TK_PR_FLOAT  shift, and go to state 5
+    TK_PR_BOOL   shift, and go to state 6
+    TK_PR_CHAR   shift, and go to state 7
+
+    DecList  go to state 8
+    Dec      go to state 9
+    Type     go to state 10
 
 
 State 3
 
-   13 Type: TK_PR_BOOL .
-
-    $default  reduce using rule 13 (Type)
-
-
-State 4
-
-   14 Type: TK_PR_CHAR .
-
-    $default  reduce using rule 14 (Type)
-
-
-State 5
-
-    0 $accept: Program . $end
-
-    $end  shift, and go to state 9
-
-
-State 6
-
-    1 Program: DecList .
-
-    $default  reduce using rule 1 (Program)
-
-
-State 7
-
-    3 DecList: Dec . DecList
-
-    TK_PR_INT    shift, and go to state 1
-    TK_PR_FLOAT  shift, and go to state 2
-    TK_PR_BOOL   shift, and go to state 3
-    TK_PR_CHAR   shift, and go to state 4
-
-    $default  reduce using rule 2 (DecList)
-
-    DecList  go to state 10
-    Dec      go to state 7
-    Type     go to state 8
-
-
-State 8
-
-    4 Dec: Type . VarList ';'
-    5    | Type . Func
-
-    TK_IDENTIFICADOR  shift, and go to state 11
-
-    VarList  go to state 12
-    Func     go to state 13
-    ID       go to state 14
-
-
-State 9
-
-    0 $accept: Program $end .
+    0 $accept: Program $end •
 
     $default  accept
 
 
-State 10
+State 4
 
-    3 DecList: Dec DecList .
+   10 Type: TK_PR_INT •
+
+    $default  reduce using rule 10 (Type)
+
+
+State 5
+
+   11 Type: TK_PR_FLOAT •
+
+    $default  reduce using rule 11 (Type)
+
+
+State 6
+
+   12 Type: TK_PR_BOOL •
+
+    $default  reduce using rule 12 (Type)
+
+
+State 7
+
+   13 Type: TK_PR_CHAR •
+
+    $default  reduce using rule 13 (Type)
+
+
+State 8
+
+    1 Program: PushTable DecList •
+
+    $default  reduce using rule 1 (Program)
+
+
+State 9
+
+    2 DecList: Dec • DecList
+    3        | Dec •
+
+    TK_PR_INT    shift, and go to state 4
+    TK_PR_FLOAT  shift, and go to state 5
+    TK_PR_BOOL   shift, and go to state 6
+    TK_PR_CHAR   shift, and go to state 7
 
     $default  reduce using rule 3 (DecList)
+
+    DecList  go to state 11
+    Dec      go to state 9
+    Type     go to state 10
+
+
+State 10
+
+    4 Dec: Type • VarList ';'
+    5    | Type • Func
+
+    TK_IDENTIFICADOR  shift, and go to state 12
+
+    VarList  go to state 13
+    Func     go to state 14
+    ID       go to state 15
 
 
 State 11
 
-   53 ID: TK_IDENTIFICADOR .
+    2 DecList: Dec DecList •
 
-    $default  reduce using rule 53 (ID)
+    $default  reduce using rule 2 (DecList)
 
 
 State 12
 
-    4 Dec: Type VarList . ';'
+   52 ID: TK_IDENTIFICADOR •
 
-    ';'  shift, and go to state 15
+    $default  reduce using rule 52 (ID)
 
 
 State 13
 
-    5 Dec: Type Func .
+    4 Dec: Type VarList • ';'
 
-    $default  reduce using rule 5 (Dec)
+    ';'  shift, and go to state 16
 
 
 State 14
 
-   15 VarList: ID . ',' VarList
-   16        | ID . '[' ArrayDim ']' ',' VarList
-   17        | ID .
-   18        | ID . '[' ArrayDim ']'
-   28 Func: ID . '(' ParamList ')' Block
-   29     | ID . '(' ')' Block
+    5 Dec: Type Func •
 
-    ','  shift, and go to state 16
-    '['  shift, and go to state 17
-    '('  shift, and go to state 18
-
-    $default  reduce using rule 17 (VarList)
+    $default  reduce using rule 5 (Dec)
 
 
 State 15
 
-    4 Dec: Type VarList ';' .
+    6 VarList: ID • ',' VarList
+    7        | ID •
+    8        | ID • '[' ArrayDim ']' ',' VarList
+    9        | ID • '[' ArrayDim ']'
+   21 Func: ID • PushTable '(' ')' Block PopTable
+   22     | ID • PushTable '(' ParamList ')' Block PopTable
 
-    $default  reduce using rule 4 (Dec)
+    ','  shift, and go to state 17
+    '['  shift, and go to state 18
+
+    '('       reduce using rule 23 (PushTable)
+    $default  reduce using rule 7 (VarList)
+
+    PushTable  go to state 19
 
 
 State 16
 
-   15 VarList: ID ',' . VarList
+    4 Dec: Type VarList ';' •
 
-    TK_IDENTIFICADOR  shift, and go to state 11
-
-    VarList  go to state 19
-    ID       go to state 20
+    $default  reduce using rule 4 (Dec)
 
 
 State 17
 
-   16 VarList: ID '[' . ArrayDim ']' ',' VarList
-   18        | ID '[' . ArrayDim ']'
+    6 VarList: ID ',' • VarList
 
-    TK_LIT_INT        shift, and go to state 21
-    TK_LIT_FLOAT      shift, and go to state 22
-    TK_LIT_FALSE      shift, and go to state 23
-    TK_LIT_TRUE       shift, and go to state 24
-    TK_LIT_CHAR       shift, and go to state 25
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '('               shift, and go to state 26
-    '-'               shift, and go to state 27
-    '!'               shift, and go to state 28
+    TK_IDENTIFICADOR  shift, and go to state 12
 
-    ArrayDim  go to state 29
-    Lit       go to state 30
-    FuncCall  go to state 31
-    ID        go to state 32
-    Expr      go to state 33
-    T         go to state 34
-    F         go to state 35
-    G         go to state 36
-    I         go to state 37
-    J         go to state 38
-    K         go to state 39
-    L         go to state 40
+    VarList  go to state 20
+    ID       go to state 21
 
 
 State 18
 
-   28 Func: ID '(' . ParamList ')' Block
-   29     | ID '(' . ')' Block
+    8 VarList: ID '[' • ArrayDim ']' ',' VarList
+    9        | ID '[' • ArrayDim ']'
 
-    TK_PR_INT    shift, and go to state 1
-    TK_PR_FLOAT  shift, and go to state 2
-    TK_PR_BOOL   shift, and go to state 3
-    TK_PR_CHAR   shift, and go to state 4
-    ')'          shift, and go to state 41
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
+    '-'               shift, and go to state 29
+    '!'               shift, and go to state 30
 
-    Type       go to state 42
-    ParamList  go to state 43
-    Param      go to state 44
+    ArrayDim    go to state 31
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 34
+    FuncCallID  go to state 35
+    Expr        go to state 36
+    T           go to state 37
+    F           go to state 38
+    G           go to state 39
+    I           go to state 40
+    J           go to state 41
+    K           go to state 42
+    L           go to state 43
 
 
 State 19
 
-   15 VarList: ID ',' VarList .
+   21 Func: ID PushTable • '(' ')' Block PopTable
+   22     | ID PushTable • '(' ParamList ')' Block PopTable
 
-    $default  reduce using rule 15 (VarList)
+    '('  shift, and go to state 44
 
 
 State 20
 
-   15 VarList: ID . ',' VarList
-   16        | ID . '[' ArrayDim ']' ',' VarList
-   17        | ID .
-   18        | ID . '[' ArrayDim ']'
+    6 VarList: ID ',' VarList •
 
-    ','  shift, and go to state 16
-    '['  shift, and go to state 17
-
-    $default  reduce using rule 17 (VarList)
+    $default  reduce using rule 6 (VarList)
 
 
 State 21
 
-   23 Lit: TK_LIT_INT .
+    6 VarList: ID • ',' VarList
+    7        | ID •
+    8        | ID • '[' ArrayDim ']' ',' VarList
+    9        | ID • '[' ArrayDim ']'
 
-    $default  reduce using rule 23 (Lit)
+    ','  shift, and go to state 17
+    '['  shift, and go to state 18
+
+    $default  reduce using rule 7 (VarList)
 
 
 State 22
 
-   24 Lit: TK_LIT_FLOAT .
+   16 Lit: TK_LIT_INT •
 
-    $default  reduce using rule 24 (Lit)
+    $default  reduce using rule 16 (Lit)
 
 
 State 23
 
-   25 Lit: TK_LIT_FALSE .
+   17 Lit: TK_LIT_FLOAT •
 
-    $default  reduce using rule 25 (Lit)
+    $default  reduce using rule 17 (Lit)
 
 
 State 24
 
-   26 Lit: TK_LIT_TRUE .
+   18 Lit: TK_LIT_FALSE •
 
-    $default  reduce using rule 26 (Lit)
+    $default  reduce using rule 18 (Lit)
 
 
 State 25
 
-   27 Lit: TK_LIT_CHAR .
+   19 Lit: TK_LIT_TRUE •
 
-    $default  reduce using rule 27 (Lit)
+    $default  reduce using rule 19 (Lit)
 
 
 State 26
 
-   74 L: '(' . Expr ')'
+   20 Lit: TK_LIT_CHAR •
 
-    TK_LIT_INT        shift, and go to state 21
-    TK_LIT_FLOAT      shift, and go to state 22
-    TK_LIT_FALSE      shift, and go to state 23
-    TK_LIT_TRUE       shift, and go to state 24
-    TK_LIT_CHAR       shift, and go to state 25
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '('               shift, and go to state 26
-    '-'               shift, and go to state 27
-    '!'               shift, and go to state 28
-
-    Lit       go to state 30
-    FuncCall  go to state 31
-    ID        go to state 32
-    Expr      go to state 45
-    T         go to state 34
-    F         go to state 35
-    G         go to state 36
-    I         go to state 37
-    J         go to state 38
-    K         go to state 39
-    L         go to state 40
+    $default  reduce using rule 20 (Lit)
 
 
 State 27
 
-   71 K: '-' . L
+   52 ID: TK_IDENTIFICADOR •
+   53 FuncCallID: TK_IDENTIFICADOR •
 
-    TK_LIT_INT        shift, and go to state 21
-    TK_LIT_FLOAT      shift, and go to state 22
-    TK_LIT_FALSE      shift, and go to state 23
-    TK_LIT_TRUE       shift, and go to state 24
-    TK_LIT_CHAR       shift, and go to state 25
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '('               shift, and go to state 26
-
-    Lit       go to state 30
-    FuncCall  go to state 31
-    ID        go to state 32
-    L         go to state 46
+    '('       reduce using rule 53 (FuncCallID)
+    $default  reduce using rule 52 (ID)
 
 
 State 28
 
-   72 K: '!' . L
+   76 L: '(' • Expr ')'
 
-    TK_LIT_INT        shift, and go to state 21
-    TK_LIT_FLOAT      shift, and go to state 22
-    TK_LIT_FALSE      shift, and go to state 23
-    TK_LIT_TRUE       shift, and go to state 24
-    TK_LIT_CHAR       shift, and go to state 25
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '('               shift, and go to state 26
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
+    '-'               shift, and go to state 29
+    '!'               shift, and go to state 30
 
-    Lit       go to state 30
-    FuncCall  go to state 31
-    ID        go to state 32
-    L         go to state 47
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 34
+    FuncCallID  go to state 35
+    Expr        go to state 45
+    T           go to state 37
+    F           go to state 38
+    G           go to state 39
+    I           go to state 40
+    J           go to state 41
+    K           go to state 42
+    L           go to state 43
 
 
 State 29
 
-   16 VarList: ID '[' ArrayDim . ']' ',' VarList
-   18        | ID '[' ArrayDim . ']'
+   73 K: '-' • L
 
-    ']'  shift, and go to state 48
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
+
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 34
+    FuncCallID  go to state 35
+    L           go to state 46
 
 
 State 30
 
-   78 L: Lit .
+   74 K: '!' • L
 
-    $default  reduce using rule 78 (L)
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
+
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 34
+    FuncCallID  go to state 35
+    L           go to state 47
 
 
 State 31
 
-   75 L: FuncCall .
+    8 VarList: ID '[' ArrayDim • ']' ',' VarList
+    9        | ID '[' ArrayDim • ']'
 
-    $default  reduce using rule 75 (L)
+    ']'  shift, and go to state 48
 
 
 State 32
 
-   51 FuncCall: ID . '(' ExprList ')'
-   52         | ID . '(' ')'
-   76 L: ID . '[' ArrayDim ']'
-   77  | ID .
+   80 L: Lit •
 
-    '['  shift, and go to state 49
-    '('  shift, and go to state 50
-
-    $default  reduce using rule 77 (L)
+    $default  reduce using rule 80 (L)
 
 
 State 33
 
-   19 ArrayDim: Expr . '^' ArrayDimEnd
-   20         | Expr .
-   54 Expr: Expr . TK_OC_OR T
+   77 L: FuncCall •
 
-    TK_OC_OR  shift, and go to state 51
-    '^'       shift, and go to state 52
-
-    $default  reduce using rule 20 (ArrayDim)
+    $default  reduce using rule 77 (L)
 
 
 State 34
 
-   55 Expr: T .
-   56 T: T . TK_OC_AND F
+   78 L: ID • '[' ArrayDim ']'
+   79  | ID •
+
+    '['  shift, and go to state 49
+
+    $default  reduce using rule 79 (L)
+
+
+State 35
+
+   50 FuncCall: FuncCallID • '(' ExprList ')'
+   51         | FuncCallID • '(' ')'
+
+    '('  shift, and go to state 50
+
+
+State 36
+
+   14 ArrayDim: Expr • '^' ArrayDim
+   15         | Expr •
+   54 Expr: Expr • TK_OC_OR T
+
+    TK_OC_OR  shift, and go to state 51
+    '^'       shift, and go to state 52
+
+    $default  reduce using rule 15 (ArrayDim)
+
+
+State 37
+
+   55 Expr: T •
+   56 T: T • TK_OC_AND F
 
     TK_OC_AND  shift, and go to state 53
 
     $default  reduce using rule 55 (Expr)
 
 
-State 35
+State 38
 
-   57 T: F .
-   58 F: F . TK_OC_EQ G
-   59  | F . TK_OC_NE G
+   57 T: F •
+   58 F: F • TK_OC_EQ G
+   59  | F • TK_OC_NE G
 
     TK_OC_EQ  shift, and go to state 54
     TK_OC_NE  shift, and go to state 55
@@ -664,98 +686,82 @@ State 35
     $default  reduce using rule 57 (T)
 
 
-State 36
+State 39
 
-   60 F: G .
-   61 G: G . TK_OC_LE I
-   62  | G . TK_OC_GE I
+   60 F: G •
+   61 G: G • TK_OC_LE I
+   62  | G • TK_OC_GE I
+   63  | G • '>' I
+   64  | G • '<' I
 
     TK_OC_LE  shift, and go to state 56
     TK_OC_GE  shift, and go to state 57
+    '>'       shift, and go to state 58
+    '<'       shift, and go to state 59
 
     $default  reduce using rule 60 (F)
 
 
-State 37
-
-   63 G: I .
-   64 I: I . '+' J
-   65  | I . '-' J
-
-    '+'  shift, and go to state 58
-    '-'  shift, and go to state 59
-
-    $default  reduce using rule 63 (G)
-
-
-State 38
-
-   66 I: J .
-   67 J: J . '*' K
-   68  | J . '/' K
-   69  | J . '%' K
-
-    '*'  shift, and go to state 60
-    '/'  shift, and go to state 61
-    '%'  shift, and go to state 62
-
-    $default  reduce using rule 66 (I)
-
-
-State 39
-
-   70 J: K .
-
-    $default  reduce using rule 70 (J)
-
-
 State 40
 
-   73 K: L .
+   65 G: I •
+   66 I: I • '+' J
+   67  | I • '-' J
 
-    $default  reduce using rule 73 (K)
+    '+'  shift, and go to state 60
+    '-'  shift, and go to state 61
+
+    $default  reduce using rule 65 (G)
 
 
 State 41
 
-   29 Func: ID '(' ')' . Block
+   68 I: J •
+   69 J: J • '*' K
+   70  | J • '/' K
+   71  | J • '%' K
 
-    '{'  shift, and go to state 63
+    '*'  shift, and go to state 62
+    '/'  shift, and go to state 63
+    '%'  shift, and go to state 64
 
-    Block  go to state 64
+    $default  reduce using rule 68 (I)
 
 
 State 42
 
-   33 Param: Type . ID
+   72 J: K •
 
-    TK_IDENTIFICADOR  shift, and go to state 11
-
-    ID  go to state 65
+    $default  reduce using rule 72 (J)
 
 
 State 43
 
-   28 Func: ID '(' ParamList . ')' Block
+   75 K: L •
 
-    ')'  shift, and go to state 66
+    $default  reduce using rule 75 (K)
 
 
 State 44
 
-   30 ParamList: Param . ParamListEnd
+   21 Func: ID PushTable '(' • ')' Block PopTable
+   22     | ID PushTable '(' • ParamList ')' Block PopTable
 
-    ','  shift, and go to state 67
+    TK_PR_INT    shift, and go to state 4
+    TK_PR_FLOAT  shift, and go to state 5
+    TK_PR_BOOL   shift, and go to state 6
+    TK_PR_CHAR   shift, and go to state 7
+    ')'          shift, and go to state 65
 
-    $default  reduce using rule 31 (ParamListEnd)
-
-    ParamListEnd  go to state 68
+    Type       go to state 66
+    ParamList  go to state 67
+    Param      go to state 68
 
 
 State 45
 
-   54 Expr: Expr . TK_OC_OR T
-   74 L: '(' Expr . ')'
+   54 Expr: Expr • TK_OC_OR T
+   76 L: '(' Expr • ')'
 
     TK_OC_OR  shift, and go to state 51
     ')'       shift, and go to state 69
@@ -763,492 +769,517 @@ State 45
 
 State 46
 
-   71 K: '-' L .
+   73 K: '-' L •
 
-    $default  reduce using rule 71 (K)
+    $default  reduce using rule 73 (K)
 
 
 State 47
 
-   72 K: '!' L .
+   74 K: '!' L •
 
-    $default  reduce using rule 72 (K)
+    $default  reduce using rule 74 (K)
 
 
 State 48
 
-   16 VarList: ID '[' ArrayDim ']' . ',' VarList
-   18        | ID '[' ArrayDim ']' .
+    8 VarList: ID '[' ArrayDim ']' • ',' VarList
+    9        | ID '[' ArrayDim ']' •
 
     ','  shift, and go to state 70
 
-    $default  reduce using rule 18 (VarList)
+    $default  reduce using rule 9 (VarList)
 
 
 State 49
 
-   76 L: ID '[' . ArrayDim ']'
+   78 L: ID '[' • ArrayDim ']'
 
-    TK_LIT_INT        shift, and go to state 21
-    TK_LIT_FLOAT      shift, and go to state 22
-    TK_LIT_FALSE      shift, and go to state 23
-    TK_LIT_TRUE       shift, and go to state 24
-    TK_LIT_CHAR       shift, and go to state 25
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '('               shift, and go to state 26
-    '-'               shift, and go to state 27
-    '!'               shift, and go to state 28
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
+    '-'               shift, and go to state 29
+    '!'               shift, and go to state 30
 
-    ArrayDim  go to state 71
-    Lit       go to state 30
-    FuncCall  go to state 31
-    ID        go to state 32
-    Expr      go to state 33
-    T         go to state 34
-    F         go to state 35
-    G         go to state 36
-    I         go to state 37
-    J         go to state 38
-    K         go to state 39
-    L         go to state 40
+    ArrayDim    go to state 71
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 34
+    FuncCallID  go to state 35
+    Expr        go to state 36
+    T           go to state 37
+    F           go to state 38
+    G           go to state 39
+    I           go to state 40
+    J           go to state 41
+    K           go to state 42
+    L           go to state 43
 
 
 State 50
 
-   51 FuncCall: ID '(' . ExprList ')'
-   52         | ID '(' . ')'
+   50 FuncCall: FuncCallID '(' • ExprList ')'
+   51         | FuncCallID '(' • ')'
 
-    TK_LIT_INT        shift, and go to state 21
-    TK_LIT_FLOAT      shift, and go to state 22
-    TK_LIT_FALSE      shift, and go to state 23
-    TK_LIT_TRUE       shift, and go to state 24
-    TK_LIT_CHAR       shift, and go to state 25
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '('               shift, and go to state 26
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
     ')'               shift, and go to state 72
-    '-'               shift, and go to state 27
-    '!'               shift, and go to state 28
+    '-'               shift, and go to state 29
+    '!'               shift, and go to state 30
 
-    Lit       go to state 30
-    FuncCall  go to state 31
-    ID        go to state 32
-    Expr      go to state 73
-    T         go to state 34
-    F         go to state 35
-    G         go to state 36
-    I         go to state 37
-    J         go to state 38
-    K         go to state 39
-    L         go to state 40
-    ExprList  go to state 74
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 34
+    FuncCallID  go to state 35
+    Expr        go to state 73
+    T           go to state 37
+    F           go to state 38
+    G           go to state 39
+    I           go to state 40
+    J           go to state 41
+    K           go to state 42
+    L           go to state 43
+    ExprList    go to state 74
 
 
 State 51
 
-   54 Expr: Expr TK_OC_OR . T
+   54 Expr: Expr TK_OC_OR • T
 
-    TK_LIT_INT        shift, and go to state 21
-    TK_LIT_FLOAT      shift, and go to state 22
-    TK_LIT_FALSE      shift, and go to state 23
-    TK_LIT_TRUE       shift, and go to state 24
-    TK_LIT_CHAR       shift, and go to state 25
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '('               shift, and go to state 26
-    '-'               shift, and go to state 27
-    '!'               shift, and go to state 28
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
+    '-'               shift, and go to state 29
+    '!'               shift, and go to state 30
 
-    Lit       go to state 30
-    FuncCall  go to state 31
-    ID        go to state 32
-    T         go to state 75
-    F         go to state 35
-    G         go to state 36
-    I         go to state 37
-    J         go to state 38
-    K         go to state 39
-    L         go to state 40
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 34
+    FuncCallID  go to state 35
+    T           go to state 75
+    F           go to state 38
+    G           go to state 39
+    I           go to state 40
+    J           go to state 41
+    K           go to state 42
+    L           go to state 43
 
 
 State 52
 
-   19 ArrayDim: Expr '^' . ArrayDimEnd
+   14 ArrayDim: Expr '^' • ArrayDim
 
-    TK_LIT_INT        shift, and go to state 21
-    TK_LIT_FLOAT      shift, and go to state 22
-    TK_LIT_FALSE      shift, and go to state 23
-    TK_LIT_TRUE       shift, and go to state 24
-    TK_LIT_CHAR       shift, and go to state 25
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '('               shift, and go to state 26
-    '-'               shift, and go to state 27
-    '!'               shift, and go to state 28
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
+    '-'               shift, and go to state 29
+    '!'               shift, and go to state 30
 
-    ArrayDimEnd  go to state 76
-    Lit          go to state 30
-    FuncCall     go to state 31
-    ID           go to state 32
-    Expr         go to state 77
-    T            go to state 34
-    F            go to state 35
-    G            go to state 36
-    I            go to state 37
-    J            go to state 38
-    K            go to state 39
-    L            go to state 40
+    ArrayDim    go to state 76
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 34
+    FuncCallID  go to state 35
+    Expr        go to state 36
+    T           go to state 37
+    F           go to state 38
+    G           go to state 39
+    I           go to state 40
+    J           go to state 41
+    K           go to state 42
+    L           go to state 43
 
 
 State 53
 
-   56 T: T TK_OC_AND . F
+   56 T: T TK_OC_AND • F
 
-    TK_LIT_INT        shift, and go to state 21
-    TK_LIT_FLOAT      shift, and go to state 22
-    TK_LIT_FALSE      shift, and go to state 23
-    TK_LIT_TRUE       shift, and go to state 24
-    TK_LIT_CHAR       shift, and go to state 25
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '('               shift, and go to state 26
-    '-'               shift, and go to state 27
-    '!'               shift, and go to state 28
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
+    '-'               shift, and go to state 29
+    '!'               shift, and go to state 30
 
-    Lit       go to state 30
-    FuncCall  go to state 31
-    ID        go to state 32
-    F         go to state 78
-    G         go to state 36
-    I         go to state 37
-    J         go to state 38
-    K         go to state 39
-    L         go to state 40
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 34
+    FuncCallID  go to state 35
+    F           go to state 77
+    G           go to state 39
+    I           go to state 40
+    J           go to state 41
+    K           go to state 42
+    L           go to state 43
 
 
 State 54
 
-   58 F: F TK_OC_EQ . G
+   58 F: F TK_OC_EQ • G
 
-    TK_LIT_INT        shift, and go to state 21
-    TK_LIT_FLOAT      shift, and go to state 22
-    TK_LIT_FALSE      shift, and go to state 23
-    TK_LIT_TRUE       shift, and go to state 24
-    TK_LIT_CHAR       shift, and go to state 25
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '('               shift, and go to state 26
-    '-'               shift, and go to state 27
-    '!'               shift, and go to state 28
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
+    '-'               shift, and go to state 29
+    '!'               shift, and go to state 30
 
-    Lit       go to state 30
-    FuncCall  go to state 31
-    ID        go to state 32
-    G         go to state 79
-    I         go to state 37
-    J         go to state 38
-    K         go to state 39
-    L         go to state 40
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 34
+    FuncCallID  go to state 35
+    G           go to state 78
+    I           go to state 40
+    J           go to state 41
+    K           go to state 42
+    L           go to state 43
 
 
 State 55
 
-   59 F: F TK_OC_NE . G
+   59 F: F TK_OC_NE • G
 
-    TK_LIT_INT        shift, and go to state 21
-    TK_LIT_FLOAT      shift, and go to state 22
-    TK_LIT_FALSE      shift, and go to state 23
-    TK_LIT_TRUE       shift, and go to state 24
-    TK_LIT_CHAR       shift, and go to state 25
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '('               shift, and go to state 26
-    '-'               shift, and go to state 27
-    '!'               shift, and go to state 28
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
+    '-'               shift, and go to state 29
+    '!'               shift, and go to state 30
 
-    Lit       go to state 30
-    FuncCall  go to state 31
-    ID        go to state 32
-    G         go to state 80
-    I         go to state 37
-    J         go to state 38
-    K         go to state 39
-    L         go to state 40
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 34
+    FuncCallID  go to state 35
+    G           go to state 79
+    I           go to state 40
+    J           go to state 41
+    K           go to state 42
+    L           go to state 43
 
 
 State 56
 
-   61 G: G TK_OC_LE . I
+   61 G: G TK_OC_LE • I
 
-    TK_LIT_INT        shift, and go to state 21
-    TK_LIT_FLOAT      shift, and go to state 22
-    TK_LIT_FALSE      shift, and go to state 23
-    TK_LIT_TRUE       shift, and go to state 24
-    TK_LIT_CHAR       shift, and go to state 25
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '('               shift, and go to state 26
-    '-'               shift, and go to state 27
-    '!'               shift, and go to state 28
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
+    '-'               shift, and go to state 29
+    '!'               shift, and go to state 30
 
-    Lit       go to state 30
-    FuncCall  go to state 31
-    ID        go to state 32
-    I         go to state 81
-    J         go to state 38
-    K         go to state 39
-    L         go to state 40
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 34
+    FuncCallID  go to state 35
+    I           go to state 80
+    J           go to state 41
+    K           go to state 42
+    L           go to state 43
 
 
 State 57
 
-   62 G: G TK_OC_GE . I
+   62 G: G TK_OC_GE • I
 
-    TK_LIT_INT        shift, and go to state 21
-    TK_LIT_FLOAT      shift, and go to state 22
-    TK_LIT_FALSE      shift, and go to state 23
-    TK_LIT_TRUE       shift, and go to state 24
-    TK_LIT_CHAR       shift, and go to state 25
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '('               shift, and go to state 26
-    '-'               shift, and go to state 27
-    '!'               shift, and go to state 28
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
+    '-'               shift, and go to state 29
+    '!'               shift, and go to state 30
 
-    Lit       go to state 30
-    FuncCall  go to state 31
-    ID        go to state 32
-    I         go to state 82
-    J         go to state 38
-    K         go to state 39
-    L         go to state 40
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 34
+    FuncCallID  go to state 35
+    I           go to state 81
+    J           go to state 41
+    K           go to state 42
+    L           go to state 43
 
 
 State 58
 
-   64 I: I '+' . J
+   63 G: G '>' • I
 
-    TK_LIT_INT        shift, and go to state 21
-    TK_LIT_FLOAT      shift, and go to state 22
-    TK_LIT_FALSE      shift, and go to state 23
-    TK_LIT_TRUE       shift, and go to state 24
-    TK_LIT_CHAR       shift, and go to state 25
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '('               shift, and go to state 26
-    '-'               shift, and go to state 27
-    '!'               shift, and go to state 28
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
+    '-'               shift, and go to state 29
+    '!'               shift, and go to state 30
 
-    Lit       go to state 30
-    FuncCall  go to state 31
-    ID        go to state 32
-    J         go to state 83
-    K         go to state 39
-    L         go to state 40
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 34
+    FuncCallID  go to state 35
+    I           go to state 82
+    J           go to state 41
+    K           go to state 42
+    L           go to state 43
 
 
 State 59
 
-   65 I: I '-' . J
+   64 G: G '<' • I
 
-    TK_LIT_INT        shift, and go to state 21
-    TK_LIT_FLOAT      shift, and go to state 22
-    TK_LIT_FALSE      shift, and go to state 23
-    TK_LIT_TRUE       shift, and go to state 24
-    TK_LIT_CHAR       shift, and go to state 25
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '('               shift, and go to state 26
-    '-'               shift, and go to state 27
-    '!'               shift, and go to state 28
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
+    '-'               shift, and go to state 29
+    '!'               shift, and go to state 30
 
-    Lit       go to state 30
-    FuncCall  go to state 31
-    ID        go to state 32
-    J         go to state 84
-    K         go to state 39
-    L         go to state 40
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 34
+    FuncCallID  go to state 35
+    I           go to state 83
+    J           go to state 41
+    K           go to state 42
+    L           go to state 43
 
 
 State 60
 
-   67 J: J '*' . K
+   66 I: I '+' • J
 
-    TK_LIT_INT        shift, and go to state 21
-    TK_LIT_FLOAT      shift, and go to state 22
-    TK_LIT_FALSE      shift, and go to state 23
-    TK_LIT_TRUE       shift, and go to state 24
-    TK_LIT_CHAR       shift, and go to state 25
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '('               shift, and go to state 26
-    '-'               shift, and go to state 27
-    '!'               shift, and go to state 28
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
+    '-'               shift, and go to state 29
+    '!'               shift, and go to state 30
 
-    Lit       go to state 30
-    FuncCall  go to state 31
-    ID        go to state 32
-    K         go to state 85
-    L         go to state 40
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 34
+    FuncCallID  go to state 35
+    J           go to state 84
+    K           go to state 42
+    L           go to state 43
 
 
 State 61
 
-   68 J: J '/' . K
+   67 I: I '-' • J
 
-    TK_LIT_INT        shift, and go to state 21
-    TK_LIT_FLOAT      shift, and go to state 22
-    TK_LIT_FALSE      shift, and go to state 23
-    TK_LIT_TRUE       shift, and go to state 24
-    TK_LIT_CHAR       shift, and go to state 25
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '('               shift, and go to state 26
-    '-'               shift, and go to state 27
-    '!'               shift, and go to state 28
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
+    '-'               shift, and go to state 29
+    '!'               shift, and go to state 30
 
-    Lit       go to state 30
-    FuncCall  go to state 31
-    ID        go to state 32
-    K         go to state 86
-    L         go to state 40
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 34
+    FuncCallID  go to state 35
+    J           go to state 85
+    K           go to state 42
+    L           go to state 43
 
 
 State 62
 
-   69 J: J '%' . K
+   69 J: J '*' • K
 
-    TK_LIT_INT        shift, and go to state 21
-    TK_LIT_FLOAT      shift, and go to state 22
-    TK_LIT_FALSE      shift, and go to state 23
-    TK_LIT_TRUE       shift, and go to state 24
-    TK_LIT_CHAR       shift, and go to state 25
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '('               shift, and go to state 26
-    '-'               shift, and go to state 27
-    '!'               shift, and go to state 28
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
+    '-'               shift, and go to state 29
+    '!'               shift, and go to state 30
 
-    Lit       go to state 30
-    FuncCall  go to state 31
-    ID        go to state 32
-    K         go to state 87
-    L         go to state 40
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 34
+    FuncCallID  go to state 35
+    K           go to state 86
+    L           go to state 43
 
 
 State 63
 
-   34 Block: '{' . CommandList '}'
-   35      | '{' . '}'
+   70 J: J '/' • K
 
-    TK_PR_INT         shift, and go to state 1
-    TK_PR_FLOAT       shift, and go to state 2
-    TK_PR_BOOL        shift, and go to state 3
-    TK_PR_CHAR        shift, and go to state 4
-    TK_PR_IF          shift, and go to state 88
-    TK_PR_WHILE       shift, and go to state 89
-    TK_PR_RETURN      shift, and go to state 90
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '{'               shift, and go to state 63
-    '}'               shift, and go to state 91
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
+    '-'               shift, and go to state 29
+    '!'               shift, and go to state 30
 
-    DecLocal     go to state 92
-    Type         go to state 93
-    Block        go to state 94
-    CommandList  go to state 95
-    Command      go to state 96
-    Atrib        go to state 97
-    Flow         go to state 98
-    Ret          go to state 99
-    FuncCall     go to state 100
-    ID           go to state 101
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 34
+    FuncCallID  go to state 35
+    K           go to state 87
+    L           go to state 43
 
 
 State 64
 
-   29 Func: ID '(' ')' Block .
+   71 J: J '%' • K
 
-    $default  reduce using rule 29 (Func)
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
+    '-'               shift, and go to state 29
+    '!'               shift, and go to state 30
+
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 34
+    FuncCallID  go to state 35
+    K           go to state 88
+    L           go to state 43
 
 
 State 65
 
-   33 Param: Type ID .
+   21 Func: ID PushTable '(' ')' • Block PopTable
 
-    $default  reduce using rule 33 (Param)
+    '{'  shift, and go to state 89
+
+    Block  go to state 90
 
 
 State 66
 
-   28 Func: ID '(' ParamList ')' . Block
+   27 Param: Type • ID
 
-    '{'  shift, and go to state 63
+    TK_IDENTIFICADOR  shift, and go to state 12
 
-    Block  go to state 102
+    ID  go to state 91
 
 
 State 67
 
-   32 ParamListEnd: ',' . Param ParamListEnd
+   22 Func: ID PushTable '(' ParamList • ')' Block PopTable
 
-    TK_PR_INT    shift, and go to state 1
-    TK_PR_FLOAT  shift, and go to state 2
-    TK_PR_BOOL   shift, and go to state 3
-    TK_PR_CHAR   shift, and go to state 4
-
-    Type   go to state 42
-    Param  go to state 103
+    ')'  shift, and go to state 92
 
 
 State 68
 
-   30 ParamList: Param ParamListEnd .
+   25 ParamList: Param • ',' ParamList
+   26          | Param •
 
-    $default  reduce using rule 30 (ParamList)
+    ','  shift, and go to state 93
+
+    $default  reduce using rule 26 (ParamList)
 
 
 State 69
 
-   74 L: '(' Expr ')' .
+   76 L: '(' Expr ')' •
 
-    $default  reduce using rule 74 (L)
+    $default  reduce using rule 76 (L)
 
 
 State 70
 
-   16 VarList: ID '[' ArrayDim ']' ',' . VarList
+    8 VarList: ID '[' ArrayDim ']' ',' • VarList
 
-    TK_IDENTIFICADOR  shift, and go to state 11
+    TK_IDENTIFICADOR  shift, and go to state 12
 
-    VarList  go to state 104
-    ID       go to state 20
+    VarList  go to state 94
+    ID       go to state 21
 
 
 State 71
 
-   76 L: ID '[' ArrayDim . ']'
+   78 L: ID '[' ArrayDim • ']'
 
-    ']'  shift, and go to state 105
+    ']'  shift, and go to state 95
 
 
 State 72
 
-   52 FuncCall: ID '(' ')' .
+   51 FuncCall: FuncCallID '(' ')' •
 
-    $default  reduce using rule 52 (FuncCall)
+    $default  reduce using rule 51 (FuncCall)
 
 
 State 73
 
-   54 Expr: Expr . TK_OC_OR T
-   79 ExprList: Expr . ExprListEnd
+   54 Expr: Expr • TK_OC_OR T
+   81 ExprList: Expr • ',' ExprList
+   82         | Expr •
 
     TK_OC_OR  shift, and go to state 51
-    ','       shift, and go to state 106
+    ','       shift, and go to state 96
 
-    $default  reduce using rule 80 (ExprListEnd)
-
-    ExprListEnd  go to state 107
+    $default  reduce using rule 82 (ExprList)
 
 
 State 74
 
-   51 FuncCall: ID '(' ExprList . ')'
+   50 FuncCall: FuncCallID '(' ExprList • ')'
 
-    ')'  shift, and go to state 108
+    ')'  shift, and go to state 97
 
 
 State 75
 
-   54 Expr: Expr TK_OC_OR T .
-   56 T: T . TK_OC_AND F
+   54 Expr: Expr TK_OC_OR T •
+   56 T: T • TK_OC_AND F
 
     TK_OC_AND  shift, and go to state 53
 
@@ -1257,28 +1288,16 @@ State 75
 
 State 76
 
-   19 ArrayDim: Expr '^' ArrayDimEnd .
+   14 ArrayDim: Expr '^' ArrayDim •
 
-    $default  reduce using rule 19 (ArrayDim)
+    $default  reduce using rule 14 (ArrayDim)
 
 
 State 77
 
-   21 ArrayDimEnd: Expr . '^' ArrayDimEnd
-   22            | Expr .
-   54 Expr: Expr . TK_OC_OR T
-
-    TK_OC_OR  shift, and go to state 51
-    '^'       shift, and go to state 109
-
-    $default  reduce using rule 22 (ArrayDimEnd)
-
-
-State 78
-
-   56 T: T TK_OC_AND F .
-   58 F: F . TK_OC_EQ G
-   59  | F . TK_OC_NE G
+   56 T: T TK_OC_AND F •
+   58 F: F • TK_OC_EQ G
+   59  | F • TK_OC_NE G
 
     TK_OC_EQ  shift, and go to state 54
     TK_OC_NE  shift, and go to state 55
@@ -1286,758 +1305,859 @@ State 78
     $default  reduce using rule 56 (T)
 
 
-State 79
+State 78
 
-   58 F: F TK_OC_EQ G .
-   61 G: G . TK_OC_LE I
-   62  | G . TK_OC_GE I
+   58 F: F TK_OC_EQ G •
+   61 G: G • TK_OC_LE I
+   62  | G • TK_OC_GE I
+   63  | G • '>' I
+   64  | G • '<' I
 
     TK_OC_LE  shift, and go to state 56
     TK_OC_GE  shift, and go to state 57
+    '>'       shift, and go to state 58
+    '<'       shift, and go to state 59
 
     $default  reduce using rule 58 (F)
 
 
-State 80
+State 79
 
-   59 F: F TK_OC_NE G .
-   61 G: G . TK_OC_LE I
-   62  | G . TK_OC_GE I
+   59 F: F TK_OC_NE G •
+   61 G: G • TK_OC_LE I
+   62  | G • TK_OC_GE I
+   63  | G • '>' I
+   64  | G • '<' I
 
     TK_OC_LE  shift, and go to state 56
     TK_OC_GE  shift, and go to state 57
+    '>'       shift, and go to state 58
+    '<'       shift, and go to state 59
 
     $default  reduce using rule 59 (F)
 
 
-State 81
+State 80
 
-   61 G: G TK_OC_LE I .
-   64 I: I . '+' J
-   65  | I . '-' J
+   61 G: G TK_OC_LE I •
+   66 I: I • '+' J
+   67  | I • '-' J
 
-    '+'  shift, and go to state 58
-    '-'  shift, and go to state 59
+    '+'  shift, and go to state 60
+    '-'  shift, and go to state 61
 
     $default  reduce using rule 61 (G)
 
 
-State 82
+State 81
 
-   62 G: G TK_OC_GE I .
-   64 I: I . '+' J
-   65  | I . '-' J
+   62 G: G TK_OC_GE I •
+   66 I: I • '+' J
+   67  | I • '-' J
 
-    '+'  shift, and go to state 58
-    '-'  shift, and go to state 59
+    '+'  shift, and go to state 60
+    '-'  shift, and go to state 61
 
     $default  reduce using rule 62 (G)
 
 
+State 82
+
+   63 G: G '>' I •
+   66 I: I • '+' J
+   67  | I • '-' J
+
+    '+'  shift, and go to state 60
+    '-'  shift, and go to state 61
+
+    $default  reduce using rule 63 (G)
+
+
 State 83
 
-   64 I: I '+' J .
-   67 J: J . '*' K
-   68  | J . '/' K
-   69  | J . '%' K
+   64 G: G '<' I •
+   66 I: I • '+' J
+   67  | I • '-' J
 
-    '*'  shift, and go to state 60
-    '/'  shift, and go to state 61
-    '%'  shift, and go to state 62
+    '+'  shift, and go to state 60
+    '-'  shift, and go to state 61
 
-    $default  reduce using rule 64 (I)
+    $default  reduce using rule 64 (G)
 
 
 State 84
 
-   65 I: I '-' J .
-   67 J: J . '*' K
-   68  | J . '/' K
-   69  | J . '%' K
+   66 I: I '+' J •
+   69 J: J • '*' K
+   70  | J • '/' K
+   71  | J • '%' K
 
-    '*'  shift, and go to state 60
-    '/'  shift, and go to state 61
-    '%'  shift, and go to state 62
+    '*'  shift, and go to state 62
+    '/'  shift, and go to state 63
+    '%'  shift, and go to state 64
 
-    $default  reduce using rule 65 (I)
+    $default  reduce using rule 66 (I)
 
 
 State 85
 
-   67 J: J '*' K .
+   67 I: I '-' J •
+   69 J: J • '*' K
+   70  | J • '/' K
+   71  | J • '%' K
 
-    $default  reduce using rule 67 (J)
+    '*'  shift, and go to state 62
+    '/'  shift, and go to state 63
+    '%'  shift, and go to state 64
+
+    $default  reduce using rule 67 (I)
 
 
 State 86
 
-   68 J: J '/' K .
-
-    $default  reduce using rule 68 (J)
-
-
-State 87
-
-   69 J: J '%' K .
+   69 J: J '*' K •
 
     $default  reduce using rule 69 (J)
 
 
+State 87
+
+   70 J: J '/' K •
+
+    $default  reduce using rule 70 (J)
+
+
 State 88
 
-   48 Flow: TK_PR_IF . '(' Expr ')' TK_PR_THEN Block
-   49     | TK_PR_IF . '(' Expr ')' TK_PR_THEN Block TK_PR_ELSE Block
+   71 J: J '%' K •
 
-    '('  shift, and go to state 110
+    $default  reduce using rule 71 (J)
 
 
 State 89
 
-   47 Flow: TK_PR_WHILE . '(' Expr ')' Block
+   28 Block: '{' • CommandList '}'
+   29      | '{' • '}'
 
-    '('  shift, and go to state 111
+    TK_PR_INT         shift, and go to state 4
+    TK_PR_FLOAT       shift, and go to state 5
+    TK_PR_BOOL        shift, and go to state 6
+    TK_PR_CHAR        shift, and go to state 7
+    TK_PR_IF          shift, and go to state 98
+    TK_PR_WHILE       shift, and go to state 99
+    TK_PR_RETURN      shift, and go to state 100
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '{'               shift, and go to state 89
+    '}'               shift, and go to state 101
+
+    Type         go to state 102
+    Block        go to state 103
+    CommandList  go to state 104
+    Command      go to state 105
+    DecLocal     go to state 106
+    Atrib        go to state 107
+    Flow         go to state 108
+    Ret          go to state 109
+    FuncCall     go to state 110
+    ID           go to state 111
+    FuncCallID   go to state 35
 
 
 State 90
 
-   50 Ret: TK_PR_RETURN . Expr
+   21 Func: ID PushTable '(' ')' Block • PopTable
 
-    TK_LIT_INT        shift, and go to state 21
-    TK_LIT_FLOAT      shift, and go to state 22
-    TK_LIT_FALSE      shift, and go to state 23
-    TK_LIT_TRUE       shift, and go to state 24
-    TK_LIT_CHAR       shift, and go to state 25
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '('               shift, and go to state 26
-    '-'               shift, and go to state 27
-    '!'               shift, and go to state 28
+    $default  reduce using rule 24 (PopTable)
 
-    Lit       go to state 30
-    FuncCall  go to state 31
-    ID        go to state 32
-    Expr      go to state 112
-    T         go to state 34
-    F         go to state 35
-    G         go to state 36
-    I         go to state 37
-    J         go to state 38
-    K         go to state 39
-    L         go to state 40
+    PopTable  go to state 112
 
 
 State 91
 
-   35 Block: '{' '}' .
+   27 Param: Type ID •
 
-    $default  reduce using rule 35 (Block)
+    $default  reduce using rule 27 (Param)
 
 
 State 92
 
-   42 Command: DecLocal .
+   22 Func: ID PushTable '(' ParamList ')' • Block PopTable
 
-    $default  reduce using rule 42 (Command)
+    '{'  shift, and go to state 89
+
+    Block  go to state 113
 
 
 State 93
 
-    6 DecLocal: Type . VarListLocal
+   25 ParamList: Param ',' • ParamList
 
-    TK_IDENTIFICADOR  shift, and go to state 11
+    TK_PR_INT    shift, and go to state 4
+    TK_PR_FLOAT  shift, and go to state 5
+    TK_PR_BOOL   shift, and go to state 6
+    TK_PR_CHAR   shift, and go to state 7
 
-    VarListLocal  go to state 113
-    ID            go to state 114
+    Type       go to state 66
+    ParamList  go to state 114
+    Param      go to state 68
 
 
 State 94
 
-   39 Command: Block .
+    8 VarList: ID '[' ArrayDim ']' ',' VarList •
 
-    $default  reduce using rule 39 (Command)
+    $default  reduce using rule 8 (VarList)
 
 
 State 95
 
-   34 Block: '{' CommandList . '}'
+   78 L: ID '[' ArrayDim ']' •
 
-    '}'  shift, and go to state 115
+    $default  reduce using rule 78 (L)
 
 
 State 96
 
-   36 CommandList: Command . CommandListEnd
+   81 ExprList: Expr ',' • ExprList
 
-    ';'  shift, and go to state 116
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
+    '-'               shift, and go to state 29
+    '!'               shift, and go to state 30
 
-    CommandListEnd  go to state 117
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 34
+    FuncCallID  go to state 35
+    Expr        go to state 73
+    T           go to state 37
+    F           go to state 38
+    G           go to state 39
+    I           go to state 40
+    J           go to state 41
+    K           go to state 42
+    L           go to state 43
+    ExprList    go to state 115
 
 
 State 97
 
-   41 Command: Atrib .
+   50 FuncCall: FuncCallID '(' ExprList ')' •
 
-    $default  reduce using rule 41 (Command)
+    $default  reduce using rule 50 (FuncCall)
 
 
 State 98
 
-   40 Command: Flow .
+   47 Flow: TK_PR_IF • '(' Expr ')' TK_PR_THEN Block
+   48     | TK_PR_IF • '(' Expr ')' TK_PR_THEN Block TK_PR_ELSE Block
 
-    $default  reduce using rule 40 (Command)
+    '('  shift, and go to state 116
 
 
 State 99
 
-   43 Command: Ret .
+   46 Flow: TK_PR_WHILE • '(' Expr ')' Block
 
-    $default  reduce using rule 43 (Command)
+    '('  shift, and go to state 117
 
 
 State 100
 
-   44 Command: FuncCall .
+   49 Ret: TK_PR_RETURN • Expr
 
-    $default  reduce using rule 44 (Command)
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
+    '-'               shift, and go to state 29
+    '!'               shift, and go to state 30
+
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 34
+    FuncCallID  go to state 35
+    Expr        go to state 118
+    T           go to state 37
+    F           go to state 38
+    G           go to state 39
+    I           go to state 40
+    J           go to state 41
+    K           go to state 42
+    L           go to state 43
 
 
 State 101
 
-   45 Atrib: ID . '=' Expr
-   46      | ID . '[' ArrayDim ']' '=' Expr
-   51 FuncCall: ID . '(' ExprList ')'
-   52         | ID . '(' ')'
+   29 Block: '{' '}' •
 
-    '['  shift, and go to state 118
-    '('  shift, and go to state 50
-    '='  shift, and go to state 119
+    $default  reduce using rule 29 (Block)
 
 
 State 102
 
-   28 Func: ID '(' ParamList ')' Block .
+   38 DecLocal: Type • VarListLocal
 
-    $default  reduce using rule 28 (Func)
+    TK_IDENTIFICADOR  shift, and go to state 12
+
+    VarListLocal  go to state 119
+    ID            go to state 120
 
 
 State 103
 
-   32 ParamListEnd: ',' Param . ParamListEnd
+   37 Command: Block •
 
-    ','  shift, and go to state 67
-
-    $default  reduce using rule 31 (ParamListEnd)
-
-    ParamListEnd  go to state 120
+    $default  reduce using rule 37 (Command)
 
 
 State 104
 
-   16 VarList: ID '[' ArrayDim ']' ',' VarList .
+   28 Block: '{' CommandList • '}'
 
-    $default  reduce using rule 16 (VarList)
+    '}'  shift, and go to state 121
 
 
 State 105
 
-   76 L: ID '[' ArrayDim ']' .
+   30 CommandList: Command • ';' CommandList
+   31            | Command • ';'
 
-    $default  reduce using rule 76 (L)
+    ';'  shift, and go to state 122
 
 
 State 106
 
-   81 ExprListEnd: ',' . Expr ExprListEnd
+   33 Command: DecLocal •
 
-    TK_LIT_INT        shift, and go to state 21
-    TK_LIT_FLOAT      shift, and go to state 22
-    TK_LIT_FALSE      shift, and go to state 23
-    TK_LIT_TRUE       shift, and go to state 24
-    TK_LIT_CHAR       shift, and go to state 25
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '('               shift, and go to state 26
-    '-'               shift, and go to state 27
-    '!'               shift, and go to state 28
-
-    Lit       go to state 30
-    FuncCall  go to state 31
-    ID        go to state 32
-    Expr      go to state 121
-    T         go to state 34
-    F         go to state 35
-    G         go to state 36
-    I         go to state 37
-    J         go to state 38
-    K         go to state 39
-    L         go to state 40
+    $default  reduce using rule 33 (Command)
 
 
 State 107
 
-   79 ExprList: Expr ExprListEnd .
+   34 Command: Atrib •
 
-    $default  reduce using rule 79 (ExprList)
+    $default  reduce using rule 34 (Command)
 
 
 State 108
 
-   51 FuncCall: ID '(' ExprList ')' .
+   32 Command: Flow •
 
-    $default  reduce using rule 51 (FuncCall)
+    $default  reduce using rule 32 (Command)
 
 
 State 109
 
-   21 ArrayDimEnd: Expr '^' . ArrayDimEnd
+   35 Command: Ret •
 
-    TK_LIT_INT        shift, and go to state 21
-    TK_LIT_FLOAT      shift, and go to state 22
-    TK_LIT_FALSE      shift, and go to state 23
-    TK_LIT_TRUE       shift, and go to state 24
-    TK_LIT_CHAR       shift, and go to state 25
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '('               shift, and go to state 26
-    '-'               shift, and go to state 27
-    '!'               shift, and go to state 28
-
-    ArrayDimEnd  go to state 122
-    Lit          go to state 30
-    FuncCall     go to state 31
-    ID           go to state 32
-    Expr         go to state 77
-    T            go to state 34
-    F            go to state 35
-    G            go to state 36
-    I            go to state 37
-    J            go to state 38
-    K            go to state 39
-    L            go to state 40
+    $default  reduce using rule 35 (Command)
 
 
 State 110
 
-   48 Flow: TK_PR_IF '(' . Expr ')' TK_PR_THEN Block
-   49     | TK_PR_IF '(' . Expr ')' TK_PR_THEN Block TK_PR_ELSE Block
+   36 Command: FuncCall •
 
-    TK_LIT_INT        shift, and go to state 21
-    TK_LIT_FLOAT      shift, and go to state 22
-    TK_LIT_FALSE      shift, and go to state 23
-    TK_LIT_TRUE       shift, and go to state 24
-    TK_LIT_CHAR       shift, and go to state 25
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '('               shift, and go to state 26
-    '-'               shift, and go to state 27
-    '!'               shift, and go to state 28
-
-    Lit       go to state 30
-    FuncCall  go to state 31
-    ID        go to state 32
-    Expr      go to state 123
-    T         go to state 34
-    F         go to state 35
-    G         go to state 36
-    I         go to state 37
-    J         go to state 38
-    K         go to state 39
-    L         go to state 40
+    $default  reduce using rule 36 (Command)
 
 
 State 111
 
-   47 Flow: TK_PR_WHILE '(' . Expr ')' Block
+   43 Atrib: ID • '=' Expr
+   44      | ID • '[' ArrayDim ']' '=' Expr
+   45      | ID • '=' ID '[' ArrayDim ']'
 
-    TK_LIT_INT        shift, and go to state 21
-    TK_LIT_FLOAT      shift, and go to state 22
-    TK_LIT_FALSE      shift, and go to state 23
-    TK_LIT_TRUE       shift, and go to state 24
-    TK_LIT_CHAR       shift, and go to state 25
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '('               shift, and go to state 26
-    '-'               shift, and go to state 27
-    '!'               shift, and go to state 28
-
-    Lit       go to state 30
-    FuncCall  go to state 31
-    ID        go to state 32
-    Expr      go to state 124
-    T         go to state 34
-    F         go to state 35
-    G         go to state 36
-    I         go to state 37
-    J         go to state 38
-    K         go to state 39
-    L         go to state 40
+    '['  shift, and go to state 123
+    '='  shift, and go to state 124
 
 
 State 112
 
-   50 Ret: TK_PR_RETURN Expr .
-   54 Expr: Expr . TK_OC_OR T
+   21 Func: ID PushTable '(' ')' Block PopTable •
 
-    TK_OC_OR  shift, and go to state 51
-
-    $default  reduce using rule 50 (Ret)
+    $default  reduce using rule 21 (Func)
 
 
 State 113
 
-    6 DecLocal: Type VarListLocal .
+   22 Func: ID PushTable '(' ParamList ')' Block • PopTable
 
-    $default  reduce using rule 6 (DecLocal)
+    $default  reduce using rule 24 (PopTable)
+
+    PopTable  go to state 125
 
 
 State 114
 
-    7 VarListLocal: ID . ',' VarListLocal
-    8             | ID . TK_OC_LE Lit ',' VarListLocal
-    9             | ID .
-   10             | ID . TK_OC_LE Lit
+   25 ParamList: Param ',' ParamList •
 
-    TK_OC_LE  shift, and go to state 125
-    ','       shift, and go to state 126
-
-    $default  reduce using rule 9 (VarListLocal)
+    $default  reduce using rule 25 (ParamList)
 
 
 State 115
 
-   34 Block: '{' CommandList '}' .
+   81 ExprList: Expr ',' ExprList •
 
-    $default  reduce using rule 34 (Block)
+    $default  reduce using rule 81 (ExprList)
 
 
 State 116
 
-   37 CommandListEnd: ';' .
-   38               | ';' . Command CommandListEnd
+   47 Flow: TK_PR_IF '(' • Expr ')' TK_PR_THEN Block
+   48     | TK_PR_IF '(' • Expr ')' TK_PR_THEN Block TK_PR_ELSE Block
 
-    TK_PR_INT         shift, and go to state 1
-    TK_PR_FLOAT       shift, and go to state 2
-    TK_PR_BOOL        shift, and go to state 3
-    TK_PR_CHAR        shift, and go to state 4
-    TK_PR_IF          shift, and go to state 88
-    TK_PR_WHILE       shift, and go to state 89
-    TK_PR_RETURN      shift, and go to state 90
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '{'               shift, and go to state 63
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
+    '-'               shift, and go to state 29
+    '!'               shift, and go to state 30
 
-    $default  reduce using rule 37 (CommandListEnd)
-
-    DecLocal  go to state 92
-    Type      go to state 93
-    Block     go to state 94
-    Command   go to state 127
-    Atrib     go to state 97
-    Flow      go to state 98
-    Ret       go to state 99
-    FuncCall  go to state 100
-    ID        go to state 101
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 34
+    FuncCallID  go to state 35
+    Expr        go to state 126
+    T           go to state 37
+    F           go to state 38
+    G           go to state 39
+    I           go to state 40
+    J           go to state 41
+    K           go to state 42
+    L           go to state 43
 
 
 State 117
 
-   36 CommandList: Command CommandListEnd .
+   46 Flow: TK_PR_WHILE '(' • Expr ')' Block
 
-    $default  reduce using rule 36 (CommandList)
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
+    '-'               shift, and go to state 29
+    '!'               shift, and go to state 30
+
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 34
+    FuncCallID  go to state 35
+    Expr        go to state 127
+    T           go to state 37
+    F           go to state 38
+    G           go to state 39
+    I           go to state 40
+    J           go to state 41
+    K           go to state 42
+    L           go to state 43
 
 
 State 118
 
-   46 Atrib: ID '[' . ArrayDim ']' '=' Expr
+   49 Ret: TK_PR_RETURN Expr •
+   54 Expr: Expr • TK_OC_OR T
 
-    TK_LIT_INT        shift, and go to state 21
-    TK_LIT_FLOAT      shift, and go to state 22
-    TK_LIT_FALSE      shift, and go to state 23
-    TK_LIT_TRUE       shift, and go to state 24
-    TK_LIT_CHAR       shift, and go to state 25
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '('               shift, and go to state 26
-    '-'               shift, and go to state 27
-    '!'               shift, and go to state 28
+    TK_OC_OR  shift, and go to state 51
 
-    ArrayDim  go to state 128
-    Lit       go to state 30
-    FuncCall  go to state 31
-    ID        go to state 32
-    Expr      go to state 33
-    T         go to state 34
-    F         go to state 35
-    G         go to state 36
-    I         go to state 37
-    J         go to state 38
-    K         go to state 39
-    L         go to state 40
+    $default  reduce using rule 49 (Ret)
 
 
 State 119
 
-   45 Atrib: ID '=' . Expr
+   38 DecLocal: Type VarListLocal •
 
-    TK_LIT_INT        shift, and go to state 21
-    TK_LIT_FLOAT      shift, and go to state 22
-    TK_LIT_FALSE      shift, and go to state 23
-    TK_LIT_TRUE       shift, and go to state 24
-    TK_LIT_CHAR       shift, and go to state 25
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '('               shift, and go to state 26
-    '-'               shift, and go to state 27
-    '!'               shift, and go to state 28
-
-    Lit       go to state 30
-    FuncCall  go to state 31
-    ID        go to state 32
-    Expr      go to state 129
-    T         go to state 34
-    F         go to state 35
-    G         go to state 36
-    I         go to state 37
-    J         go to state 38
-    K         go to state 39
-    L         go to state 40
+    $default  reduce using rule 38 (DecLocal)
 
 
 State 120
 
-   32 ParamListEnd: ',' Param ParamListEnd .
+   39 VarListLocal: ID • ',' VarListLocal
+   40             | ID • TK_OC_LE Lit ',' VarListLocal
+   41             | ID • TK_OC_LE Lit
+   42             | ID •
 
-    $default  reduce using rule 32 (ParamListEnd)
+    TK_OC_LE  shift, and go to state 128
+    ','       shift, and go to state 129
+
+    $default  reduce using rule 42 (VarListLocal)
 
 
 State 121
 
-   54 Expr: Expr . TK_OC_OR T
-   81 ExprListEnd: ',' Expr . ExprListEnd
+   28 Block: '{' CommandList '}' •
 
-    TK_OC_OR  shift, and go to state 51
-    ','       shift, and go to state 106
-
-    $default  reduce using rule 80 (ExprListEnd)
-
-    ExprListEnd  go to state 130
+    $default  reduce using rule 28 (Block)
 
 
 State 122
 
-   21 ArrayDimEnd: Expr '^' ArrayDimEnd .
+   30 CommandList: Command ';' • CommandList
+   31            | Command ';' •
 
-    $default  reduce using rule 21 (ArrayDimEnd)
+    TK_PR_INT         shift, and go to state 4
+    TK_PR_FLOAT       shift, and go to state 5
+    TK_PR_BOOL        shift, and go to state 6
+    TK_PR_CHAR        shift, and go to state 7
+    TK_PR_IF          shift, and go to state 98
+    TK_PR_WHILE       shift, and go to state 99
+    TK_PR_RETURN      shift, and go to state 100
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '{'               shift, and go to state 89
+
+    $default  reduce using rule 31 (CommandList)
+
+    Type         go to state 102
+    Block        go to state 103
+    CommandList  go to state 130
+    Command      go to state 105
+    DecLocal     go to state 106
+    Atrib        go to state 107
+    Flow         go to state 108
+    Ret          go to state 109
+    FuncCall     go to state 110
+    ID           go to state 111
+    FuncCallID   go to state 35
 
 
 State 123
 
-   48 Flow: TK_PR_IF '(' Expr . ')' TK_PR_THEN Block
-   49     | TK_PR_IF '(' Expr . ')' TK_PR_THEN Block TK_PR_ELSE Block
-   54 Expr: Expr . TK_OC_OR T
+   44 Atrib: ID '[' • ArrayDim ']' '=' Expr
 
-    TK_OC_OR  shift, and go to state 51
-    ')'       shift, and go to state 131
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
+    '-'               shift, and go to state 29
+    '!'               shift, and go to state 30
+
+    ArrayDim    go to state 131
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 34
+    FuncCallID  go to state 35
+    Expr        go to state 36
+    T           go to state 37
+    F           go to state 38
+    G           go to state 39
+    I           go to state 40
+    J           go to state 41
+    K           go to state 42
+    L           go to state 43
 
 
 State 124
 
-   47 Flow: TK_PR_WHILE '(' Expr . ')' Block
-   54 Expr: Expr . TK_OC_OR T
+   43 Atrib: ID '=' • Expr
+   45      | ID '=' • ID '[' ArrayDim ']'
 
-    TK_OC_OR  shift, and go to state 51
-    ')'       shift, and go to state 132
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
+    '-'               shift, and go to state 29
+    '!'               shift, and go to state 30
+
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 132
+    FuncCallID  go to state 35
+    Expr        go to state 133
+    T           go to state 37
+    F           go to state 38
+    G           go to state 39
+    I           go to state 40
+    J           go to state 41
+    K           go to state 42
+    L           go to state 43
 
 
 State 125
 
-    8 VarListLocal: ID TK_OC_LE . Lit ',' VarListLocal
-   10             | ID TK_OC_LE . Lit
+   22 Func: ID PushTable '(' ParamList ')' Block PopTable •
 
-    TK_LIT_INT    shift, and go to state 21
-    TK_LIT_FLOAT  shift, and go to state 22
-    TK_LIT_FALSE  shift, and go to state 23
-    TK_LIT_TRUE   shift, and go to state 24
-    TK_LIT_CHAR   shift, and go to state 25
-
-    Lit  go to state 133
+    $default  reduce using rule 22 (Func)
 
 
 State 126
 
-    7 VarListLocal: ID ',' . VarListLocal
+   47 Flow: TK_PR_IF '(' Expr • ')' TK_PR_THEN Block
+   48     | TK_PR_IF '(' Expr • ')' TK_PR_THEN Block TK_PR_ELSE Block
+   54 Expr: Expr • TK_OC_OR T
 
-    TK_IDENTIFICADOR  shift, and go to state 11
-
-    VarListLocal  go to state 134
-    ID            go to state 114
+    TK_OC_OR  shift, and go to state 51
+    ')'       shift, and go to state 134
 
 
 State 127
 
-   38 CommandListEnd: ';' Command . CommandListEnd
+   46 Flow: TK_PR_WHILE '(' Expr • ')' Block
+   54 Expr: Expr • TK_OC_OR T
 
-    ';'  shift, and go to state 116
-
-    CommandListEnd  go to state 135
+    TK_OC_OR  shift, and go to state 51
+    ')'       shift, and go to state 135
 
 
 State 128
 
-   46 Atrib: ID '[' ArrayDim . ']' '=' Expr
+   40 VarListLocal: ID TK_OC_LE • Lit ',' VarListLocal
+   41             | ID TK_OC_LE • Lit
 
-    ']'  shift, and go to state 136
+    TK_LIT_INT    shift, and go to state 22
+    TK_LIT_FLOAT  shift, and go to state 23
+    TK_LIT_FALSE  shift, and go to state 24
+    TK_LIT_TRUE   shift, and go to state 25
+    TK_LIT_CHAR   shift, and go to state 26
+
+    Lit  go to state 136
 
 
 State 129
 
-   45 Atrib: ID '=' Expr .
-   54 Expr: Expr . TK_OC_OR T
+   39 VarListLocal: ID ',' • VarListLocal
 
-    TK_OC_OR  shift, and go to state 51
+    TK_IDENTIFICADOR  shift, and go to state 12
 
-    $default  reduce using rule 45 (Atrib)
+    VarListLocal  go to state 137
+    ID            go to state 120
 
 
 State 130
 
-   81 ExprListEnd: ',' Expr ExprListEnd .
+   30 CommandList: Command ';' CommandList •
 
-    $default  reduce using rule 81 (ExprListEnd)
+    $default  reduce using rule 30 (CommandList)
 
 
 State 131
 
-   48 Flow: TK_PR_IF '(' Expr ')' . TK_PR_THEN Block
-   49     | TK_PR_IF '(' Expr ')' . TK_PR_THEN Block TK_PR_ELSE Block
+   44 Atrib: ID '[' ArrayDim • ']' '=' Expr
 
-    TK_PR_THEN  shift, and go to state 137
+    ']'  shift, and go to state 138
 
 
 State 132
 
-   47 Flow: TK_PR_WHILE '(' Expr ')' . Block
+   45 Atrib: ID '=' ID • '[' ArrayDim ']'
+   78 L: ID • '[' ArrayDim ']'
+   79  | ID •
 
-    '{'  shift, and go to state 63
+    '['  shift, and go to state 139
 
-    Block  go to state 138
+    $default  reduce using rule 79 (L)
 
 
 State 133
 
-    8 VarListLocal: ID TK_OC_LE Lit . ',' VarListLocal
-   10             | ID TK_OC_LE Lit .
+   43 Atrib: ID '=' Expr •
+   54 Expr: Expr • TK_OC_OR T
 
-    ','  shift, and go to state 139
+    TK_OC_OR  shift, and go to state 51
 
-    $default  reduce using rule 10 (VarListLocal)
+    $default  reduce using rule 43 (Atrib)
 
 
 State 134
 
-    7 VarListLocal: ID ',' VarListLocal .
+   47 Flow: TK_PR_IF '(' Expr ')' • TK_PR_THEN Block
+   48     | TK_PR_IF '(' Expr ')' • TK_PR_THEN Block TK_PR_ELSE Block
 
-    $default  reduce using rule 7 (VarListLocal)
+    TK_PR_THEN  shift, and go to state 140
 
 
 State 135
 
-   38 CommandListEnd: ';' Command CommandListEnd .
+   46 Flow: TK_PR_WHILE '(' Expr ')' • Block
 
-    $default  reduce using rule 38 (CommandListEnd)
-
-
-State 136
-
-   46 Atrib: ID '[' ArrayDim ']' . '=' Expr
-
-    '='  shift, and go to state 140
-
-
-State 137
-
-   48 Flow: TK_PR_IF '(' Expr ')' TK_PR_THEN . Block
-   49     | TK_PR_IF '(' Expr ')' TK_PR_THEN . Block TK_PR_ELSE Block
-
-    '{'  shift, and go to state 63
+    '{'  shift, and go to state 89
 
     Block  go to state 141
 
 
+State 136
+
+   40 VarListLocal: ID TK_OC_LE Lit • ',' VarListLocal
+   41             | ID TK_OC_LE Lit •
+
+    ','  shift, and go to state 142
+
+    $default  reduce using rule 41 (VarListLocal)
+
+
+State 137
+
+   39 VarListLocal: ID ',' VarListLocal •
+
+    $default  reduce using rule 39 (VarListLocal)
+
+
 State 138
 
-   47 Flow: TK_PR_WHILE '(' Expr ')' Block .
+   44 Atrib: ID '[' ArrayDim ']' • '=' Expr
 
-    $default  reduce using rule 47 (Flow)
+    '='  shift, and go to state 143
 
 
 State 139
 
-    8 VarListLocal: ID TK_OC_LE Lit ',' . VarListLocal
+   45 Atrib: ID '=' ID '[' • ArrayDim ']'
+   78 L: ID '[' • ArrayDim ']'
 
-    TK_IDENTIFICADOR  shift, and go to state 11
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
+    '-'               shift, and go to state 29
+    '!'               shift, and go to state 30
 
-    VarListLocal  go to state 142
-    ID            go to state 114
+    ArrayDim    go to state 144
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 34
+    FuncCallID  go to state 35
+    Expr        go to state 36
+    T           go to state 37
+    F           go to state 38
+    G           go to state 39
+    I           go to state 40
+    J           go to state 41
+    K           go to state 42
+    L           go to state 43
 
 
 State 140
 
-   46 Atrib: ID '[' ArrayDim ']' '=' . Expr
+   47 Flow: TK_PR_IF '(' Expr ')' TK_PR_THEN • Block
+   48     | TK_PR_IF '(' Expr ')' TK_PR_THEN • Block TK_PR_ELSE Block
 
-    TK_LIT_INT        shift, and go to state 21
-    TK_LIT_FLOAT      shift, and go to state 22
-    TK_LIT_FALSE      shift, and go to state 23
-    TK_LIT_TRUE       shift, and go to state 24
-    TK_LIT_CHAR       shift, and go to state 25
-    TK_IDENTIFICADOR  shift, and go to state 11
-    '('               shift, and go to state 26
-    '-'               shift, and go to state 27
-    '!'               shift, and go to state 28
-
-    Lit       go to state 30
-    FuncCall  go to state 31
-    ID        go to state 32
-    Expr      go to state 143
-    T         go to state 34
-    F         go to state 35
-    G         go to state 36
-    I         go to state 37
-    J         go to state 38
-    K         go to state 39
-    L         go to state 40
-
-
-State 141
-
-   48 Flow: TK_PR_IF '(' Expr ')' TK_PR_THEN Block .
-   49     | TK_PR_IF '(' Expr ')' TK_PR_THEN Block . TK_PR_ELSE Block
-
-    TK_PR_ELSE  shift, and go to state 144
-
-    $default  reduce using rule 48 (Flow)
-
-
-State 142
-
-    8 VarListLocal: ID TK_OC_LE Lit ',' VarListLocal .
-
-    $default  reduce using rule 8 (VarListLocal)
-
-
-State 143
-
-   46 Atrib: ID '[' ArrayDim ']' '=' Expr .
-   54 Expr: Expr . TK_OC_OR T
-
-    TK_OC_OR  shift, and go to state 51
-
-    $default  reduce using rule 46 (Atrib)
-
-
-State 144
-
-   49 Flow: TK_PR_IF '(' Expr ')' TK_PR_THEN Block TK_PR_ELSE . Block
-
-    '{'  shift, and go to state 63
+    '{'  shift, and go to state 89
 
     Block  go to state 145
 
 
+State 141
+
+   46 Flow: TK_PR_WHILE '(' Expr ')' Block •
+
+    $default  reduce using rule 46 (Flow)
+
+
+State 142
+
+   40 VarListLocal: ID TK_OC_LE Lit ',' • VarListLocal
+
+    TK_IDENTIFICADOR  shift, and go to state 12
+
+    VarListLocal  go to state 146
+    ID            go to state 120
+
+
+State 143
+
+   44 Atrib: ID '[' ArrayDim ']' '=' • Expr
+
+    TK_LIT_INT        shift, and go to state 22
+    TK_LIT_FLOAT      shift, and go to state 23
+    TK_LIT_FALSE      shift, and go to state 24
+    TK_LIT_TRUE       shift, and go to state 25
+    TK_LIT_CHAR       shift, and go to state 26
+    TK_IDENTIFICADOR  shift, and go to state 27
+    '('               shift, and go to state 28
+    '-'               shift, and go to state 29
+    '!'               shift, and go to state 30
+
+    Lit         go to state 32
+    FuncCall    go to state 33
+    ID          go to state 34
+    FuncCallID  go to state 35
+    Expr        go to state 147
+    T           go to state 37
+    F           go to state 38
+    G           go to state 39
+    I           go to state 40
+    J           go to state 41
+    K           go to state 42
+    L           go to state 43
+
+
+State 144
+
+   45 Atrib: ID '=' ID '[' ArrayDim • ']'
+   78 L: ID '[' ArrayDim • ']'
+
+    ']'  shift, and go to state 148
+
+
 State 145
 
-   49 Flow: TK_PR_IF '(' Expr ')' TK_PR_THEN Block TK_PR_ELSE Block .
+   47 Flow: TK_PR_IF '(' Expr ')' TK_PR_THEN Block •
+   48     | TK_PR_IF '(' Expr ')' TK_PR_THEN Block • TK_PR_ELSE Block
 
-    $default  reduce using rule 49 (Flow)
+    TK_PR_ELSE  shift, and go to state 149
+
+    $default  reduce using rule 47 (Flow)
+
+
+State 146
+
+   40 VarListLocal: ID TK_OC_LE Lit ',' VarListLocal •
+
+    $default  reduce using rule 40 (VarListLocal)
+
+
+State 147
+
+   44 Atrib: ID '[' ArrayDim ']' '=' Expr •
+   54 Expr: Expr • TK_OC_OR T
+
+    TK_OC_OR  shift, and go to state 51
+
+    $default  reduce using rule 44 (Atrib)
+
+
+State 148
+
+   45 Atrib: ID '=' ID '[' ArrayDim ']' •
+   78 L: ID '[' ArrayDim ']' •
+
+    ';'       reduce using rule 45 (Atrib)
+    ';'       [reduce using rule 78 (L)]
+    $default  reduce using rule 78 (L)
+
+
+State 149
+
+   48 Flow: TK_PR_IF '(' Expr ')' TK_PR_THEN Block TK_PR_ELSE • Block
+
+    '{'  shift, and go to state 89
+
+    Block  go to state 150
+
+
+State 150
+
+   48 Flow: TK_PR_IF '(' Expr ')' TK_PR_THEN Block TK_PR_ELSE Block •
+
+    $default  reduce using rule 48 (Flow)

@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.5.1.  */
+/* A Bison parser, made by GNU Bison 3.8.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2021 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -31,8 +31,9 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
 
 #ifndef YY_YY_PARSER_TAB_H_INCLUDED
 # define YY_YY_PARSER_TAB_H_INCLUDED
@@ -64,39 +65,44 @@ extern int get_line_number();
 extern void *arvore;
 
 
-#line 68 "parser.tab.h"
+#line 69 "parser.tab.h"
 
-/* Token type.  */
+/* Token kinds.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    TK_PR_INT = 258,
-    TK_PR_FLOAT = 259,
-    TK_PR_BOOL = 260,
-    TK_PR_CHAR = 261,
-    TK_PR_IF = 262,
-    TK_PR_THEN = 263,
-    TK_PR_ELSE = 264,
-    TK_PR_WHILE = 265,
-    TK_PR_INPUT = 266,
-    TK_PR_OUTPUT = 267,
-    TK_PR_RETURN = 268,
-    TK_PR_FOR = 269,
-    TK_OC_LE = 270,
-    TK_OC_GE = 271,
-    TK_OC_EQ = 272,
-    TK_OC_NE = 273,
-    TK_OC_AND = 274,
-    TK_OC_OR = 275,
-    TK_LIT_INT = 276,
-    TK_LIT_FLOAT = 277,
-    TK_LIT_FALSE = 278,
-    TK_LIT_TRUE = 279,
-    TK_LIT_CHAR = 280,
-    TK_IDENTIFICADOR = 281,
-    TK_ERRO = 282
+    YYEMPTY = -2,
+    YYEOF = 0,                     /* "end of file"  */
+    YYerror = 256,                 /* error  */
+    YYUNDEF = 257,                 /* "invalid token"  */
+    TK_PR_INT = 258,               /* TK_PR_INT  */
+    TK_PR_FLOAT = 259,             /* TK_PR_FLOAT  */
+    TK_PR_BOOL = 260,              /* TK_PR_BOOL  */
+    TK_PR_CHAR = 261,              /* TK_PR_CHAR  */
+    TK_PR_IF = 262,                /* TK_PR_IF  */
+    TK_PR_THEN = 263,              /* TK_PR_THEN  */
+    TK_PR_ELSE = 264,              /* TK_PR_ELSE  */
+    TK_PR_WHILE = 265,             /* TK_PR_WHILE  */
+    TK_PR_INPUT = 266,             /* TK_PR_INPUT  */
+    TK_PR_OUTPUT = 267,            /* TK_PR_OUTPUT  */
+    TK_PR_RETURN = 268,            /* TK_PR_RETURN  */
+    TK_PR_FOR = 269,               /* TK_PR_FOR  */
+    TK_OC_LE = 270,                /* TK_OC_LE  */
+    TK_OC_GE = 271,                /* TK_OC_GE  */
+    TK_OC_EQ = 272,                /* TK_OC_EQ  */
+    TK_OC_NE = 273,                /* TK_OC_NE  */
+    TK_OC_AND = 274,               /* TK_OC_AND  */
+    TK_OC_OR = 275,                /* TK_OC_OR  */
+    TK_LIT_INT = 276,              /* TK_LIT_INT  */
+    TK_LIT_FLOAT = 277,            /* TK_LIT_FLOAT  */
+    TK_LIT_FALSE = 278,            /* TK_LIT_FALSE  */
+    TK_LIT_TRUE = 279,             /* TK_LIT_TRUE  */
+    TK_LIT_CHAR = 280,             /* TK_LIT_CHAR  */
+    TK_IDENTIFICADOR = 281,        /* TK_IDENTIFICADOR  */
+    TK_ERRO = 282                  /* TK_ERRO  */
   };
+  typedef enum yytokentype yytoken_kind_t;
 #endif
 
 /* Value type.  */
@@ -108,7 +114,7 @@ union YYSTYPE
 	value_t valor_lexico;
 	asd_tree_t *tree;
 
-#line 112 "parser.tab.h"
+#line 118 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -119,6 +125,8 @@ typedef union YYSTYPE YYSTYPE;
 
 extern YYSTYPE yylval;
 
+
 int yyparse (void);
+
 
 #endif /* !YY_YY_PARSER_TAB_H_INCLUDED  */
