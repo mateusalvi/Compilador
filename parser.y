@@ -191,6 +191,8 @@ VarListLocal : ID ',' VarListLocal { $$ = $3; if((search_stack($1->label))){retu
 		| ID { $$ = NULL; if(search_stack($1->label)){return ERR_DECLARED;} else {ht_insert($1->label, $1->value);} }
 		;
 
+
+
 Atrib : ID '=' Expr { $$ = asd_new("="); asd_add_child($$,$1); asd_add_child($$,$3); }
 	| ID '[' ArrayDim ']' '=' Expr { $$ = asd_new("="); asd_tree_t *col = asd_new("[]"); asd_add_child($$, col); asd_add_child($$, $6); asd_add_child(col, $1); asd_add_child(col,$3); }
 	;
