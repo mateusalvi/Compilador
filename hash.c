@@ -1,475 +1,97 @@
 #include "hash.h"
 
-#define CAPACITY 50000 // Size of the HashTable.
+#define HASH_SIZE 997
 
-HashTable *HashTableStack[SIZE];
-int top = 0;
+static hash_node_t *table[HASH_SIZE];
 
-unsigned long hash_function(char *str)
-{
-    unsigned long i = 0;
-
-    for (int j = 0; str[j]; j++)
-        i += str[j];
-
-    return i % CAPACITY;
+void ht_init() {
+    memset(table, 0, sizeof(hash_node_t*) * HASH_SIZE);
 }
 
-LinkedList *allocate_list()
-{
-    // Allocates memory for a LinkedList pointer.
-    LinkedList *list = (LinkedList *)malloc(sizeof(LinkedList));
-    return list;
+unsigned int ht_hash(char *key) {
+    unsigned int hash = 0;
+    int i;
+    for (i = 0; key[i]; i++) {
+        hash = (hash << 4) + key[i];
+        unsigned int g = hash & 0xF0000000;
+        if (g != 0) {
+            hash ^= g >> 24;
+            hash &= ~g;
+        }
+    }
+    return hash % HASH_SIZE;
 }
 
-LinkedList *linkedlist_insert(LinkedList *list, Ht_item *item)
-{
-    // Inserts the item onto the LinkedList.
-    if (!list)
-    {
-        LinkedList *head = allocate_list();
-        head->item = item;
-        head->next = NULL;
-        list = head;
-        return list;
+void ht_insert(char *key, value_t valor_lexico) {
+    unsigned int h = ht_hash(key);
+    hash_node_t *node = (hash_node_t*) malloc(sizeof(hash_node_t));
+    if (!node) {
+        fprintf(stderr, "Error: out of memory\n");
+        exit(-1);
     }
-    else if (list->next == NULL)
-    {
-        LinkedList *node = allocate_list();
-        node->item = item;
-        node->next = NULL;
-        list->next = node;
-        return list;
-    }
-
-    LinkedList *temp = list;
-
-    while (temp->next->next)
-    {
-        temp = temp->next;
-    }
-
-    LinkedList *node = allocate_list();
-    node->item = item;
-    node->next = NULL;
-    temp->next = node;
-    return list;
+    node->key = strdup(key);
+    node->valor_lexico = valor_lexico;
+    node->next = table[h];
+    table[h] = node;
 }
 
-Ht_item *linkedlist_remove(LinkedList *list)
-{
-    // Removes the head from the LinkedList.
-    // Returns the item of the popped element.
-    if (!list)
+value_t ht_search(char *key) {
+    unsigned int h = ht_hash(key);
+    hash_node_t *node;
+    for (node = table[h]; node; node = node->next) {
+        if (strcmp(node->key, key) == 0)
+            return node->valor_lexico;
+    }
+    value_t v;
+    v.type = -1; // not found
+    return v;
+}
+
+void ht_print() {
+    int i;
+    printf("Hash table:\n");
+    for (i = 0; i < HASH_SIZE; i++) {
+        if (table[i]) {
+            printf("%d: ", i);
+            hash_node_t *node = table[i];
+            while (node) {
+                printf("(%s, %d, %d) ", node->key, node->valor_lexico.type, node->valor_lexico.atLine);
+                node = node->next;
+            }
+            printf("\n");
+        }
+    }
+}
+
+void stack_push(Stack **stack, hash_node_t *ht) {
+    Stack *new_node = (Stack*) malloc(sizeof(Stack));
+    if (!new_node) {
+        fprintf(stderr, "Error: out of memory\n");
+        exit(-1);
+    }
+    new_node->ht = ht;
+    new_node->next = *stack;
+    *stack = new_node;
+}
+
+hash_node_t *stack_pop(Stack **stack) {
+    if (!*stack)
         return NULL;
-
-    if (!list->next)
-        return NULL;
-
-    LinkedList *node = list->next;
-    LinkedList *temp = list;
-    temp->next = NULL;
-    list = node;
-    Ht_item *it = NULL;
-    memcpy(temp->item, it, sizeof(Ht_item));
-    free(temp->item->key);
-    free(temp->item->value);
-    free(temp->item);
-    free(temp);
-    return it;
+    Stack *top = *stack;
+    hash_node_t *ht = top->ht;
+    *stack = top->next;
+    free(top);
+    return ht;
 }
 
-void free_linkedlist(LinkedList *list)
-{
-    LinkedList *temp = list;
-
-    while (list)
-    {
-        temp = list;
-        list = list->next;
-        free(temp->item->key);
-        free(temp->item->value);
-        free(temp->item);
-        free(temp);
+hash_node_t *stack_search(Stack **stack, char *key) {
+    Stack *node = *stack;
+    while (node) {
+        hash_node_t *ht = node->ht;
+        value_t value = ht_search(ht, key);
+        if (value.type != -1)
+            return ht;
+        node = node->next;
     }
-}
-
-LinkedList **create_overflow_buckets(HashTable *table)
-{
-    // Create the overflow buckets; an array of LinkedLists.
-    LinkedList **buckets = (LinkedList **)calloc(table->size, sizeof(LinkedList *));
-
-    for (int i = 0; i < table->size; i++)
-        buckets[i] = NULL;
-
-    return buckets;
-}
-
-void free_overflow_buckets(HashTable *table)
-{
-    // Free all the overflow bucket lists.
-    LinkedList **buckets = table->overflow_buckets;
-
-    for (int i = 0; i < table->size; i++)
-        free_linkedlist(buckets[i]);
-
-    free(buckets);
-}
-
-Ht_item *create_item(char *key, value_t valor_lexico)
-{
-    // Creates a pointer to a new HashTable item.
-    Ht_item *item = (Ht_item *)malloc(sizeof(Ht_item));
-    item->key = (char *)malloc(strlen(key) + 1);
-    item->value = (char *)malloc(strlen(valor_lexico.value.valueChar) + 1);
-    item->atLine = valor_lexico.atLine;
-    item->type = valor_lexico.type;
-    strcpy(item->key, key);
-    strcpy(item->value, valor_lexico.value.valueChar);
-
-    //Switch-case para o tamanho
-    switch (item->type)
-    {
-    case 0: //Float
-        item->size = 8;
-        break;
-    case 1: //Int
-        item->size = 4;
-        break;
-    case 2: //Char
-        item->size = 1;
-        break;
-    case 3: //Bool
-        item->size = 1;
-        break;
-    case 4: //Vetor[NxN] (Tipo * N * N)
-        printf("TAMANHO DE VETORES AINDA NÃO IMPLEMENTADO, FINALIZANDO PROGRAMA.");
-        exit(0);
-        break;
-    default:
-        break;
-    }
-
-    return item;
-}
-
-HashTable *create_table(int size)
-{
-    // Creates a new HashTable.
-    HashTable *table = (HashTable *)malloc(sizeof(HashTable));
-    table->size = size;
-    table->count = 0;
-    table->items = (Ht_item **)calloc(table->size, sizeof(Ht_item *));
-
-    for (int i = 0; i < table->size; i++)
-        table->items[i] = NULL;
-
-    table->overflow_buckets = create_overflow_buckets(table);
-
-    return table;
-}
-
-void free_item(Ht_item *item)
-{
-    // Frees an item.
-    free(item->key);
-    free(item->value);
-    free(item);
-}
-
-void free_table(HashTable *table)
-{
-    // Frees the table.
-    for (int i = 0; i < table->size; i++)
-    {
-        Ht_item *item = table->items[i];
-
-        if (item != NULL)
-            free_item(item);
-    }
-
-    // Free the overflow bucket lists and its items.
-    free_overflow_buckets(table);
-    free(table->items);
-    free(table);
-}
-
-void handle_collision(HashTable *table, unsigned long index, Ht_item *item)
-{
-    LinkedList *head = table->overflow_buckets[index];
-
-    if (head == NULL)
-    {
-        // Creates the list.
-        head = allocate_list();
-        head->item = item;
-        table->overflow_buckets[index] = head;
-        return;
-    }
-    else
-    {
-        // Insert to the list.
-        table->overflow_buckets[index] = linkedlist_insert(head, item);
-        return;
-    }
-}
-
-void ht_insert(char *key, value_t valor_lexico)
-{
-
-	
-    // Creates the item.
-	HashTable *table = create_table(999);
-    //HashTable *table = HashTableStack[top];
-    //printf("%d ", HashTableStack[top]->items[1]->atLine);
-    Ht_item *item = create_item(key, valor_lexico);
-
-    // Computes the index.
-    int index = hash_function(key);
-	printf("Index: %d\n", index);
-printf("Item key: %s, value: %s\n", item->key, item->value);
-
-    Ht_item *current_item = table->items[index];
-	printf("Key already exists: %d\n", strcmp(current_item->key, key) == 0);
-	if (current_item == NULL) {
-  printf("Current item is NULL\n");
-} else {
-  printf("Current item key: %s, value: %s\n", current_item->key, current_item->value);
-}
-
-    if (current_item == NULL)
-    {
-        // Key does not exist.
-        if (table->count == table->size)
-        {
-            // HashTable is full.
-            free_item(item);
-            return;
-        }
-
-        // Insert directly.
-        table->items[index] = item;
-        table->count++;
-    }
-    else
-    {
-        // Scenario 1: Update the value.
-        if (strcmp(current_item->key, key) == 0)
-        {
-            strcpy(table->items[index]->value, valor_lexico.value.valueChar);
-            return;
-        }
-        else
-        {
-            // Scenario 2: Handle the collision.
-            handle_collision(table, index, item);
-            return;
-        }
-    }
-}
-
-
-char *ht_search(HashTable *table, char *key)
-{
-    // Searches for the key in the HashTable.
-    // Returns NULL if it doesn't exist.
-    int index = hash_function(key);
-    Ht_item *item = table->items[index];
-    LinkedList *head = table->overflow_buckets[index];
-
-    // Provide only non-NULL values.
-    if (item != NULL)
-    {
-        if (strcmp(item->key, key) == 0)
-            return item->value;
-
-        if (head == NULL)
-            return NULL;
-
-        item = head->item;
-        head = head->next;
-    }
-
     return NULL;
 }
-
-bool search_stack(char* key) 
-{    
-	for(int i = top; i != -1; i--)
-    {
-        if(ht_search(HashTableStack[i], key))
-            return true;
-	}
-	return false;
-}
-
-// void ht_delete(HashTable *table, value_t value)
-// {
-//     // Deletes an item from the table.
-//     int index = hash_function(key);
-//     Ht_item *item = table->items[index];
-//     LinkedList *head = table->overflow_buckets[index];
-
-//     if (item == NULL)
-//     {
-//         // Does not exist.
-//         return;
-//     }
-//     else
-//     {
-//         if (head == NULL && strcmp(item->key, key) == 0)
-//         {
-//             // Collision chain does not exist.
-//             // Remove the item.
-//             // Set table index to NULL.
-//             table->items[index] = NULL;
-//             free_item(item);
-//             table->count--;
-//             return;
-//         }
-//         else if (head != NULL)
-//         {
-//             // Collision chain exists.
-//             if (strcmp(item->key, key) == 0)
-//             {
-//                 // Remove this item.
-//                 // Set the head of the list as the new item.
-//                 free_item(item);
-//                 LinkedList *node = head;
-//                 head = head->next;
-//                 node->next = NULL;
-//                 table->items[index] = create_item(node->item->key, node->item->value->value);
-//                 free_linkedlist(node);
-//                 table->overflow_buckets[index] = head;
-//                 return;
-//             }
-
-//             LinkedList *curr = head;
-//             LinkedList *prev = NULL;
-
-//             while (curr)
-//             {
-//                 if (strcmp(curr->item->key, key) == 0)
-//                 {
-//                     if (prev == NULL)
-//                     {
-//                         // First element of the chain.
-//                         // Remove the chain.
-//                         free_linkedlist(head);
-//                         table->overflow_buckets[index] = NULL;
-//                         return;
-//                     }
-//                     else
-//                     {
-//                         // This is somewhere in the chain.
-//                         prev->next = curr->next;
-//                         curr->next = NULL;
-//                         free_linkedlist(curr);
-//                         table->overflow_buckets[index] = head;
-//                         return;
-//                     }
-//                 }
-
-//                 curr = curr->next;
-//                 prev = curr;
-//             }
-//         }
-//     }
-// }
-
-void print_search(HashTable *table, char *key)
-{
-    char *val;
-
-    if ((val = ht_search(table, key)) == NULL)
-    {
-        printf("Key:%s does not exist\n", key);
-        return;
-    }
-    else
-    {
-        printf("Key:%s, Value:%s\n", key, val);
-    }
-}
-
-void print_table(HashTable *table)
-{
-    printf("\nHash Table\n-------------------\n");
-
-    for (int i = 0; i < table -> size; i++)
-    {
-        if (table -> items[i])
-        {
-            printf("Index:%d, Key:%s, Value:%s\n", i, table -> items[i] -> key, table -> items[i] -> value);
-        }
-    }
-
-    printf("-------------------\n\n");
-}
-
-void push(HashTable *table)
-{
-    if (top == SIZE - 1)
-    {
-        printf("\nHashTable StackOverflow!");
-        exit(0);
-    }
-    else
-    {
-        top += top;
-        HashTableStack[top] = table;
-    }
-}
-
-void pop()
-{
-    if (top == -1)
-    {
-        printf("\nHashTable StackUnderflow!!");
-        exit(0);
-    }
-    else
-    {
-        HashTableStack[top] = NULL;
-        top -= top;
-    }
-}
-
-void print_stack()
-{
-    printf("\nStack \n-------------------------------------------\n");
-	for (int j = top; j >= 0; j--)
-	{ printf("\nHash Table\n-------------------\n");
-		printf("Hash Table index = %d", j);
-		HashTable table = *HashTableStack[j];
-		for (int i = 0; i < table.size; i++)
-		{
-			if (table.items[i])
-			{
-				printf("Index:%d, Key:%s, Value:%s\n", i, table.items[i]->key, table.items[i]->value);
-			}
-		}
-	
-		printf("-------------------\n\n");
-	}
-	printf("-------------------------------------------\n\n");
-}
-
-void Free_Hash_Stack()
-{
-    // free(HashTableStack);
-}
-
-// void show()
-// {
-//     if (top == -1)
-//     {
-//         printf("\nUnderflow!!");
-//     }
-//     else
-//     {
-//         printf("\nElements present in the stack: \n");
-//         for (int i = top; i >= 0; --i)
-//             printf("Index: %d, Table: %ld\n", top, (long)HashTableStack[i]);
-//     }
-// }
