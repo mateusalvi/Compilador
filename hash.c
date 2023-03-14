@@ -27,10 +27,9 @@ hash_da_pilha * pilha[TABLE_SIZE];
  
 	 
 	 void print_table() {
-		 printf("pq n printa");
 		 for (int i=0; i < TABLE_SIZE; i++) {
 			 if (hash_table[i] == NULL) {
-				 printf("\t%i\t---\n",i);
+				 printf("\n\t%i\t---\n",i);
 			 } else {
 				 printf("\t%i\t%s",i, hash_table[i]->value.valueChar); printf("               atLine: %d, value_t value: %d\n", hash_table[i]->atLine, hash_table[i]->type);
 			 }
