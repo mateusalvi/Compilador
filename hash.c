@@ -58,9 +58,9 @@ hash_da_pilha * pilha[TABLE_SIZE];
 		 }
 	 }
 	 
-	  void init_stack() {
+	void init_stack() {
 	 for (int i=0; i < TABLE_SIZE; i++) {
-		 hash_da_pilha[i] = NULL;
+		 pilha[i] = NULL;
 	 }
  }
  
