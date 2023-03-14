@@ -41,6 +41,7 @@ value_t * hash_table[TABLE_SIZE];
 			 return false;
 		 }
 		 hash_table[index] = v;
+		 printf("Success!");
 		 return true;
 	 }
 	 
