@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "asd.h"
-#define TABLE_SIZE 1000
+#define SIZE 1000
 
 #define ERR_UNDECLARED 10 //2.2
 #define ERR_DECLARED 11 //2.2
@@ -18,31 +18,16 @@
 #define ERR_CHAR_VECTOR 34 //2.4
 #define ERR_X_TO_CHAR 35 //2.4
 
-typedef struct node {
-  char* key;
-  value_t value;
-  struct node* next;
-} node_t;
+value_t * hash_table[TABLE_SIZE];
 
-typedef struct hash_table {
-  node_t** items;
-  int size;
-} hash_table_t;
+unsigned int hash(char *key);
 
-hash_table_t* create_table();
-void free_table(hash_table_t* table);
-unsigned int hash(const char* key);
-node_t* create_node(const char* key, value_t value);
-void free_node(node_t* node);
-void ht_insert(hash_table_t* table, const char* key, value_t value);
-node_t* ht_search(hash_table_t* table, const char* key);
-void ht_print(hash_table_t* table);
+void init_hash_table();
 
+void print_table();
 
-void stack_push(Stack **stack, hash_node_t *ht);
+bool hash_table_insert(value_t *v);
 
-hash_node_t *stack_pop(Stack **stack);
-
-hash_node_t *stack_search(Stack **stack, char *key);
+value_t *hash_table_lookup (char *key);
 
 #endif
