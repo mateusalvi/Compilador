@@ -231,35 +231,7 @@ void ht_insert(char *key)
 
 
 
-    if (current_item == NULL)
-    {
-        // Key does not exist.
-        if (table->count == table->size)
-        {
-            // HashTable is full.
-            free_item(item);
-            return;
-        }
-
-        // Insert directly.
-        table->items[index] = item;
-        table->count++;
-    }
-    else
-    {
-        // Scenario 1: Update the value.
-        if (strcmp(current_item->key, key) == 0)
-        {
-            strcpy(table->items[index]->value, valor_lexico.value.valueChar);
-            return;
-        }
-        else
-        {
-            // Scenario 2: Handle the collision.
-            handle_collision(table, index, item);
-            return;
-        }
-    }
+    
 }
 
 char *ht_search(HashTable *table, char *key)
