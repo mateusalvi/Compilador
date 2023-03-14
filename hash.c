@@ -219,7 +219,7 @@ void ht_insert(char *key, value_t valor_lexico)
 
 	
     // Creates the item.
-	
+	printf("yo");
     HashTable *table = HashTableStack[top];
     printf("%d ", HashTableStack[top]->items[1]->atLine);
     Ht_item *item = create_item(key, valor_lexico);
