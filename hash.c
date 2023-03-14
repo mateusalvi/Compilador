@@ -50,7 +50,7 @@ hash_da_pilha * pilha[TABLE_SIZE];
 	 value_t *hash_table_lookup (char *key) {
 		 int index = hash(key);
 		 if (hash_table[index] != NULL &&
-		 strncmp(hash_table[index]->value.valuechar, key) {
+		 strncmp(hash_table[index]->value.valuechar, key)) {
 			 return hash_table[index];
 		 } else {
 			 return NULL;
