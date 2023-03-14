@@ -5,10 +5,10 @@ int f() {
 int a;
 
 int g() {
-  return 0;
+  return 2;
 }
 
 int h() {
-  return 0;
+  return 3;
 }
 int a;
