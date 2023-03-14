@@ -217,7 +217,20 @@ void handle_collision(HashTable *table, unsigned long index, Ht_item *item)
 void ht_insert(char *key)
 {
 
-printf("hi");
+	
+    // Creates the item.
+	printf("yo");
+
+    
+    
+
+    // Computes the index.
+  
+	printf("Index: %d\n", index);
+
+
+
+
     
 }
 
