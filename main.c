@@ -18,7 +18,7 @@ void asd_free (asd_tree_t *arvore);
 
 int main (int argc, char **argv)
 {
-	void init_hash_table();
+  init_hash_table();
   int ret = yyparse(); 
   //asd_print(arvore);
   //asd_print(arvore);
