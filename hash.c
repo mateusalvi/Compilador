@@ -4,7 +4,7 @@
 #define CAPACITY 50000 // Size of the HashTable.
 #define MAX_KEY 256
 
-value_t * hash_table[TABLE_SIZE];
+
 
 
  unsigned int hash(char *key) {
