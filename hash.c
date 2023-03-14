@@ -26,16 +26,16 @@
 	 void print_table() {
 		 for (int i=0; i < TABLE_SIZE; i++) {
 			 if (hash_table[i] == NULL) {
-				 printf("\t%1\t---");
+				 printf("\t%i\t---\n");
 			 } else {
-				 printf("\t%i\t%s\n", hash_table[i]->valueChar);
+				 printf("\t%i\t%s\n", hash_table[i]->value->valueChar);
 			 }
 		 }
 	 }
 	 
 	 bool hash_table_insert(value_t *v) {
 		 if (v == NULL) return false;
-		 int index = hash(v->valueChar);
+		 int index = hash(v->value->valueChar);
 		 if (hash_table[index] != NULL) {
 			 return false;
 		 }
@@ -46,7 +46,7 @@
 	 value_t *hash_table_lookup (char *key) {
 		 int index = hash(key);
 		 if (hash_table[index] != NULL &&
-		 strncmp(hash_table[index]->valueChar, key, TABLE_SIZE)==0) {
+		 strncmp(hash_table[index]->value->valueChar, key, TABLE_SIZE)==0) {
 			 return hash_table[index];
 		 } else {
 			 return NULL;
