@@ -18,80 +18,33 @@
 #define ERR_CHAR_VECTOR 34 //2.4
 #define ERR_X_TO_CHAR 35 //2.4
 
-union value_u{
-    int intValue;
-    float floatValue;
-    char charValue;
-};
+#ifndef HASH_HEADER
+#define HASH_HEADER
+#define HASH_SIZE 997
+#include "ast.h"
 
-// typedef struct ItemContent
-// {
-//     int atLine;
-//     int type;
-// 	float size;
-//     union value_u value;
-// } ItemContent;
+typedef struct hash_ent{
+   valor_t valor_lexico; // dados acerca do simbolo
+   int chave;
+   int desloc;
+}HASH_ENT;
 
-typedef struct Ht_item
-{
-    char* key;
-    int atLine;
-    int type;
-	float size;
-    char* value;
-    //union value_u value;
-    //ItemContent** Ht_item_content;
-} Ht_item;
+typedef struct hash_table{
+    int size_table;
+    HASH_ENT **items;
+}HASH_TABLE;
 
-typedef struct LinkedList
-{
-    struct Ht_item *item;
-    struct LinkedList *next;
-} LinkedList;
+int hashAddress(char*);
+//void init_table(HASH_TABLE*);
+HASH_TABLE* create_table(int);
+HASH_ENT* create_item(valor_t);
+void insert_item(HASH_TABLE*,valor_t);
+void calcula_tamanho(valor_t);
+HASH_ENT* ht_search(HASH_TABLE*,char*);
+void print_table(HASH_TABLE*);
+void free_item(HASH_ENT*);
+void free_table(HASH_TABLE*);
 
-typedef struct HashTable
-{
-    // Contains an array of pointers to items.
-    Ht_item **items;
-    LinkedList **overflow_buckets;
-    int size;
-    int count;
-} HashTable;
-
-extern HashTable *HashTableStack[];
-extern int top;
-
-unsigned long hash_function(char* str);
-
-LinkedList *allocate_list();
-
-LinkedList *linkedlist_insert(LinkedList *list, Ht_item *item);
-
-Ht_item *linkedlist_remove(LinkedList *list);
-
-void free_linkedlist(LinkedList *list);
-
-LinkedList **create_overflow_buckets(HashTable *table);
-
-void free_overflow_buckets(HashTable *table);
-
-Ht_item* create_item(char* key, value_t valor_lexico);
-
-HashTable* create_table(int size);
-
-void free_item(Ht_item* item);
-
-void free_table(HashTable* table);
-
-void handle_collision(HashTable *table, unsigned long index, Ht_item *item);
-
-void ht_insert(char* key, value_t valor_lexico);
-
-char* ht_search(HashTable* table, char* key);
-
-void ht_delete(HashTable *table, char *key);
-
-void print_search(HashTable *table, char* key);
 
 void print_table(HashTable *table);
 

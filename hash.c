@@ -1,287 +1,141 @@
 #include "hash.h"
+#include "ast.h"
+#include "parser.tab.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-#define CAPACITY 50000 // Size of the HashTable.
+int hashAddress(char *text){
+    int address = 1;
 
-HashTable *HashTableStack[SIZE];
-int top = 0;
-
-unsigned long hash_function(char *str)
-{
     unsigned long i = 0;
+    for (int j = 0; text[j]; j++)
+        i += text[j];
 
-    for (int j = 0; str[j]; j++)
-        i += str[j];
-
-    return i % CAPACITY;
+    return i % HASH_SIZE;
 }
 
-LinkedList *allocate_list()
-{
-    // Allocates memory for a LinkedList pointer.
-    LinkedList *list = (LinkedList *)malloc(sizeof(LinkedList));
-    return list;
-}
-
-LinkedList *linkedlist_insert(LinkedList *list, Ht_item *item)
-{
-    // Inserts the item onto the LinkedList.
-    if (!list)
-    {
-        LinkedList *head = allocate_list();
-        head->item = item;
-        head->next = NULL;
-        list = head;
-        return list;
-    }
-    else if (list->next == NULL)
-    {
-        LinkedList *node = allocate_list();
-        node->item = item;
-        node->next = NULL;
-        list->next = node;
-        return list;
-    }
-
-    LinkedList *temp = list;
-
-    while (temp->next->next)
-    {
-        temp = temp->next;
-    }
-
-    LinkedList *node = allocate_list();
-    node->item = item;
-    node->next = NULL;
-    temp->next = node;
-    return list;
-}
-
-Ht_item *linkedlist_remove(LinkedList *list)
-{
-    // Removes the head from the LinkedList.
-    // Returns the item of the popped element.
-    if (!list)
-        return NULL;
-
-    if (!list->next)
-        return NULL;
-
-    LinkedList *node = list->next;
-    LinkedList *temp = list;
-    temp->next = NULL;
-    list = node;
-    Ht_item *it = NULL;
-    memcpy(temp->item, it, sizeof(Ht_item));
-    free(temp->item->key);
-    free(temp->item->value);
-    free(temp->item);
-    free(temp);
-    return it;
-}
-
-void free_linkedlist(LinkedList *list)
-{
-    LinkedList *temp = list;
-
-    while (list)
-    {
-        temp = list;
-        list = list->next;
-        free(temp->item->key);
-        free(temp->item->value);
-        free(temp->item);
-        free(temp);
-    }
-}
-
-LinkedList **create_overflow_buckets(HashTable *table)
-{
-    // Create the overflow buckets; an array of LinkedLists.
-    LinkedList **buckets = (LinkedList **)calloc(table->size, sizeof(LinkedList *));
-
-    for (int i = 0; i < table->size; i++)
-        buckets[i] = NULL;
-
-    return buckets;
-}
-
-void free_overflow_buckets(HashTable *table)
-{
-    // Free all the overflow bucket lists.
-    LinkedList **buckets = table->overflow_buckets;
-
-    for (int i = 0; i < table->size; i++)
-        free_linkedlist(buckets[i]);
-
-    free(buckets);
-}
-
-Ht_item *create_item(char *key, value_t valor_lexico)
-{
+HASH_ENT* create_item(valor_t value){
     // Creates a pointer to a new HashTable item.
-    Ht_item *item = (Ht_item *)malloc(sizeof(Ht_item));
-    item->key = (char *)malloc(strlen(key) + 1);
-    item->value = (char *)malloc(strlen(valor_lexico.value.valueChar) + 1);
-    item->atLine = valor_lexico.atLine;
-    item->type = valor_lexico.type;
-    strcpy(item->key, key);
-    strcpy(item->value, valor_lexico.value.valueChar);
-
-    //Switch-case para o tamanho
-    switch (item->type)
-    {
-    case 0: //Float
-        item->size = 8;
-        break;
-    case 1: //Int
-        item->size = 4;
-        break;
-    case 2: //Char
-        item->size = 1;
-        break;
-    case 3: //Bool
-        item->size = 1;
-        break;
-    case 4: //Vetor[NxN] (Tipo * N * N)
-        printf("TAMANHO DE VETORES AINDA NÃO IMPLEMENTADO, FINALIZANDO PROGRAMA.");
-        exit(0);
-        break;
-    default:
-        break;
-    }
-
+    HASH_ENT* item = (HASH_ENT*) malloc(sizeof(HASH_ENT));
+    int chave = hashAddress(value.value.token);
+    item->chave = chave;
+    item->valor_lexico = value;
     return item;
 }
 
-HashTable *create_table(int size)
+void insert_item(HASH_TABLE* table, valor_t novo_simbolo)
+{
+    // Creates the item.
+    HASH_ENT* item = create_item(novo_simbolo);
+
+    // Computes the index.
+    int index = hashAddress(novo_simbolo.value.token);
+
+    HASH_ENT* current_item; /* = (HASH_ENT*) malloc(sizeof(HASH_ENT));*/
+    current_item = table->items[index];
+
+    if (current_item == NULL){
+        table->items[index] = item;
+    }
+}
+
+void init_table(HASH_TABLE* table)
 {
     // Creates a new HashTable.
-    HashTable *table = (HashTable *)malloc(sizeof(HashTable));
-    table->size = size;
-    table->count = 0;
-    table->items = (Ht_item **)calloc(table->size, sizeof(Ht_item *));
+    table = (HASH_TABLE*) malloc(sizeof(HASH_TABLE));
+    table->size_table = HASH_SIZE;
+    table->items = (HASH_ENT**) calloc(table->size_table, sizeof(HASH_ENT*));
 
-    for (int i = 0; i < table->size; i++)
+    for (int i = 0; i < table->size_table; i++)
         table->items[i] = NULL;
 
-    table->overflow_buckets = create_overflow_buckets(table);
-
-    return table;
 }
 
-void free_item(Ht_item *item)
+/*
+void free_item(HASH_ENT* item)
 {
     // Frees an item.
-    free(item->key);
-    free(item->value);
+    free(item->chave);
+    free(item->valor_lexico);
     free(item);
-}
+}*/
 
-void free_table(HashTable *table)
+void free_table(HASH_TABLE* table)
 {
     // Frees the table.
-    for (int i = 0; i < table->size; i++)
+    for (int i = 0; i < table->size_table; i++)
     {
-        Ht_item *item = table->items[i];
+        HASH_ENT* item = table->items[i];
 
         if (item != NULL)
-            free_item(item);
+            free(item);
     }
 
-    // Free the overflow bucket lists and its items.
-    free_overflow_buckets(table);
     free(table->items);
     free(table);
 }
 
-void handle_collision(HashTable *table, unsigned long index, Ht_item *item)
+void print_table(HASH_TABLE* table)
 {
-    LinkedList *head = table->overflow_buckets[index];
+    printf("\nHash Table\n-------------------\n");
 
-    if (head == NULL)
+    for (int i = 0; i < table->size_table; i++)
     {
-        // Creates the list.
-        head = allocate_list();
-        head->item = item;
-        table->overflow_buckets[index] = head;
-        return;
+        if (table->items[i])
+        {
+            printf("Index:%d, Key:%d, Value:%s\n", i, table->items[i]->chave, table->items[i]->valor_lexico.value.token);
+        }
     }
-    else
-    {
-        // Insert to the list.
-        table->overflow_buckets[index] = linkedlist_insert(head, item);
-        return;
-    }
+
+    printf("-------------------\n\n");
 }
 
-void ht_insert(char *key, value_t valor_lexico)
-{
-
-	
-    // Creates the item.
-	
-    HashTable *table = HashTableStack[top];
-    printf("%d ", HashTableStack[top]->items[1]->atLine);
-    Ht_item *item = create_item(key, valor_lexico);
-
-    // Computes the index.
-    int index = hash_function(key);
-
-    Ht_item *current_item = table->items[index];
-
-    if (current_item == NULL)
-    {
-        // Key does not exist.
-        if (table->count == table->size)
-        {
-            // HashTable is full.
-            free_item(item);
-            return;
-        }
-
-        // Insert directly.
-        table->items[index] = item;
-        table->count++;
-    }
-    else
-    {
-        // Scenario 1: Update the value.
-        if (strcmp(current_item->key, key) == 0)
-        {
-            strcpy(table->items[index]->value, valor_lexico.value.valueChar);
-            return;
-        }
-        else
-        {
-            // Scenario 2: Handle the collision.
-            handle_collision(table, index, item);
-            return;
-        }
-    }
-}
-
-char *ht_search(HashTable *table, char *key)
+HASH_ENT* ht_search(HASH_TABLE* table, char* token)
 {
     // Searches for the key in the HashTable.
     // Returns NULL if it doesn't exist.
-    int index = hash_function(key);
-    Ht_item *item = table->items[index];
-    LinkedList *head = table->overflow_buckets[index];
+
+    int index = hashAddress(token);
+
+    HASH_ENT* item = table->items[index];
 
     // Provide only non-NULL values.
     if (item != NULL)
     {
-        if (strcmp(item->key, key) == 0)
-            return item->value;
-
-        if (head == NULL)
-            return NULL;
-
-        item = head->item;
-        head = head->next;
+        if (strcmp(item->valor_lexico.value.token, token) == 0){
+            return item;
+        }
     }
-
     return NULL;
+}
+
+HASH_TABLE* create_table(int size)
+{
+    // Creates a new HashTable.
+    HASH_TABLE* table = (HASH_TABLE*) malloc(sizeof(HASH_TABLE));
+    table->size_table = size;
+    table->items = (HASH_ENT**) calloc(table->size_table, sizeof(HASH_ENT*));
+
+    for (int i = 0; i < table->size_table; i++)
+        table->items[i] = NULL;
+    return table;
+}
+
+void calcula_tamanho(valor_t valor_lexico){
+	switch(valor_lexico.tipo){
+		case TK_LIT_FLOAT:
+			valor_lexico.tamanho = 8;
+			break;
+		case TK_LIT_INT:
+			valor_lexico.tamanho = 4;
+			break;
+		case TK_LIT_CHAR:
+		case TK_LIT_TRUE:
+		case TK_LIT_FALSE:
+			valor_lexico.tamanho = 1;
+			break;
+	}
 }
 
 bool search_stack(char* key) 
