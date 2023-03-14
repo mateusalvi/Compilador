@@ -23,7 +23,7 @@
 #define HASH_SIZE 997
 
 typedef struct hash_ent{
-   valor_t valor_lexico; // dados acerca do simbolo
+   value_t valor_lexico; // dados acerca do simbolo
    int chave;
    int desloc;
 }HASH_ENT;
@@ -36,22 +36,22 @@ typedef struct hash_table{
 int hashAddress(char*);
 //void init_table(HASH_TABLE*);
 HASH_TABLE* create_table(int);
-HASH_ENT* create_item(valor_t);
-void insert_item(HASH_TABLE*,valor_t);
-void calcula_tamanho(valor_t);
+HASH_ENT* create_item(value_t);
+void insert_item(HASH_TABLE*,value_t);
+void calcula_tamanho(value_t);
 HASH_ENT* ht_search(HASH_TABLE*,char*);
 void print_table(HASH_TABLE*);
 void free_item(HASH_ENT*);
 void free_table(HASH_TABLE*);
 
 
-void print_table(HashTable *table);
+void print_table(HASH_TABLE *table);
 
 bool search_stack(char *key);
 
 
 //Push a table onto stack
-void push(HashTable *table);
+void push(HASH_TABLE *table);
 
 //Pop a table from stack
 void pop();

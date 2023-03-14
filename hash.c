@@ -15,7 +15,7 @@ int hashAddress(char *text){
     return i % HASH_SIZE;
 }
 
-HASH_ENT* create_item(valor_t value){
+HASH_ENT* create_item(value_t value){
     // Creates a pointer to a new HashTable item.
     HASH_ENT* item = (HASH_ENT*) malloc(sizeof(HASH_ENT));
     int chave = hashAddress(value.value.token);
@@ -24,7 +24,7 @@ HASH_ENT* create_item(valor_t value){
     return item;
 }
 
-void insert_item(HASH_TABLE* table, valor_t novo_simbolo)
+void insert_item(HASH_TABLE* table, value_t novo_simbolo)
 {
     // Creates the item.
     HASH_ENT* item = create_item(novo_simbolo);
@@ -122,7 +122,7 @@ HASH_TABLE* create_table(int size)
     return table;
 }
 
-void calcula_tamanho(valor_t valor_lexico){
+void calcula_tamanho(value_t valor_lexico){
 	switch(valor_lexico.tipo){
 		case TK_LIT_FLOAT:
 			valor_lexico.tamanho = 8;
@@ -237,7 +237,7 @@ void print_search(HashTable *table, char *key)
     }
 }
 
-void print_table(HashTable *table)
+void print_table(HASH_TABLE *table)
 {
     printf("\nHash Table\n-------------------\n");
 
@@ -252,7 +252,7 @@ void print_table(HashTable *table)
     printf("-------------------\n\n");
 }
 
-void push(HashTable *table)
+void push(HASH_TABLE *table)
 {
     if (top == SIZE - 1)
     {
