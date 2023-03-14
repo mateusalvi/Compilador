@@ -15,6 +15,7 @@ int yyerror (char *s);
 extern int yydebug;
 extern int get_line_number();
 extern void *arvore;
+extern value_t * hash_table[TABLE_SIZE];
 
 }
 
