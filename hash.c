@@ -32,7 +32,7 @@ hash_da_pilha * pilha[TABLE_SIZE];
 			 if (hash_table[i] == NULL) {
 				 printf("\t%i\t---\n",i);
 			 } else {
-				 printf("\t%i\t%s\n",i, hash_table[i]->key);
+				 printf("\t%i\t%s\n",i, hash_table[i]->value.valueChar);
 			 }
 		 }
 	 }
@@ -44,6 +44,7 @@ hash_da_pilha * pilha[TABLE_SIZE];
 			 return false;
 		 }
 		 hash_table[index] = v;
+		 v->key = index;
 		 printf("Success!");
 		 return true;
 	 }
