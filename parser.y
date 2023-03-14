@@ -193,7 +193,7 @@ DecLocal: Type VarListLocal { if($2){ $$ = $2; } }
 
 VarListLocal : ID ',' VarListLocal { $$ = $3; if((search_stack($1->label))){return ERR_DECLARED;} else {ht_insert($1->label);}}
         | ID TK_OC_LE Lit ',' VarListLocal { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $5); if(search_stack($1->label)){return ERR_DECLARED;} else {ht_insert($1->label);} }
-		| ID TK_OC_LE Lit { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); if(search_stack($1->label)){return ERR_DECLARED;} else {ht_insert($1->label;} }
+		| ID TK_OC_LE Lit { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); if(search_stack($1->label)){return ERR_DECLARED;} else {ht_insert($1->label);} }
 		| ID { $$ = NULL; if(search_stack($1->label)){return ERR_DECLARED;} else {ht_insert($1->label);} }
 		;
 
