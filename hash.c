@@ -39,7 +39,7 @@ hash_da_pilha * pilha[TABLE_SIZE];
 	 
 	 bool hash_table_insert(value_t *v) {
 		 if (v == NULL) return false;
-		 int index = hash(v->value->valueChar);
+		 int index = hash(v->value.valueChar);
 		 if (hash_table[index] != NULL) {
 			 return false;
 		 }
