@@ -126,10 +126,10 @@ Dec : Type VarList ';' { if($2){ $$ = $2; } else{$$ = NULL; } }
     | Type Func { $$ = $2; }
     ;
 
-VarList : ID ',' VarList {  $$ = $1; asd_add_child($$,$3); if(search_stack($1->label)){return ERR_DECLARED;} else { } }
-		| ID { $$ = $1; if(search_stack($1->label)){return ERR_DECLARED;} else { } }
-		| ID '[' ArrayDim ']' ',' VarList { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $6); if(search_stack($1->label)){return ERR_DECLARED;} else { } }
-		| ID '[' ArrayDim ']' { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3); if(search_stack($1->label)){return ERR_DECLARED;} else { }}
+VarList : ID ',' VarList {  $$ = $1; asd_add_child($$,$3);   else { } }
+		| ID { $$ = $1;   else { } }
+		| ID '[' ArrayDim ']' ',' VarList { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $6);   else { } }
+		| ID '[' ArrayDim ']' { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3);   else { }}
 		;
 
 
@@ -185,10 +185,10 @@ Command : Flow { $$ = $1; }
 	
 DecLocal: Type VarListLocal { if($2){ $$ = $2; } }
 
-VarListLocal : ID ',' VarListLocal { $$ = $3; if((search_stack($1->label))){return ERR_DECLARED;} else { }}
-        | ID TK_OC_LE Lit ',' VarListLocal { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $5); if(search_stack($1->label)){return ERR_DECLARED;} else { } }
-		| ID TK_OC_LE Lit { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); if(search_stack($1->label)){return ERR_DECLARED;} else { } }
-		| ID { $$ = NULL; if(search_stack($1->label)){return ERR_DECLARED;} else { } }
+VarListLocal : ID ',' VarListLocal { $$ = $3;   else { }}
+        | ID TK_OC_LE Lit ',' VarListLocal { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $5);   else { } }
+		| ID TK_OC_LE Lit { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3);   else { } }
+		| ID { $$ = NULL;   else { } }
 		;
 
 
@@ -205,8 +205,8 @@ Flow : TK_PR_WHILE '(' Expr ')' Block { $$ = asd_new("while"); asd_add_child($$,
 Ret : TK_PR_RETURN Expr { $$ = asd_new("return"); asd_add_child($$, $2); } // Para o comando de retorno deve ser utilizado o lexema correspondente. ???
 	;
 
-FuncCall : FuncCallID '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); if((search_stack($1->label))){return ERR_DECLARED;} }
-	| FuncCallID '(' ')' { $$ = $1; if((search_stack($1->label))){return ERR_DECLARED;} }
+FuncCall : FuncCallID '(' ExprList ')' { $$ = $1; asd_add_child($$, $3);   }
+	| FuncCallID '(' ')' { $$ = $1;   }
 	;
 
 ID: TK_IDENTIFICADOR { $$ = asd_new(create_leaf($1)); }//ht_search($1 , (create_leaf($1))); }

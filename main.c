@@ -14,6 +14,7 @@ extern int yylex_destroy(void);
 void *arvore = NULL;
 void asd_print_graphviz (asd_tree_t *arvore);
 void asd_free (asd_tree_t *arvore); 
+value_t * hash_table[TABLE_SIZE];
 
 int main (int argc, char **argv)
 {
