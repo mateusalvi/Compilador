@@ -85,7 +85,7 @@ void free_table(HashTable* table);
 
 void handle_collision(HashTable *table, unsigned long index, Ht_item *item);
 
-void ht_insert(char* key);
+void ht_insert(char *key, value_t valor_lexico);
 
 char* ht_search(HashTable* table, char* key);
 
