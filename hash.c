@@ -1,7 +1,6 @@
 #include "hash.h"
 #include "asd.h"
 
-#define CAPACITY 50000 // Size of the HashTable.
 #define MAX_KEY 256
 
 
