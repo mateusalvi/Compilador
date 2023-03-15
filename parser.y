@@ -127,15 +127,15 @@ Dec : Type VarList ';' { if($2){ $$ = $2; } else{$$ = NULL; }  }
     | Type Func { $$ = $2; }
     ;
 
-VarList : TK_IDENTIFICADOR',' VarList {  $$ = $1; asd_add_child($$,$3);  if(hash_table_lookup($1.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&$1); print_table();}   }
-		| TK_IDENTIFICADOR{ $$ = $1;  if(hash_table_lookup($1.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&$1); print_table();}   }
-		| TK_IDENTIFICADOR'[' ArrayDim ']' ',' VarList { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $6);   if(hash_table_lookup($1.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&$1); print_table();}  }
-		| TK_IDENTIFICADOR'[' ArrayDim ']' { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3);  if(hash_table_lookup($1.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&$1); print_table();}  }
+VarList : TK_IDENTIFICADOR',' VarList {  $$ = asd_new(create_leaf($1)); asd_add_child($$,$3);  if(hash_table_lookup($1.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&$1); print_table();}   }
+		| TK_IDENTIFICADOR{ $$ = asd_new(create_leaf($1));  if(hash_table_lookup($1.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&$1); print_table();}   }
+		| TK_IDENTIFICADOR'[' ArrayDim ']' ',' VarList { $$ = asd_new("[]"), asd_add_child($$, asd_new(create_leaf($1)); asd_add_child($$, $3); asd_add_child($$, $6);   if(hash_table_lookup($1.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&$1); print_table();}  }
+		| TK_IDENTIFICADOR'[' ArrayDim ']' { $$ = asd_new("[]"), asd_add_child($$, asd_new(create_leaf($1)); asd_add_child($$, $3);  if(hash_table_lookup($1.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&$1); print_table();}  }
 		;
 
 
 
-Type : TK_PR_INT { $$ = asd_new(create_leaf($1)); asd_free_node($$); }
+Type : TK_PR_INT { $$ = NULL; }
 	| TK_PR_FLOAT { $$ = NULL; } //$$ = asd_new(create_leaf($1)); asd_free_node($$); }
 	| TK_PR_BOOL { $$ = NULL; } //$$ = asd_new(create_leaf($1)); asd_free_node($$); }
 	| TK_PR_CHAR { $$ = NULL; } //$$ = asd_new(create_leaf($1)); asd_free_node($$); }
@@ -154,8 +154,8 @@ Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); hash_table_insert(&$1); print_
     | TK_LIT_CHAR { $$ = asd_new(create_leaf($1)); hash_table_insert(&$1); print_table();  }
     ;
 
-Func : TK_IDENTIFICADOR PushTable '(' ')' Block PopTable { $$ = $1; if($5){ asd_add_child($$,$5); }; if(hash_table_lookup($1.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1)); print_table();} }
-	| TK_IDENTIFICADOR PushTable '(' ParamList ')' Block PopTable { $$ = $1; if($4){ asd_add_child($$,$4); }; if($6){ asd_add_child($$,$6); }; if(hash_table_lookup($1.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&$1); print_table();} }
+Func : TK_IDENTIFICADOR PushTable '(' ')' Block PopTable { $$ = asd_new(create_leaf($1)); if($5){ asd_add_child($$,$5); }; if(hash_table_lookup($1.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1)); print_table();} }
+	| TK_IDENTIFICADOR PushTable '(' ParamList ')' Block PopTable { $$ = asd_new(create_leaf($1)); if($4){ asd_add_child($$,$4); }; if($6){ asd_add_child($$,$6); }; if(hash_table_lookup($1.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&$1); print_table();} }
 	;
 
 PushTable:  %empty { printf("aloquei memória");}
@@ -206,8 +206,8 @@ Flow : TK_PR_WHILE '(' Expr ')' Block { $$ = asd_new("while"); asd_add_child($$,
 Ret : TK_PR_RETURN Expr { $$ = asd_new("return"); asd_add_child($$, $2); } // Para o comando de retorno deve ser utilizado o lexema correspondente. ???
 	;
 
-FuncCall : TK_IDENTIFICADOR '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); if(hash_table_lookup($1.value.valueChar) == NULL) { return ERR_UNDECLARED; } else{ print_table();}  }
-	| TK_IDENTIFICADOR '(' ')' { $$ = $1; if(hash_table_lookup($1.value.valueChar) == NULL) { return ERR_UNDECLARED; } else{ print_table();}  }
+FuncCall : TK_IDENTIFICADOR '(' ExprList ')' { $$ = asd_new(create_leaf($1)); asd_add_child($$, $3); if(hash_table_lookup($1.value.valueChar) == NULL) { return ERR_UNDECLARED; } else{ print_table();}  }
+	| TK_IDENTIFICADOR '(' ')' { $$ = asd_new(create_leaf($1)); if(hash_table_lookup($1.value.valueChar) == NULL) { return ERR_UNDECLARED; } else{ print_table();}  }
 	;
 
 
@@ -237,7 +237,7 @@ K : '-' L { $$ = asd_new("-"); asd_add_child($$, $2); }
 L : '(' Expr ')' { $$ = $2; }
 	| FuncCall  { $$ = $1; }
 	| TK_IDENTIFICADOR '[' ArrayDim ']'
-	| TK_IDENTIFICADOR { $$ = $1;} 
+	| TK_IDENTIFICADOR { $$ = asd_new(create_leaf($1));} 
 	| Lit { $$ = $1; }
 
 ExprList : Expr ',' ExprList {$$ = $1; asd_add_child($$,$3);}
