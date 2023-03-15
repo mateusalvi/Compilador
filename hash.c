@@ -37,6 +37,7 @@ hash_da_pilha * pilha[TABLE_SIZE];
 	 
 	 bool hash_table_insert(value_t *v) {
 		 if (v == NULL) return false;
+		 printf("%s", v->value.valueChar);
 		 int index = hash(v->value.valueChar);
 		 if (hash_table[index] != NULL) {
 			 return false;
@@ -65,6 +66,9 @@ hash_da_pilha * pilha[TABLE_SIZE];
 		 pilha[i] = NULL;
 	 }
  }
+ 
+ 
+ 
  
  char* generate_random_key(int length) {
     char* key = malloc(sizeof(char) * (length + 1)); // Allocate memory for the key
