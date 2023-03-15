@@ -5,7 +5,6 @@
 //  #include "asd.h"
 //  #include "semantic.h"
 
-<<<<<<< HEAD
 // enum tk_types{
 // 	IDENTIFICADOR = 0,
 // 	INT = 1,
@@ -64,8 +63,6 @@
 // 	printf("Erro na linha %d, não é possível atribuir %s a uma variavel do tipo %s\n", linhaDoErro, tipo2, tipo1);
 // 	exit(error);
 // }
-=======
->>>>>>> parent of 0475934 (Merge branch 'main' of https://github.com/mateusalvi/Compilador)
 
 // /*
 // int undeclared_err (value_t value1)
