@@ -194,7 +194,7 @@ VarListLocal : ID ',' VarListLocal { $$ = $3;  if(hash_table_lookup($1->value.va
 
 
 
-Atrib : ID '=' Expr { $$ = asd_new("="); asd_add_child($$,$1); asd_add_child($$,$3); hash_table_insert(&($1->value)); print_table(); }
+Atrib : ID '=' Expr { $$ = asd_new("="); asd_add_child($$,$1); asd_add_child($$,$3);  }
 	| ID '[' ArrayDim ']' '=' Expr { $$ = asd_new("="); asd_tree_t *col = asd_new("[]"); asd_add_child($$, col); asd_add_child($$, $6); asd_add_child(col, $1); asd_add_child(col,$3); if(hash_table_lookup($1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();} }
 	;
 
@@ -210,7 +210,7 @@ FuncCall : FuncCallID '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); if(hash
 	| FuncCallID '(' ')' { $$ = $1; if(hash_table_lookup($1->value.value.valueChar) == NULL) { return ERR_UNDECLARED; } else{hash_table_insert(&($1->value)); print_table();}  }
 	;
 
-ID: TK_IDENTIFICADOR { $$ = asd_new(create_leaf($1)); }//ht_search($1 , (create_leaf($1))); }
+ID: TK_IDENTIFICADOR { $$ = asd_new(create_leaf($1)); hash_table_insert(&$1); print_table();}
 	;
 
 FuncCallID : TK_IDENTIFICADOR { char newLabel[100] = "call "; strcat(newLabel, create_leaf($1)); $$ = asd_new(newLabel); }// ht_insert(HashTableStack[top], $1); }
