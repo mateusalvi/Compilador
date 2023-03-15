@@ -194,7 +194,7 @@ VarListLocal : TK_IDENTIFICADOR ',' VarListLocal { $$ = $3;  if(hash_table_looku
 
 
 
-Atrib : TK_IDENTIFICADOR '=' Expr { $$ = asd_new("="); asd_add_child($$,asd_new(create_leaf($1))); asd_add_child($$,$3); if(hash_table_lookup($1.value.valueChar) == NULL) { exit(ERR_UNDECLARED); } else{print_table();} }
+Atrib : TK_IDENTIFICADOR '=' Expr { $$ = asd_new("="); asd_add_child($$,asd_new(create_leaf($1))); asd_add_child($$,$3); if(hash_table_lookup($1.value.valueChar) == NULL) { exit(ERR_UNDECLARED) } else{print_table();} }
 	| TK_IDENTIFICADOR '[' ArrayDim ']' '=' Expr { $$ = asd_new("="); asd_tree_t *col = asd_new("[]"); asd_add_child($$, col); asd_add_child($$, $6); asd_add_child(col, asd_new(create_leaf($1))); asd_add_child(col,$3); if(hash_table_lookup($1.value.valueChar) == NULL) { return ERR_UNDECLARED; } else{print_table();} }
 	;
 
