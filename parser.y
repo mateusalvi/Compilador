@@ -128,9 +128,9 @@ Dec : Type VarList ';' { if($2){ $$ = $2; } else{$$ = NULL; }  }
     ;
 
 VarList : ID ',' VarList {  $$ = $1; asd_add_child($$,$3);  if(hash_table_lookup($1.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&$1); print_table();}   }
-		| ID { $$ = $1;  if(hash_table_lookup($1->value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&$1); print_table();}   }
-		| ID '[' ArrayDim ']' ',' VarList { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $6);   if(hash_table_lookup($1->value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&$1); print_table();}  }
-		| ID '[' ArrayDim ']' { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3);  if(hash_table_lookup($1->value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&$1); print_table();}  }
+		| ID { $$ = $1;  if(hash_table_lookup($1.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&$1); print_table();}   }
+		| ID '[' ArrayDim ']' ',' VarList { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $6);   if(hash_table_lookup($1.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&$1); print_table();}  }
+		| ID '[' ArrayDim ']' { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3);  if(hash_table_lookup($1.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&$1); print_table();}  }
 		;
 
 
@@ -186,10 +186,10 @@ Command : Flow { $$ = $1; }
 	
 DecLocal: Type VarListLocal { if($2){ $$ = $2; } }
 
-VarListLocal : ID ',' VarListLocal { $$ = $3;  if(hash_table_lookup($1->value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&$1); print_table();}  }
-        | ID TK_OC_LE Lit ',' VarListLocal { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $5);   if(hash_table_lookup($1->value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&$1); print_table();}  }
-		| ID TK_OC_LE Lit { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3);  if(hash_table_lookup($1->value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&$1); print_table();}   }
-		| ID { $$ = NULL;  if(hash_table_lookup($1->value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&$1); print_table();}   }
+VarListLocal : ID ',' VarListLocal { $$ = $3;  if(hash_table_lookup($1.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&$1); print_table();}  }
+        | ID TK_OC_LE Lit ',' VarListLocal { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $5);   if(hash_table_lookup($1.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&$1); print_table();}  }
+		| ID TK_OC_LE Lit { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3);  if(hash_table_lookup($1.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&$1); print_table();}   }
+		| ID { $$ = NULL;  if(hash_table_lookup($1.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&$1); print_table();}   }
 		;
 
 
