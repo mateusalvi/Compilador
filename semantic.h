@@ -8,6 +8,14 @@
 #define ERR_CHAR_TO_BOOL 33 //2.4
 #define ERR_CHAR_VECTOR 34 //2.4
 #define ERR_X_TO_CHAR 35 //2.4
+
+void print_error(int linhaDoErro, char* tipo1, char* tipo2, int error);
+
+void check_function_variable(value_t value1, value_t value2);
+
+void check_vector_type();
+
+void compare_type(value_t valor1, value_t valor2);
 /*
 int undeclared_err (value_t value1);
 
