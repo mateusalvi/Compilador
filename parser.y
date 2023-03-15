@@ -14,7 +14,7 @@ int yylex();
 int yyerror (char *s);
 extern int yydebug;
 extern int get_line_number();
-extern void *arvore;
+extern voTK_IDENTIFICADOR *arvore;
 extern value_t * hash_table[TABLE_SIZE];
 
 }
@@ -127,10 +127,10 @@ Dec : Type VarList ';' { if($2){ $$ = $2; } else{$$ = NULL; }  }
     | Type Func { $$ = $2; }
     ;
 
-VarList : ID ',' VarList {  $$ = $1; asd_add_child($$,$3);  if(hash_table_lookup($1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}   }
-		| ID { $$ = $1;  if(hash_table_lookup($1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}   }
-		| ID '[' ArrayDim ']' ',' VarList { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $6);   if(hash_table_lookup($1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}  }
-		| ID '[' ArrayDim ']' { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3);  if(hash_table_lookup($1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}  }
+VarList : TK_IDENTIFICADOR',' VarList {  $$ = $1; asd_add_child($$,$3);  if(hash_table_lookup($1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}   }
+		| TK_IDENTIFICADOR{ $$ = $1;  if(hash_table_lookup($1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}   }
+		| TK_IDENTIFICADOR'[' ArrayDim ']' ',' VarList { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $6);   if(hash_table_lookup($1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}  }
+		| TK_IDENTIFICADOR'[' ArrayDim ']' { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3);  if(hash_table_lookup($1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}  }
 		;
 
 
@@ -154,8 +154,8 @@ Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); hash_table_insert(&$1); print_
     | TK_LIT_CHAR { $$ = asd_new(create_leaf($1)); hash_table_insert(&$1); print_table();  }
     ;
 
-Func : ID PushTable '(' ')' Block PopTable { $$ = $1; if($5){ asd_add_child($$,$5); }; }
-	| ID PushTable '(' ParamList ')' Block PopTable { $$ = $1; if($4){ asd_add_child($$,$4); }; if($6){ asd_add_child($$,$6); }; }
+Func : TK_IDENTIFICADORPushTable '(' ')' Block PopTable { $$ = $1; if($5){ asd_add_child($$,$5); }; }
+	| TK_IDENTIFICADORPushTable '(' ParamList ')' Block PopTable { $$ = $1; if($4){ asd_add_child($$,$4); }; if($6){ asd_add_child($$,$6); }; }
 	;
 
 PushTable:  %empty { printf("aloquei memória");}
@@ -166,7 +166,7 @@ ParamList : Param ',' ParamList { $$ = $1; asd_add_child($$,$3); }
 	| Param { $$ = $1; }
 	;
 
-Param : Type ID { $$ = $2; }
+Param : Type TK_IDENTIFICADOR{ $$ = $2; }
 	;
 
 Block : '{' CommandList '}'  { if($2){ $$ = $2; } }
@@ -186,16 +186,16 @@ Command : Flow { $$ = $1; }
 	
 DecLocal: Type VarListLocal { if($2){ $$ = $2; } }
 
-VarListLocal : ID ',' VarListLocal { $$ = $3;  if(hash_table_lookup($1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}  }
-        | ID TK_OC_LE Lit ',' VarListLocal { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $5);   if(hash_table_lookup($1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}  }
-		| ID TK_OC_LE Lit { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3);  if(hash_table_lookup($1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}   }
-		| ID { $$ = NULL;  if(hash_table_lookup($1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}   }
+VarListLocal : TK_IDENTIFICADOR ',' VarListLocal { $$ = $3;  if(hash_table_lookup($1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}  }
+        | TK_IDENTIFICADOR TK_OC_LE Lit ',' VarListLocal { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $5);   if(hash_table_lookup($1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}  }
+		| TK_IDENTIFICADOR TK_OC_LE Lit { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3);  if(hash_table_lookup($1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}   }
+		| TK_IDENTIFICADOR { $$ = NULL;  if(hash_table_lookup($1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}   }
 		;
 
 
 
-Atrib : ID '=' Expr { $$ = asd_new("="); asd_add_child($$,$1); asd_add_child($$,$3);  }
-	| ID '[' ArrayDim ']' '=' Expr { $$ = asd_new("="); asd_tree_t *col = asd_new("[]"); asd_add_child($$, col); asd_add_child($$, $6); asd_add_child(col, $1); asd_add_child(col,$3); if(hash_table_lookup($1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();} }
+Atrib : TK_IDENTIFICADOR '=' Expr { $$ = asd_new("="); asd_add_child($$,$1); asd_add_child($$,$3); if(hash_table_lookup($1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();} }
+	| TK_IDENTIFICADOR '[' ArrayDim ']' '=' Expr { $$ = asd_new("="); asd_tree_t *col = asd_new("[]"); asd_add_child($$, col); asd_add_child($$, $6); asd_add_child(col, $1); asd_add_child(col,$3); if(hash_table_lookup($1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();} }
 	;
 
 Flow : TK_PR_WHILE '(' Expr ')' Block { $$ = asd_new("while"); asd_add_child($$, $3); if($5){ asd_add_child($$, $5); }; }
@@ -206,15 +206,11 @@ Flow : TK_PR_WHILE '(' Expr ')' Block { $$ = asd_new("while"); asd_add_child($$,
 Ret : TK_PR_RETURN Expr { $$ = asd_new("return"); asd_add_child($$, $2); } // Para o comando de retorno deve ser utilizado o lexema correspondente. ???
 	;
 
-FuncCall : FuncCallID '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); if(hash_table_lookup($1->value.value.valueChar) == NULL) { return ERR_UNDECLARED; } else{hash_table_insert(&($1->value)); print_table();}  }
-	| FuncCallID '(' ')' { $$ = $1; if(hash_table_lookup($1->value.value.valueChar) == NULL) { return ERR_UNDECLARED; } else{hash_table_insert(&($1->value)); print_table();}  }
+FuncCall : TK_IDENTIFICADOR '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); if(hash_table_lookup($1->value.value.valueChar) == NULL) { return ERR_UNDECLARED; } else{hash_table_insert(&($1->value)); print_table();}  }
+	| TK_IDENTIFICADOR '(' ')' { $$ = $1; if(hash_table_lookup($1->value.value.valueChar) == NULL) { return ERR_UNDECLARED; } else{hash_table_insert(&($1->value)); print_table();}  }
 	;
 
-ID: TK_IDENTIFICADOR { $$ = asd_new(create_leaf($1)); hash_table_insert(&$1); print_table();}
-	;
 
-FuncCallID : TK_IDENTIFICADOR { char newLabel[100] = "call "; strcat(newLabel, create_leaf($1)); $$ = asd_new(newLabel); }// ht_insert(HashTableStack[top], $1); }
-	;
 
 Expr : Expr TK_OC_OR T  { $$ = asd_new("||"); asd_add_child($$, $1); asd_add_child($$, $3); }
 	| T { $$ = $1; }
@@ -240,8 +236,8 @@ K : '-' L { $$ = asd_new("-"); asd_add_child($$, $2); }
 	| L { $$ = $1; }
 L : '(' Expr ')' { $$ = $2; }
 	| FuncCall  { $$ = $1; }
-	| ID '[' ArrayDim ']'
-	| ID { $$ = $1;} 
+	| TK_IDENTIFICADOR '[' ArrayDim ']'
+	| TK_IDENTIFICADOR { $$ = $1;} 
 	| Lit { $$ = $1; }
 
 ExprList : Expr ',' ExprList {$$ = $1; asd_add_child($$,$3);}
