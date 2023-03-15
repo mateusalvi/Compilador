@@ -188,7 +188,7 @@ DecLocal: Type VarListLocal { if($2){ $$ = $2; } }
 
 VarListLocal : ID ',' VarListLocal { $$ = $3;  if(hash_table_lookup($1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}  }
         | ID TK_OC_LE Lit ',' VarListLocal { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $5);   if(hash_table_lookup($1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}  }
-		| ID TK_OC_LE Lit { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3);  if(hash_table_lookup($1.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}   }
+		| ID TK_OC_LE Lit { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3);  if(hash_table_lookup($1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}   }
 		| ID { $$ = NULL;  if(hash_table_lookup($1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}   }
 		;
 
