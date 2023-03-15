@@ -26,10 +26,7 @@
 		OC_NE = 20,
 		OC_AND = 21,
 		OC_OR = 22,
-		SPECIAL_CHARACTER = 23,
-		FUNCTION = 24,
-		VARIABLE = 25,
-		ARRAY = 26
+		SPECIAL_CHARACTER = 23
 	};
 	
 	int lineNumber = 1;
@@ -132,21 +129,25 @@
 [-+]?[0-9]+			{ yylval.valor_lexico.atLine = get_line_number(); 
 					  yylval.valor_lexico.type =  INT; 
 					  yylval.valor_lexico.value.valueInt = atoi(yytext); 
+					  yylval.valor_lexico.value.valueChar = strdup(yytext); 
 					  return TK_LIT_INT; }
 
 [+-]?(([0-9]+"."[0-9]+)|("."[0-9]+)|([0-9]+".")|([0-9]+"."+[0-9]+([eE][+-]?[0-9]+)?)) { yylval.valor_lexico.atLine = get_line_number(); 
 					yylval.valor_lexico.type = FLOAT; 
 					yylval.valor_lexico.value.valueFloat = atof(yytext); 
+					yylval.valor_lexico.value.valueChar = strdup(yytext);  
 					return TK_LIT_FLOAT; } 
 
 "false"				{ yylval.valor_lexico.atLine = get_line_number(); 
 					  yylval.valor_lexico.type = BOOL; 
-					  yylval.valor_lexico.value.valueInt = 0;  
+					  yylval.valor_lexico.value.valueInt = 0; 
+					  yylval.valor_lexico.value.valueChar = strdup(yytext);  
 					  return TK_LIT_FALSE; }
 
 "true"				{ yylval.valor_lexico.atLine = get_line_number(); 
 					  yylval.valor_lexico.type = BOOL; 
 					  yylval.valor_lexico.value.valueInt = 1; 
+					  yylval.valor_lexico.value.valueChar = strdup(yytext); 
 					  return TK_LIT_TRUE; }
 
 '.'					{ yylval.valor_lexico.atLine = get_line_number(); 
