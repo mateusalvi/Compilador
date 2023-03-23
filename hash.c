@@ -67,18 +67,15 @@ hash_da_pilha * pilha[TABLE_SIZE];
 	 }
  }
  
-	bool stack_insert(hash_da_pilha *h) {
+	bool (hash_da_pilha *h) {
 		 if (h == NULL) return false;
-		 printf("%s", v->value.valueChar);
-		 int index = hash(v->value.valueChar);
-		 if (hash_table[index] != NULL) {
+		 if (stack[index] != NULL) {
 			 return false;
 		 }
-		 hash_table[index] = malloc(sizeof(value_t)); // Allocate memory for the struct
-		memcpy(hash_table[index], v, sizeof(value_t)); // Copy the struct into the allocated memory
-		hash_table[index]->value.valueChar = malloc(strlen(v->value.valueChar) + 1); // Allocate memory for the string
-		strcpy(hash_table[index]->value.valueChar, v->value.valueChar); // Copy the string into the allocated memory
-		hash_table[index]->key = index;
+		 stack[index] = malloc(sizeof(hash_da_pilha)); // Allocate memory for the struct
+		memcpy(stack[index], h, sizeof(hash_da_pilha)); // Copy the struct into the allocated memory
+		stack[index]->value = malloc(strlen(h->value) + 1); // Allocate memory for the string
+		strcpy(stack[index]->value.valueChar, h->value.valueChar); // Copy the string into the allocated memory
 		printf("Success!\n");
 		return true;
 	 }
