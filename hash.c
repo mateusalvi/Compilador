@@ -67,19 +67,6 @@ hash_da_pilha * pilha[TABLE_SIZE];
 	 }
  }
  
-	bool (hash_da_pilha *h) {
-		 if (h == NULL) return false;
-		 if (stack[index] != NULL) {
-			 return false;
-		 }
-		 stack[index] = malloc(sizeof(hash_da_pilha)); // Allocate memory for the struct
-		memcpy(stack[index], h, sizeof(hash_da_pilha)); // Copy the struct into the allocated memory
-		stack[index]->value = malloc(strlen(h->value) + 1); // Allocate memory for the string
-		strcpy(stack[index]->value.valueChar, h->value.valueChar); // Copy the string into the allocated memory
-		printf("Success!\n");
-		return true;
-	 }
- 
  
  
  

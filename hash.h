@@ -35,7 +35,6 @@ bool hash_table_insert(value_t *v);
 
 value_t *hash_table_lookup (char *key);
 
-bool stack_insert(hash_da_pilha *h)
 
 char* generate_random_key(int length);
 
