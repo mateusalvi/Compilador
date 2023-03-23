@@ -128,9 +128,9 @@ Dec : Type VarList ';' { if($2){ $$ = $2; } else{$$ = NULL; }  }
     ;
 
 VarList : ID',' VarList {  $$ = $1; asd_add_child($$,$3);  if(hash_table_lookup(&($1->value.value.valueChar)) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}   }
-		| ID{ $$ = $1;  if(hash_table_lookup(&($1->value.value.valueChar)) != NULL) { return ERR_DECLARED; } else{hash_table_insert($1->value); print_table();}   }
-		| ID'[' ArrayDim ']' ',' VarList { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $6);   if(hash_table_lookup(&($1->value.value.valueChar)) != NULL) { return ERR_DECLARED; } else{hash_table_insert($1->value); print_table();}  }
-		| ID'[' ArrayDim ']' { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3);  if(hash_table_lookup($1->value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert($1->value); print_table();}  }
+		| ID{ $$ = $1;  if(hash_table_lookup(&($1->value.value.valueChar)) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}   }
+		| ID'[' ArrayDim ']' ',' VarList { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $6);   if(hash_table_lookup(&($1->value.value.valueChar)) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}  }
+		| ID'[' ArrayDim ']' { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3);  if(hash_table_lookup(&($1->value.value.valueChar)) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}  }
 		;
 
 
@@ -154,8 +154,8 @@ Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); $$->value = $1; hash_table_ins
     | TK_LIT_CHAR { $$ = asd_new(create_leaf($1)); $$->value = $1; hash_table_insert(&$1); print_table();  }
     ;
 
-Func : ID PushTable '(' ')' Block PopTable { $$ = $1; if($5){ asd_add_child($$,$5); }; if(hash_table_lookup($1->value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert($1->value); print_table();} }
-	| ID PushTable '(' ParamList ')' Block PopTable { $$ = $1; if($4){ asd_add_child($$,$4); }; if($6){ asd_add_child($$,$6); }; if(hash_table_lookup($1->value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert($1->value); print_table();} }
+Func : ID PushTable '(' ')' Block PopTable { $$ = $1; if($5){ asd_add_child($$,$5); }; if(hash_table_lookup(&($1->value.value.valueChar)) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();} }
+	| ID PushTable '(' ParamList ')' Block PopTable { $$ = $1; if($4){ asd_add_child($$,$4); }; if($6){ asd_add_child($$,$6); }; if(hash_table_lookup(&($1->value.value.valueChar)) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();} }
 	;
 
 PushTable:  %empty { printf("aloquei memória");}
@@ -186,15 +186,15 @@ Command : Flow { $$ = $1; }
 	
 DecLocal: Type VarListLocal { if($2){ $$ = $2; } }
 
-VarListLocal : ID ',' VarListLocal { $$ = $3;  if(hash_table_lookup($1->value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert($1->value); print_table();}  }
-        | ID TK_OC_LE Lit ',' VarListLocal { $$ = asd_new("<="); asd_add_child($$, asd_new(create_leaf($1))); asd_add_child($$, $3); asd_add_child($$, $5);   if(hash_table_lookup($1.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert($1->value); print_table();}  }
-		| ID TK_OC_LE Lit { $$ = asd_new("<="); asd_add_child($$, asd_new(create_leaf($1))); asd_add_child($$, $3);  if(hash_table_lookup($1->value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert($1->value); print_table();}   }
-		| ID { $$ = $1;  if(hash_table_lookup($1->value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert($1->value); print_table();}   }
+VarListLocal : ID ',' VarListLocal { $$ = $3;  if(hash_table_lookup(&($1->value.value.valueChar)) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}  }
+        | ID TK_OC_LE Lit ',' VarListLocal { $$ = asd_new("<="); asd_add_child($$, asd_new(create_leaf($1))); asd_add_child($$, $3); asd_add_child($$, $5);   if(hash_table_lookup($1.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}  }
+		| ID TK_OC_LE Lit { $$ = asd_new("<="); asd_add_child($$, asd_new(create_leaf($1))); asd_add_child($$, $3);  if(hash_table_lookup(&($1->value.value.valueChar)) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}   }
+		| ID { $$ = $1;  if(hash_table_lookup(&($1->value.value.valueChar)) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}   }
 		;
 
 
 Atrib : ID '=' Expr { $$ = asd_new("="); asd_add_child($$,asd_new(create_leaf($1))); asd_add_child($$,$3); if(hash_table_lookup($1.value.valueChar) == NULL) { exit(ERR_UNDECLARED); } else{print_table();} }
-	| ID '[' ArrayDim ']' '=' Expr { $$ = asd_new("="); asd_tree_t *col = asd_new("[]"); asd_add_child($$, col); asd_add_child($$, $6); asd_add_child(col, asd_new(create_leaf($1))); asd_add_child(col,$3); if(hash_table_lookup($1->value.valueChar) == NULL) { return ERR_UNDECLARED; } else{print_table();} }
+	| ID '[' ArrayDim ']' '=' Expr { $$ = asd_new("="); asd_tree_t *col = asd_new("[]"); asd_add_child($$, col); asd_add_child($$, $6); asd_add_child(col, asd_new(create_leaf($1))); asd_add_child(col,$3); if(hash_table_lookup(&($1->value.value.valueChar)) == NULL) { return ERR_UNDECLARED; } else{print_table();} }
 	;
 
 Flow : TK_PR_WHILE '(' Expr ')' Block { $$ = asd_new("while"); asd_add_child($$, $3); if($5){ asd_add_child($$, $5); }; }
@@ -205,8 +205,8 @@ Flow : TK_PR_WHILE '(' Expr ')' Block { $$ = asd_new("while"); asd_add_child($$,
 Ret : TK_PR_RETURN Expr { $$ = asd_new("return"); asd_add_child($$, $2); } // Para o comando de retorno deve ser utilizado o lexema correspondente. ???
 	;
 
-FuncCall : ID '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); if(hash_table_lookup($1->value.valueChar) == NULL) { return ERR_UNDECLARED; } else{ print_table();}  }
-	| ID '(' ')' { $$ = $1; if(hash_table_lookup($1->value.valueChar) == NULL) { return ERR_UNDECLARED; } else{ print_table();}  }
+FuncCall : ID '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); if(hash_table_lookup(&($1->value.value.valueChar)) == NULL) { return ERR_UNDECLARED; } else{ print_table();}  }
+	| ID '(' ')' { $$ = $1; if(hash_table_lookup(&($1->value.value.valueChar)) == NULL) { return ERR_UNDECLARED; } else{ print_table();}  }
 	;
 
 
