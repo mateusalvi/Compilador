@@ -25,7 +25,7 @@ typedef struct hash_da_pilha {
 	
 } hash_da_pilha;
 
-unsigned int hash(char key);
+unsigned int hash(char *key);
 
 void init_hash_table();
 
@@ -33,7 +33,7 @@ void print_table();
 
 bool hash_table_insert(value_t *v);
 
-value_t *hash_table_lookup (char key);
+value_t *hash_table_lookup (char *key);
 
 
 char* generate_random_key(int length);
