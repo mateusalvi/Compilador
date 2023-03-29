@@ -7,9 +7,7 @@
 
 typedef struct iloc_operation {
     char *opcode;
-    char *src1, *src2, *src3;
-    char *dst1, *dst2, *dst3;
-    char *label;
+    char *r1, *r2, *r3;
 } iloc_operation;
 
 typedef struct iloc_operations_list {
@@ -19,14 +17,14 @@ typedef struct iloc_operations_list {
     int count;
 } iloc_operations_list;
 
-iloc_operation *new_iloc_operation(char *opcode, char *src1, char *src2, char *src3, char *dst1, char *dst2, char *dst3, char *label);
+iloc_operation *new_iloc_operation(char *opcode, char *r1, char *r2, char *r3);
 
 iloc_operations_list *new_iloc_operations_list();
 
 void append_iloc_operation(iloc_operations_list *list, iloc_operation *operation);
 
 // Função para gerar um nome de rótulo único
-char* new_label();
+char* new_rot();
 
 // Função para gerar um nome de temporário único
 char* new_temp();

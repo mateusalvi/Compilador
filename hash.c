@@ -3,6 +3,8 @@
 
 #define MAX_KEY 256
 
+static int desloc;
+
 
 value_t * hash_table[TABLE_SIZE];
 
@@ -19,6 +21,7 @@ hash_da_pilha * pilha[TABLE_SIZE];
  }
  
  void init_hash_table() {
+	 desloc = 0;
 	 for (int i=0; i < TABLE_SIZE; i++) {
 		 hash_table[i] = NULL;
 	 }

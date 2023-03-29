@@ -7,6 +7,7 @@
 #include <string.h>
 #include "asd.h"
 #include "hash.h"
+#inlcude "iloc.h"
 
 
 
@@ -147,11 +148,11 @@ ArrayDim : Expr '^' ArrayDim  { $$ = asd_new("^"); asd_add_child($$,$1); asd_add
 	| Expr { $$ = $1; }
     ;
 
-Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); $$->value = $1; hash_table_insert(&$1); print_table();}
-    | TK_LIT_FLOAT { $$ = asd_new(create_leaf($1)); $$->value = $1; hash_table_insert(&$1); print_table();  }
-    | TK_LIT_FALSE { $$ = asd_new(create_leaf($1)); $$->value = $1; hash_table_insert(&$1); print_table(); }
-    | TK_LIT_TRUE { $$ = asd_new(create_leaf($1)); $$->value = $1; hash_table_insert(&$1); print_table(); }
-    | TK_LIT_CHAR { $$ = asd_new(create_leaf($1)); $$->value = $1; hash_table_insert(&$1); print_table();  }
+Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); $$->value = $1; hash_table_insert(&$1); print_table(); $$->temp = new_temp(); op = new_iloc_operation(char "loadI", "r1",NULL, "r3") ; append_iloc_operation(op); }
+    | TK_LIT_FLOAT { $$ = asd_new(create_leaf($1)); $$->value = $1; hash_table_insert(&$1); print_table(); $$->temp = new_temp(); }
+    | TK_LIT_FALSE { $$ = asd_new(create_leaf($1)); $$->value = $1; hash_table_insert(&$1); print_table(); $$->temp = new_temp(); }
+    | TK_LIT_TRUE { $$ = asd_new(create_leaf($1)); $$->value = $1; hash_table_insert(&$1); print_table(); $$->temp = new_temp(); }
+    | TK_LIT_CHAR { $$ = asd_new(create_leaf($1)); $$->value = $1; hash_table_insert(&$1); print_table(); $$->temp = new_temp(); }
     ;
 
 Func : ID PushTable '(' ')' Block PopTable { $$ = $1; if($5){ asd_add_child($$,$5); }; if(hash_table_lookup(&($1->value.value.valueChar)) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();} }
@@ -202,7 +203,7 @@ Flow : TK_PR_WHILE '(' Expr ')' Block { $$ = asd_new("while"); asd_add_child($$,
 	| TK_PR_IF '(' Expr ')' TK_PR_THEN Block TK_PR_ELSE Block { $$ = asd_new("if"); asd_add_child($$, $3); if($6){ asd_add_child($$, $6); }; if($8){ asd_add_child($$, $8); }; }
 	;
 
-Ret : TK_PR_RETURN Expr { $$ = asd_new("return"); asd_add_child($$, $2); } // Para o comando de retorno deve ser utilizado o lexema correspondente. ???
+Ret : TK_PR_RETURN Expr { $$ = asd_new("return"); asd_add_child($$, $2);  op = new_iloc_operation(char "jump", NULL ,NULL, $$.temp) ; append_iloc_operation(op); } // Para o comando de retorno deve ser utilizado o lexema correspondente. ???
 	;
 
 FuncCall : ID '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); if(hash_table_lookup(&($1->value.value.valueChar)) == NULL) { return ERR_UNDECLARED; } else{ print_table();}  }
@@ -223,12 +224,13 @@ G : G TK_OC_LE I { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, 
 	| G '>' I { $$ = asd_new(">"); asd_add_child($$, $1); asd_add_child($$, $3); }
 	| G '<' I { $$ = asd_new("<"); asd_add_child($$, $1); asd_add_child($$, $3); }
 	| I { $$ = $1; }
-I : I '+' J { $$ = asd_new("+"); asd_add_child($$, $1); asd_add_child($$, $3); }
-	| I '-' J { $$ = asd_new("-"); asd_add_child($$, $1); asd_add_child($$, $3); }
+I : I '+' J { $$ = asd_new("+"); asd_add_child($$, $1); asd_add_child($$, $3); $$->temp = new_temp(); op = new_iloc_operation(char "add", $1.temp,$2.temp, $$.temp) ; append_iloc_operation(op); }
+	| I '-' J { $$ = asd_new("-"); asd_add_child($$, $1); asd_add_child($$, $3); $$->temp = new_temp(); op = new_iloc_operation(char "sub", $1.temp,$2.temp, $$.temp) ; append_iloc_operation(op); }
 	| J { $$ = $1; }
-J : J '*' K { $$ = asd_new("*"); asd_add_child($$, $1); asd_add_child($$, $3); }
-	| J '/' K { $$ = asd_new("/"); asd_add_child($$, $1); asd_add_child($$, $3); }
-	| J '%' K { $$ = asd_new("%"); asd_add_child($$, $1); asd_add_child($$, $3); }
+J : J '*' K { $$ = asd_new("*"); asd_add_child($$, $1); asd_add_child($$, $3); $$->temp = new_temp(); asd_add_child($$, $3); $$->temp = new_temp(); op = new_iloc_operation(char "sub", $1.temp,$2.temp, $$.temp) ; append_iloc_operation(op); }
+	| J '/' K { $$ = asd_new("/"); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $3); $$->temp = new_temp(); op = new_iloc_operation(char "sub", $1.temp,$2.temp, $$.temp) ; append_iloc_operation(op); }
+	| J '%' K { $$ = asd_new("%"); asd_add_child($$, $1); asd_add_child($$, $3); 
+	}
 	| K { $$ = $1; }
 K : '-' L { $$ = asd_new("-"); asd_add_child($$, $2); }
 	| '!' L { $$ = asd_new("!"); asd_add_child($$, $2); }
@@ -236,7 +238,7 @@ K : '-' L { $$ = asd_new("-"); asd_add_child($$, $2); }
 L : '(' Expr ')' { $$ = $2; }
 	| FuncCall  { $$ = $1; }
 	| ID '[' ArrayDim ']'
-	| ID { $$ = $1;} 
+	| ID { $$ = $1; } 
 	| Lit { $$ = $1;  }
 
 ExprList : Expr ',' ExprList {$$ = $1; asd_add_child($$,$3);}

@@ -17,12 +17,16 @@ typedef struct value
   int atLine;
   int key;
   int type;
+  int tamanho;
+  int desloc;
   union literal value;
 } value_t;
 
 typedef struct asd_tree 
 {
   char *label;
+  char *temp;
+  char *rot;
   value_t value;
   int number_of_children;
   struct asd_tree **children;
