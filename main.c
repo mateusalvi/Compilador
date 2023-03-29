@@ -8,6 +8,8 @@
 #include "hash.h"
 
 
+iloc_operations_list iloc_list =* new_iloc_operations_list();
+
 extern int yyparse(void);
 extern int yylex_destroy(void);
 
@@ -18,6 +20,7 @@ void asd_free (asd_tree_t *arvore);
 
 int main (int argc, char **argv)
 {
+  
   init_hash_table();
   int ret = yyparse(); 
   //asd_print(arvore);
