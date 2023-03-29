@@ -18,7 +18,6 @@ void asd_free (asd_tree_t *arvore);
 
 int main (int argc, char **argv)
 {
-  top=-1;
   init_hash_table();
   int ret = yyparse(); 
   //asd_print(arvore);

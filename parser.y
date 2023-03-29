@@ -7,7 +7,7 @@
 #include <string.h>
 #include "asd.h"
 #include "hash.h"
-#inlcude "iloc.h"
+#include "iloc.h"
 
 
 
