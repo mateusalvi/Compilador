@@ -6,13 +6,14 @@
 #include <stddef.h>
 #include "asd.h"
 #include "hash.h"
+#include "iloc.h"
 
 
-iloc_operations_list iloc_list =* new_iloc_operations_list();
+
 
 extern int yyparse(void);
 extern int yylex_destroy(void);
-
+iloc_operations_list *iloc_list;
 void *arvore = NULL;
 void asd_print_graphviz (asd_tree_t *arvore);
 void asd_free (asd_tree_t *arvore); 
@@ -20,7 +21,7 @@ void asd_free (asd_tree_t *arvore);
 
 int main (int argc, char **argv)
 {
-  
+  iloc_list = new_iloc_operations_list();
   init_hash_table();
   int ret = yyparse(); 
   //asd_print(arvore);
