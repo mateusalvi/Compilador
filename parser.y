@@ -224,11 +224,11 @@ G : G TK_OC_LE I { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, 
 	| G '>' I { $$ = asd_new(">"); asd_add_child($$, $1); asd_add_child($$, $3); }
 	| G '<' I { $$ = asd_new("<"); asd_add_child($$, $1); asd_add_child($$, $3); }
 	| I { $$ = $1; }
-I : I '+' J { $$ = asd_new("+"); asd_add_child($$, $1); asd_add_child($$, $3); $$->temp = new_temp(); op = new_iloc_operation(char "add", $1.temp,$2.temp, $$.temp) ; append_iloc_operation(op); }
-	| I '-' J { $$ = asd_new("-"); asd_add_child($$, $1); asd_add_child($$, $3); $$->temp = new_temp(); op = new_iloc_operation(char "sub", $1.temp,$2.temp, $$.temp) ; append_iloc_operation(op); }
+I : I '+' J { $$ = asd_new("+"); asd_add_child($$, $1); asd_add_child($$, $3); $$->temp = new_temp(); op = new_iloc_operation(char "add", $1.temp,$3.temp, $$.temp) ; append_iloc_operation(op); }
+	| I '-' J { $$ = asd_new("-"); asd_add_child($$, $1); asd_add_child($$, $3); $$->temp = new_temp(); op = new_iloc_operation(char "sub", $1.temp,$3.temp, $$.temp) ; append_iloc_operation(op); }
 	| J { $$ = $1; }
-J : J '*' K { $$ = asd_new("*"); asd_add_child($$, $1); asd_add_child($$, $3); $$->temp = new_temp(); asd_add_child($$, $3); $$->temp = new_temp(); op = new_iloc_operation(char "sub", $1.temp,$2.temp, $$.temp) ; append_iloc_operation(op); }
-	| J '/' K { $$ = asd_new("/"); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $3); $$->temp = new_temp(); op = new_iloc_operation(char "sub", $1.temp,$2.temp, $$.temp) ; append_iloc_operation(op); }
+J : J '*' K { $$ = asd_new("*"); asd_add_child($$, $1); asd_add_child($$, $3); $$->temp = new_temp(); asd_add_child($$, $3); $$->temp = new_temp(); op = new_iloc_operation(char "sub", $1.temp,$3.temp, $$.temp) ; append_iloc_operation(op); }
+	| J '/' K { $$ = asd_new("/"); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $3); $$->temp = new_temp(); op = new_iloc_operation(char "sub", $1.temp,$3.temp, $$.temp) ; append_iloc_operation(op); }
 	| J '%' K { $$ = asd_new("%"); asd_add_child($$, $1); asd_add_child($$, $3); 
 	}
 	| K { $$ = $1; }
