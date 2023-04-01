@@ -25,8 +25,8 @@ int main (int argc, char **argv)
   init_hash_table();
   int ret = yyparse(); 
   print_iloc_list(iloc_list);
-  //asd_print(arvore);
-  //asd_print(arvore);
+  asd_print(arvore);
+  asd_print(arvore);
   void print_table();
   arvore = NULL;
   yylex_destroy();
