@@ -225,7 +225,7 @@ G : G TK_OC_LE I { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, 
 	| G '>' I { $$ = asd_new(">"); asd_add_child($$, $1); asd_add_child($$, $3); }
 	| G '<' I { $$ = asd_new("<"); asd_add_child($$, $1); asd_add_child($$, $3); }
 	| I { $$ = $1; }
-I : I '+' J { $$ = asd_new("+"); asd_add_child($$, $1); asd_add_child($$, $3); $$->temp = new_temp();iloc_operation *op = new_iloc_operation("add", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op); }
+I : I '+' J { $$ = asd_new("+"); asd_add_child($$, $1); asd_add_child($$, $3); $$->temp = new_temp();iloc_operation *op = new_iloc_operation("add", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op); } //$1.cod 
 	| I '-' J { $$ = asd_new("-"); asd_add_child($$, $1); asd_add_child($$, $3); $$->temp = new_temp();iloc_operation *op = new_iloc_operation("sub", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op); }
 	| J { $$ = $1; }
 J : J '*' K { $$ = asd_new("*"); asd_add_child($$, $1); asd_add_child($$, $3); $$->temp = new_temp(); asd_add_child($$, $3); $$->temp = new_temp();iloc_operation *op = new_iloc_operation("mult", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op); }

@@ -1,9 +1,12 @@
 #include "hash.h"
 
-typedef struct pilha {
+typedef struct nodo {
 	
 	hash_da_pilha hash;
-	struct pilha *next;
-};
+	struct nodo *next;
+}Nodo;
 	
-	
+	typedef struct pilha {
+		Nodo *cabeça;
+		int tamanho;
+	}Pilha;
