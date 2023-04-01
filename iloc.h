@@ -26,5 +26,7 @@ void append_iloc_operation(iloc_operations_list *list, iloc_operation *operation
 // Função para gerar um nome de rótulo único
 char* new_rot();
 
+void print_iloc_list(iloc_operations_list *list);
+
 // Função para gerar um nome de temporário único
 char* new_temp();

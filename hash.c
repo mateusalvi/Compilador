@@ -69,10 +69,7 @@ hash_da_pilha * pilha[TABLE_SIZE];
 		 pilha[i] = NULL;
 	 }
  }
- 
- 
- 
- 
+  
  char* generate_random_key(int length) {
     char* key = malloc(sizeof(char) * (length + 1)); // Allocate memory for the key
     srand(time(NULL)); // Seed the random number generator with the current time
