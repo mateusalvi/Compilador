@@ -51,3 +51,14 @@ char* new_temp() {
     snprintf(temp, MAX_TEMP_LEN, "r%d", temp_count++);
     return temp;
 }
+
+void print_iloc_list(iloc_operations_list *list)
+{
+    if(list != NULL)
+    {
+        printf("Operation: %s. R1: %s, R2: %s, R3: %s.", list->operation->opcode, list->operation->r1, list->operation->r2, list->operation->r3);
+        
+        if(list->next != NULL)           //essa é a recursão, se o print estiver na ordem errada (printando o programa ao contrario),
+            print_iloc_list(list->next); //joga ela pra cima do prinf                                
+    }
+}
