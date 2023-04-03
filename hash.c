@@ -5,11 +5,6 @@
 
 static int desloc;
 
-
-value_t * hash_table[TABLE_SIZE];
-
-hash_da_pilha * pilha[TABLE_SIZE];
-
  unsigned int hash(char *key) {
 	 int length = strnlen(key, MAX_KEY);
 	 unsigned int hash_value = 0;
@@ -20,11 +15,16 @@ hash_da_pilha * pilha[TABLE_SIZE];
 	 return hash_value;
  }
  
- void init_hash_table() {
-	 desloc = 0;
+hash_da_pilha* create_table() {
+	 hash_da_pilha* hash_table;
+	 hash_da_pilha->desloc = 0;
 	 for (int i=0; i < TABLE_SIZE; i++) {
 		 hash_table[i] = NULL;
 	 }
+	 
+	 hash_da_pilha->hash_table = hash_table;
+	 
+	 return hash_da_pilha;
  }
  
 	 
@@ -38,23 +38,23 @@ hash_da_pilha * pilha[TABLE_SIZE];
 		 }
 	 }
 	 
-	 bool hash_table_insert(value_t *v) {
-		 if (v == NULL) return false;
-		 printf("%s", v->value.valueChar);
-		 int index = hash(v->value.valueChar);
+	 bool hash_table_insert(value_t *hash_table[TABLE_SIZE], value_t s) {
+		 if (s == NULL) return false;
+		 printf("%s", s->value.valueChar);
+		 int index = hash(s->value.valueChar);
 		 if (hash_table[index] != NULL) {
 			 return false;
 		 }
-		 hash_table[index] = malloc(sizeof(value_t)); // Allocate memory for the struct
-		memcpy(hash_table[index], v, sizeof(value_t)); // Copy the struct into the allocated memory
-		hash_table[index]->value.valueChar = malloc(strlen(v->value.valueChar) + 1); // Allocate memory for the string
-		strcpy(hash_table[index]->value.valueChar, v->value.valueChar); // Copy the string into the allocated memory
+		hash_table[index] = malloc(sizeof(value_t)); // Allocate memory for the struct
+		memcpy(hash_table[index], s, sizeof(value_t)); // Copy the struct into the allocated memory
+		hash_table[index]->value.valueChar = malloc(strlen(s->value.valueChar) + 1); // Allocate memory for the string
+		strcpy(hash_table[index]->value.valueChar, s->value.valueChar); // Copy the string into the allocated memory
 		hash_table[index]->key = index;
 		printf("Success!\n");
 		return true;
 	 }
 	 
-	 value_t *hash_table_lookup (char *key) {
+	 value_t *hash_table_lookup (value_t* hash_table[TABLE_SIZE],char *key) {
 		 int index = hash(key);
 		 if (hash_table[index] != NULL &&
 		 strncmp(hash_table[index]->value.valueChar, key, TABLE_SIZE)==0) {

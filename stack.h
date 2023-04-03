@@ -10,3 +10,10 @@ typedef struct nodo {
 		Nodo *cabeça;
 		int tamanho;
 	}Pilha;
+	
+	/*Receita Pilha
+	cria uma int main() no .c
+	instancia uma tabela
+	instancia uma pilha
+	instancia um elemento da tabela
+	função de printar pilha/tabela/elemento

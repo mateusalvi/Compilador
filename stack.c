@@ -1,56 +1,55 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include "hash.h"
-#include "stack_management.h"
-#include "errors.h"
+#include "stack.h"
 
-int empty_stack(Stack* stack){
-     if(stack->head == NULL)
+int empty_Pilha(Pilha* Pilha){
+     if(Pilha->cabeça == NULL)
         return 1;
      else
         return 0;
 }
 
-void init_stack(void){
-    stack = malloc(sizeof(Stack));
-    stack->head = NULL;
-    stack->size = 0;
+void init_Pilha(void){
+    Pilha = malloc(sizeof(Pilha));
+    Pilha->cabeça = NULL;
+    Pilha->size = 0;
 }
 
-Stack* create_stack(){
-    Stack* stack = malloc(sizeof(Stack));
-    stack->head = NULL;
-    stack->size = 0;
-    return stack;
+Pilha* create_Pilha(){
+    Pilha* Pilha = malloc(sizeof(Pilha));
+    Pilha->cabeça = NULL;
+    Pilha->size = 0;
+    return Pilha;
 }
 
-void push(Stack* stack, HASH_TABLE* table){
-    stack_node* new_element = malloc(sizeof(struct stack_node));
+void push(Pilha* Pilha, HASH_TABLE* table){
+    Nodo* new_element = malloc(sizeof(struct Nodo));
     new_element->data = table;
-    new_element->next = stack->head;
-    stack->head = new_element;
-    stack->size+=1;
+    new_element->next = Pilha->cabeça;
+    Pilha->cabeça = new_element;
+    Pilha->size+=1;
 }
 
 
-HASH_TABLE* pop(Stack* stack){
-    if(empty_stack(stack)){
+hash_da_pilha* pop(Pilha* pilha){
+    if(empty_Pilha(pilha)){
         printf("pilha vazia!\n");
         exit(4);
     }
     else{
-        stack_node* temp = stack->head->next;
-        HASH_TABLE* table = stack->head->data;
-        stack->head = temp;
-        stack->size-=1;
+        Nodo* temp = pilha->cabeça->next;
+        hash_da_pilha* table = Pilha->cabeça->data;
+        Pilha->cabeça = temp;
+        Pilha->size-=1;
         return table;
     }
 }
 
-stack_node* retrieve(Stack* stack, int level){
-    if (stack->size < level)
-        printf("Stack isn't that long yet\n");
-    stack_node* temp = stack->head;
+Nodo* retrieve(Pilha* Pilha, int level){
+    if (Pilha->size < level)
+        printf("Pilha isn't that long yet\n");
+    Nodo* temp = Pilha->cabeça;
     level -= 1;
     while(level > 0){
         temp = temp->next;
@@ -59,9 +58,9 @@ stack_node* retrieve(Stack* stack, int level){
     return temp;
 } //get something below
 
-void delete_stack(Stack* stack){
-    stack_node *atual, *prox;
-    atual = stack->head->next;
+void delete_Pilha(Pilha* Pilha){
+    Nodo *atual, *prox;
+    atual = Pilha->cabeça->next;
     while(atual != NULL){
         prox = atual->next;
         free(atual);
@@ -69,21 +68,21 @@ void delete_stack(Stack* stack){
     }
 } //free all
 
-void print_stack(Stack* stack){
-    stack_node *atual;
-    atual = stack->head;
+void print_Pilha(Pilha* Pilha){
+    Nodo *atual;
+    atual = Pilha->cabeça;
     while(atual!=NULL){
         print_table(atual->data);
         atual = atual->next;
     }
 }
 
-HASH_ENT* search_stack(Stack* stack, char* simbolo){
-    stack_node* aux;
-    aux = stack->head;
-    HASH_ENT* achou;
+value_t search_Pilha(Pilha* Pilha, char* simbolo){
+    Nodo* aux;
+    aux = Pilha->cabeça;
+    value_t achou;
     while(aux){
-        achou = ht_search(aux->data,simbolo);
+        achou = hash_table_lookup(aux->hash,simbolo);
         if(achou)
             return achou;
         aux = aux->next;
@@ -91,3 +90,5 @@ HASH_ENT* search_stack(Stack* stack, char* simbolo){
 
     return NULL;
 }
+
+

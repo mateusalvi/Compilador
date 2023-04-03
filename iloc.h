@@ -30,3 +30,7 @@ void print_iloc_list(iloc_operations_list *list);
 
 // Função para gerar um nome de temporário único
 char* new_temp();
+
+void concat_lista(iloc_operations_list *list1 ,iloc_operations_list *list2);
+
+void print_iloc_operations_list(iloc_operations_list *list, char* filename);

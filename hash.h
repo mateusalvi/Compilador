@@ -22,6 +22,7 @@
 typedef struct hash_da_pilha {
 	
 	value_t * hash_table[TABLE_SIZE];
+	int desloc;
 	
 } hash_da_pilha;
 

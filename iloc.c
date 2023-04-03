@@ -1,5 +1,8 @@
 #include "iloc.h"
-
+#include "ast.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 iloc_operations_list *new_iloc_operations_list();
 
 iloc_operation *new_iloc_operation(char *opcode, char *r1, char *r2, char *r3) {
@@ -61,4 +64,40 @@ void print_iloc_list(iloc_operations_list *list)
         if(list->next != NULL)           //essa é a recursão, se o print estiver na ordem errada (printando o programa ao contrario),
             print_iloc_list(list->next); //joga ela pra cima do prinf                                
     }
+}
+
+void concat_lista(iloc_operations_list *list1 ,iloc_operations_list *list2)
+{
+	while (list2->next != NULL) 
+	{
+	  append_iloc_operation(list1, list2->operation);
+	  list2 = list2->prox;
+	}
+}
+
+void print_iloc_operations_list(iloc_operations_list *list, char* filename) {
+    FILE *fp;
+    fp = fopen(filename, "w");
+
+    if (fp == NULL) {
+        printf("Erro ao abrir arquivo %s.\n", filename);
+        return;
+    }
+
+    fprintf(fp, "Lista de Operações:\n");
+    iloc_operations_list *current = list;
+    while (current != NULL) {
+        iloc_operation *operation = current->operation;
+        fprintf(fp, "%s %s,%s => %s,%s,%s\n", operation->opcode, operation->r1, operation->r2, operation->r3, operation->r4, operation->r5);
+        current = current->next;
+    }
+
+    fclose(fp);
+}
+
+
+void print_code_tree(void* arvore){
+    asd_tree_t *tree = (asd_tree_t *) arvore;
+	print_list_ilocs(arvore->code);
+	print_iloc_operations_list(arvore->code,"saida");
 }

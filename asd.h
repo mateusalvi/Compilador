@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <iloc.h>
 
 union literal {
     int valueInt;
@@ -15,6 +16,7 @@ union literal {
 typedef struct value
 {
   int atLine;
+  char *value_rot;
   int key;
   int type;
   int tamanho;
@@ -24,9 +26,9 @@ typedef struct value
 
 typedef struct asd_tree 
 {
-  char *label;
   char *temp;
   char *rot;
+  iloc_operations_list *code;
   value_t value;
   int number_of_children;
   struct asd_tree **children;

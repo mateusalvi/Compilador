@@ -21,13 +21,13 @@ void asd_free (asd_tree_t *arvore);
 
 int main (int argc, char **argv)
 {
-  iloc_list = new_iloc_operations_list();
+
   init_hash_table();
   int ret = yyparse(); 
   print_iloc_list(iloc_list);
   asd_print(arvore);
-  asd_print(arvore);
-  void print_table();
+  print_code_tree(arvore);
+  //void print_table();
   arvore = NULL;
   yylex_destroy();
   return ret;
