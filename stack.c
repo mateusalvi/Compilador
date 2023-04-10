@@ -18,7 +18,7 @@ Pilha* create_Pilha(){
 }
 
 void push(Pilha* Pilha, hash_da_pilha* table){
-    Nodo* new_element = malloc(sizeof(struct Nodo));
+    Nodo* new_element = malloc(sizeof(Nodo));
     new_element->hash->hash_table = table;
     new_element->next = Pilha->cabeça;
     Pilha->cabeça = new_element;
@@ -33,9 +33,9 @@ hash_da_pilha* pop(Pilha* pilha){
     }
     else{
         Nodo* temp = pilha->cabeça->next;
-        hash_da_pilha* table = pilha->cabeça->hash->hash_da_pilha->hash_table;
-        Pilha->cabeça = temp;
-        Pilha->tamanho-=1;
+        hash_da_pilha* table = pilha->cabeça->hash;
+        pilha->cabeça = temp;
+        pilha->tamanho-=1;
         return table;
     }
 }
@@ -56,7 +56,7 @@ void print_Pilha(Pilha* Pilha){
     Nodo *atual;
     atual = Pilha->cabeça;
     while(atual!=NULL){
-        print_table(atual->hash->hash_da_pilha->hash_table);
+        print_table(atual->hash->hash_table);
         atual = atual->next;
     }
 }
@@ -66,7 +66,7 @@ value_t *search_Pilha(Pilha* Pilha, char* simbolo){
     aux = Pilha->cabeça;
     value_t *achou;
     while(aux){
-        achou = hash_table_lookup(aux->hash-hash_da_pilha->hash_table,simbolo);
+        achou = hash_table_lookup(aux->hash->hash_table,simbolo);
         if(achou != NULL)
             return achou;
         aux = aux->next;
