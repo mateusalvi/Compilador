@@ -18,7 +18,7 @@ void init_Pilha(void);
 
 Pilha* create_Pilha();
 
-void push(Pilha* Pilha, HASH_TABLE* table);
+void push(Pilha* Pilha, hash_da_pilha* table);
 
 hash_da_pilha* pop(Pilha* pilha);
 
@@ -38,3 +38,4 @@ value_t search_Pilha(Pilha* Pilha, char* simbolo);
 	instancia uma pilha
 	instancia um elemento da tabela
 	função de printar pilha/tabela/elemento
+	*/ 

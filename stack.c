@@ -23,7 +23,7 @@ Pilha* create_Pilha(){
     return Pilha;
 }
 
-void push(Pilha* Pilha, HASH_TABLE* table){
+void push(Pilha* Pilha, hash_da_pilha* table){
     Nodo* new_element = malloc(sizeof(struct Nodo));
     new_element->data = table;
     new_element->next = Pilha->cabeça;
