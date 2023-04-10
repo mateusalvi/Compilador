@@ -27,7 +27,7 @@ void delete_Pilha(Pilha* Pilha);
 
 void print_Pilha(Pilha* Pilha);
 
-value_t search_Pilha(Pilha* Pilha, char* simbolo);
+value_t *search_Pilha(Pilha* Pilha, char* simbolo);
 
 
 

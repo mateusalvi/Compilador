@@ -61,7 +61,7 @@ void print_Pilha(Pilha* Pilha){
     }
 }
 
-value_t search_Pilha(Pilha* Pilha, char* simbolo){
+value_t *search_Pilha(Pilha* Pilha, char* simbolo){
     Nodo* aux;
     aux = Pilha->cabeça;
     value_t *achou;
