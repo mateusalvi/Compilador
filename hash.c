@@ -3,6 +3,8 @@
 
 #define MAX_KEY 256
 
+#define TABLE_SIZE 30
+
 static int desloc;
 
  unsigned int hash(char *key) {
@@ -16,15 +18,16 @@ static int desloc;
  }
  
 hash_da_pilha* create_table() {
-	 hash_da_pilha* hash_table = malloc(sizeof(hash_da_pilha));
-	 hash_table->desloc = 0;
+	 hash_da_pilha* ht= malloc(sizeof(hash_da_pilha));
+	 ht->desloc = 0;
+	 value_t* hash_table[TABLE_SIZE];
 	 for (int i=0; i < TABLE_SIZE; i++) {
 		 hash_table[i] = NULL;
 	 }
 	 
-	 hash_da_pilha->hash_table = hash_table;
+	 ht->hash_table = hash_table;
 	 
-	 return hash_da_pilha;
+	 return ht;
  }
  
 	 
