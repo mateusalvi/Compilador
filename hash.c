@@ -39,7 +39,7 @@ hash_da_pilha* create_table() {
 		 }*/
 	 }
 	 
-	 bool hash_table_insert(value_t *hash_table[TABLE_SIZE], value_t s) {
+	 bool hash_table_insert(value_t *hash_table[TABLE_SIZE], value_t *s) {
 		 if (s == NULL) return false;
 		 printf("%s", s->value.valueChar);
 		 int index = hash(s->value.valueChar);
