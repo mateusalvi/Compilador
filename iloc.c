@@ -96,8 +96,10 @@ void print_iloc_operations_list(iloc_operations_list *list, char* filename) {
 }
 
 
+
 void print_code_tree(void* arvore){
     asd_tree_t *tree = (asd_tree_t *) arvore;
 	print_list_ilocs(arvore->code);
 	print_iloc_operations_list(arvore->code,"saida");
+
 }

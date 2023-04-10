@@ -2,7 +2,7 @@
 
 typedef struct nodo {
 	
-	hash_da_pilha hash;
+	hash_da_pilha *hash; // tabela hash
 	struct nodo *next;
 }Nodo;
 	
