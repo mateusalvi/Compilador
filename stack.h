@@ -22,7 +22,6 @@ void push(Pilha* Pilha, hash_da_pilha* table);
 
 hash_da_pilha* pop(Pilha* pilha);
 
-Nodo* retrieve(Pilha* Pilha, int level);
 
 void delete_Pilha(Pilha* Pilha);
 

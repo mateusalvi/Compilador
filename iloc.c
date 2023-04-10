@@ -71,7 +71,7 @@ void concat_lista(iloc_operations_list *list1 ,iloc_operations_list *list2)
 	while (list2->next != NULL) 
 	{
 	  append_iloc_operation(list1, list2->operation);
-	  list2 = list2->prox;
+	  list2 = list2->next;
 	}
 }
 
@@ -88,7 +88,7 @@ void print_iloc_operations_list(iloc_operations_list *list, char* filename) {
     iloc_operations_list *current = list;
     while (current != NULL) {
         iloc_operation *operation = current->operation;
-        fprintf(fp, "%s %s,%s => %s,%s,%s\n", operation->opcode, operation->r1, operation->r2, operation->r3, operation->r4, operation->r5);
+        fprintf(fp, "%s");
         current = current->next;
     }
 
