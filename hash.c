@@ -30,13 +30,13 @@ hash_da_pilha* create_table() {
  
 	 
 	 void print_table() {
-		 for (int i=0; i < TABLE_SIZE; i++) {
+		 /*for (int i=0; i < TABLE_SIZE; i++) {
 			 if (hash_table[i] == NULL) {
 				 printf("\t%i\t---\n",i);
 			 } else {
 				 printf("\t%i\t%s",i, hash_table[i]->value.valueChar); printf("               atLine: %d, value_t value: %d\n", hash_table[i]->atLine, hash_table[i]->type);
 			 }
-		 }
+		 }*/
 	 }
 	 
 	 bool hash_table_insert(value_t *hash_table[TABLE_SIZE], value_t s) {
