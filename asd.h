@@ -28,6 +28,7 @@ typedef struct asd_tree
 {
   char *temp;
   char *rot;
+  char *label;
   iloc_operations_list *code;
   value_t value;
   int number_of_children;

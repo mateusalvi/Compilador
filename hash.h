@@ -34,7 +34,7 @@ void print_table();
 
 bool hash_table_insert(value_t *hash_table[TABLE_SIZE], value_t *s);
 
-value_t *hash_table_lookup (char *key);
+value_t *hash_table_lookup (value_t* hash_table[TABLE_SIZE],char *key);
 
 
 char* generate_random_key(int length);

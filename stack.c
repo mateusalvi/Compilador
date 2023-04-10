@@ -11,15 +11,15 @@ int empty_Pilha(Pilha* Pilha){
 }
 
 void init_Pilha(void){
-    Pilha = malloc(sizeof(Pilha));
-    Pilha->cabeça = NULL;
-    Pilha->size = 0;
+    Pilha pilha = malloc(sizeof(Pilha));
+    pilha->cabeça = NULL;
+    pilha->size = 0;
 }
 
 Pilha* create_Pilha(){
-    Pilha* Pilha = malloc(sizeof(Pilha));
-    Pilha->cabeça = NULL;
-    Pilha->size = 0;
+    Pilha* pilha = malloc(sizeof(Pilha));
+    pilha->cabeça = NULL;
+    pilha->size = 0;
     return Pilha;
 }
 
