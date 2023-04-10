@@ -5,10 +5,12 @@
 #define MAX_LABEL_LEN 64
 #define MAX_TEMP_LEN 64
 
-typedef struct iloc_operation {
+struct iloc_operation {
     char *opcode;
     char *r1, *r2, *r3;
-} iloc_operation;
+};
+
+typedef struct iloc_operation iloc_op;
 
 typedef struct iloc_operations_list {
     iloc_operation *operation;
