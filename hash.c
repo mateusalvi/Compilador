@@ -17,7 +17,7 @@ static int desloc;
  
 hash_da_pilha* create_table() {
 	 hash_da_pilha* hash_table = malloc(sizeof(hash_da_pilha));
-	 hash_da_pilha->desloc = 0;
+	 hash_table->desloc = 0;
 	 for (int i=0; i < TABLE_SIZE; i++) {
 		 hash_table[i] = NULL;
 	 }
