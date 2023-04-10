@@ -129,7 +129,7 @@ Dec : Type VarList ';' { if($2){ $$ = $2; } else{$$ = NULL; }  }
     | Type Func { $$ = $2; }
     ;
 
-VarList : ID',' VarList {  $$ = $1; asd_add_child($$,$3);  if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}   }
+VarList : ID',' VarList {  $$ = $1; asd_add_child($$,$3);  if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha* hp = pop(stack); hash_table_insert(hp,&($1->value)); print_table();}} // replicar em todas as inserções na tabela
 		| ID{ $$ = $1;  if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}   }
 		| ID'[' ArrayDim ']' ',' VarList { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $6);   if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,$1->value); push(stack,hp);}  }
 		| ID'[' ArrayDim ']' { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3);  if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,$1->value); push(stack,hp);}  }
