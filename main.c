@@ -24,7 +24,7 @@ int main (int argc, char **argv)
 
   init_hash_table();
   int ret = yyparse(); 
-  print_iloc_list(iloc_list);
+ // print_iloc_list(iloc_list);
   asd_print(arvore);
   print_code_tree(arvore);
   //void print_table();
