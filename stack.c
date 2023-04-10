@@ -29,7 +29,7 @@ void push(Pilha* Pilha, hash_da_pilha* table){
 hash_da_pilha* pop(Pilha* pilha){
     if(empty_Pilha(pilha)){
         printf("pilha vazia!\n");
-        exit(4)
+        exit(4);
     }
     else{
         Nodo* temp = pilha->cabeça->next;
