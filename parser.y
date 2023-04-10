@@ -8,7 +8,7 @@
 #include "asd.h"
 #include "hash.h"
 #include "iloc.h"
-
+#include "stack.h"
 
 
 int yylex();
