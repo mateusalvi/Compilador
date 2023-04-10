@@ -3,10 +3,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-iloc_operations_list *new_iloc_operations_list();
+iloc_ops_list *new_iloc_ops_list();
 
-iloc_operation *new_iloc_operation(char *opcode, char *r1, char *r2, char *r3) {
-    iloc_operation *operation = malloc(sizeof(iloc_operation));
+iloc_op *new_iloc_op(char *opcode, char *r1, char *r2, char *r3) {
+    iloc_op *operation = malloc(sizeof(iloc_op));
     operation->opcode = opcode;
     operation->r1 = r1;
     operation->r2 = r2;
@@ -14,8 +14,8 @@ iloc_operation *new_iloc_operation(char *opcode, char *r1, char *r2, char *r3) {
     return operation;
 }
 
-iloc_operations_list *new_iloc_operations_list() {
-    iloc_operations_list *list = malloc(sizeof(iloc_operations_list));
+iloc_ops_list *new_iloc_ops_list() {
+    iloc_ops_list *list = malloc(sizeof(iloc_ops_list));
     list->operation = NULL;
     list->prev = NULL;
     list->next = NULL;
@@ -23,8 +23,8 @@ iloc_operations_list *new_iloc_operations_list() {
     return list;
 }
 
-void append_iloc_operation(iloc_operations_list *list, iloc_operation *operation) {
-    iloc_operations_list *node = malloc(sizeof(iloc_operations_list));
+void append_iloc_op(iloc_ops_list *list, iloc_op *operation) {
+    iloc_ops_list *node = malloc(sizeof(iloc_ops_list));
     node->operation = operation;
     node->next = NULL;
     node->prev = list;
@@ -55,7 +55,7 @@ char* new_temp() {
     return temp;
 }
 
-void print_iloc_list(iloc_operations_list *list)
+void print_iloc_list(iloc_ops_list *list)
 {
     if(list != NULL)
     {
@@ -66,16 +66,16 @@ void print_iloc_list(iloc_operations_list *list)
     }
 }
 
-void concat_lista(iloc_operations_list *list1 ,iloc_operations_list *list2)
+void concat_lista(iloc_ops_list *list1 ,iloc_ops_list *list2)
 {
 	while (list2->next != NULL) 
 	{
-	  append_iloc_operation(list1, list2->operation);
+	  append_iloc_op(list1, list2->operation);
 	  list2 = list2->prox;
 	}
 }
 
-void print_iloc_operations_list(iloc_operations_list *list, char* filename) {
+void print_iloc_ops_list(iloc_ops_list *list, char* filename) {
     FILE *fp;
     fp = fopen(filename, "w");
 
@@ -85,9 +85,9 @@ void print_iloc_operations_list(iloc_operations_list *list, char* filename) {
     }
 
     fprintf(fp, "Lista de Operações:\n");
-    iloc_operations_list *current = list;
+    iloc_ops_list *current = list;
     while (current != NULL) {
-        iloc_operation *operation = current->operation;
+        iloc_op *operation = current->operation;
         fprintf(fp, "%s %s,%s => %s,%s,%s\n", operation->opcode, operation->r1, operation->r2, operation->r3, operation->r4, operation->r5);
         current = current->next;
     }
@@ -99,5 +99,5 @@ void print_iloc_operations_list(iloc_operations_list *list, char* filename) {
 void print_code_tree(void* arvore){
     asd_tree_t *tree = (asd_tree_t *) arvore;
 	print_list_ilocs(arvore->code);
-	print_iloc_operations_list(arvore->code,"saida");
+	print_iloc_ops_list(arvore->code,"saida");
 }
