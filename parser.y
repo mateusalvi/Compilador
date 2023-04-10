@@ -85,7 +85,6 @@ Pilha* stack;
 %type<valor_lexico> TK_IDENTIFICADOR
 
 %type<tree> ID
-%type<tree> FuncCallID
 %type<tree> Program
 %type<tree> DecList
 %type<tree> Dec
@@ -208,7 +207,7 @@ Flow : TK_PR_WHILE '(' Expr ')' Block { $$ = asd_new("while"); asd_add_child($$,
 												iloc_operation *op = new_iloc_operation("nop", NULL,NULL, label_verdade) ; append_iloc_operation(iloc_list,op);
 												iloc_operation *op = new_iloc_operation("loadI", "0",NULL, $$->temp) ; append_iloc_operation(iloc_list,op); 
 												iloc_operation *op = new_iloc_operation("cmp_NE", $3->temp,$$->temp, opaco) ; append_iloc_operation(iloc_list,op);
-												concat_lista(iloc_list, $6->code);
+												concat_lista(iloc_list, $5->code);
 												iloc_operation *op = new_iloc_operation("cbr", opaco,label_verdade, label_falso); append_iloc_operation(iloc_list,op);
 												iloc_operation *op = new_iloc_operation("nop", NULL,NULL, label_falso) ; append_iloc_operation(iloc_list,op);
 												$$.code = iloc_list;}
