@@ -11,6 +11,27 @@ typedef struct nodo {
 		int tamanho;
 	}Pilha;
 	
+	
+int empty_Pilha(Pilha* Pilha);
+
+void init_Pilha(void);
+
+Pilha* create_Pilha();
+
+void push(Pilha* Pilha, HASH_TABLE* table);
+
+hash_da_pilha* pop(Pilha* pilha);
+
+Nodo* retrieve(Pilha* Pilha, int level);
+
+void delete_Pilha(Pilha* Pilha);
+
+void print_Pilha(Pilha* Pilha);
+
+value_t search_Pilha(Pilha* Pilha, char* simbolo);
+
+
+
 	/*Receita Pilha
 	cria uma int main() no .c
 	instancia uma tabela

@@ -159,10 +159,12 @@ Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); $$->value = $1; print_table();
 
 Func : ID PushTable '(' ')' Block PopTable { $$ = $1; if($5){ asd_add_child($$,$5); }; if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; exit(4);} else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,$1->value); push(stack,hp);
        $1->value->value_rot = strdup(new_rot()); iloc_operations_list *iloc_list = new_iloc_operations_list(); iloc_operation *op = new_iloc_operation("nop", NULL,NULL, $1->value->value_rot) ; append_iloc_operation(iloc_list,op); $$.code = iloc_list; print_table();} }
-	| ID PushTable '(' ParamList ')' Block PopTable { $$ = $1; if($4){ asd_add_child($$,$4); }; if($6){ asd_add_child($$,$6); }; if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,$1->value); push(stack,hp); $1->value->value_rot = strdup(new_rot()); iloc_operations_list *iloc_list = new_iloc_operations_list(); iloc_operation *op = new_iloc_operation("nop", NULL,NULL, $1->value->value_rot) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list,$6->code) $$.code = iloc_list; print_table(); }
+	| ID PushTable '(' ParamList ')' Block PopTable { $$ = $1; if($4){ asd_add_child($$,$4); }; if($6){ asd_add_child($$,$6); }; if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,$1->value); push(stack,hp); $1->value->value_rot = strdup(new_rot()); iloc_operations_list *iloc_list = new_iloc_operations_list(); iloc_operation *op = new_iloc_operation("nop", NULL,NULL, $1->value->value_rot) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list,$6->code) $$.code = iloc_list; print_table();} }
 	;
 
 PushTable:  %empty { hash_da_pilha* hp = create_table(); push(stack,hp);}
+
+PopTable:  %empty { hash_da_pilha* hp = create_table(); push(stack,hp);}
 
 
 ParamList : Param ',' ParamList { $$ = $1; asd_add_child($$,$3); }
@@ -215,12 +217,12 @@ Flow : TK_PR_WHILE '(' Expr ')' Block { $$ = asd_new("while"); asd_add_child($$,
 												$$->temp = new_temp(); char *tempoopaco = new_temp();  iloc_operations_list *iloc_list = new_iloc_operations_list(); 
 												iloc_operation *op = new_iloc_operation("loadI", "0",NULL, $$->temp) ; append_iloc_operation(iloc_list,op); 
 												iloc_operation *op = new_iloc_operation("cmp_NE", $3->temp,$$->temp, opaco) ; append_iloc_operation(iloc_list,op);
-												iloc_operation *op = new_iloc_operation(""cbr", opaco,label_verdade, label_falso) ; append_iloc_operation(iloc_list,op);
+												iloc_operation *op = new_iloc_operation("cbr", opaco,label_verdade, label_falso) ; append_iloc_operation(iloc_list,op);
 												iloc_operation *op = new_iloc_operation("nop", NULL,NULL, label_verdade) ; append_iloc_operation(iloc_list,op);
 												concat_lista(iloc_list, $6->code);
 												iloc_operation *op = new_iloc_operation("jumpI", NULL,NULL, label_depois) ; append_iloc_operation(iloc_list,op);
 												iloc_operation *op = new_iloc_operation("nop", NULL,NULL, label_falso) ; append_iloc_operation(iloc_list,op);
-												$$.code = iloc_list;
+												$$.code = iloc_list; } 
 	| TK_PR_IF '(' Expr ')' TK_PR_THEN Block TK_PR_ELSE Block { $$ = asd_new("if"); asd_add_child($$, $3); if($6){ asd_add_child($$, $6); }; if($8){ asd_add_child($$, $8); } 
 																char *label_verdade,*label_falso,*label_depois; label_verdade = new_rot(); label_falso = new_rot(); label_depois = new_rot(); 
 																$$->temp = new_temp(); char *tempoopaco = new_temp();  iloc_operations_list *iloc_list = new_iloc_operations_list(); 
