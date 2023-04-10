@@ -1,3 +1,6 @@
+#ifndef ILOC_H
+#define ILOC_H
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -34,3 +37,5 @@ char* new_temp();
 void concat_lista(iloc_operations_list *list1 ,iloc_operations_list *list2);
 
 void print_iloc_operations_list(iloc_operations_list *list, char* filename);
+
+#endif // ILOC_H
