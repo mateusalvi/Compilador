@@ -164,7 +164,7 @@ Func : ID PushTable '(' ')' Block PopTable { $$ = $1; if($5){ asd_add_child($$,$
 
 PushTable:  %empty { hash_da_pilha* hp = create_table(); push(stack,hp);}
 
-PopTable:  %empty { hash_da_pilha* hp = create_table(); push(stack,hp);}
+PopTable:  %empty { hash_da_pilha* hp = pop(stack);}
 
 
 ParamList : Param ',' ParamList { $$ = $1; asd_add_child($$,$3); }
