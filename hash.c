@@ -65,11 +65,6 @@ hash_da_pilha* create_table() {
 		 }
 	 }
 	 
-	void init_stack() {
-	 for (int i=0; i < TABLE_SIZE; i++) {
-		 pilha[i] = NULL;
-	 }
- }
   
  char* generate_random_key(int length) {
     char* key = malloc(sizeof(char) * (length + 1)); // Allocate memory for the key

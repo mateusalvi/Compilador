@@ -11,7 +11,7 @@ int empty_Pilha(Pilha* Pilha){
 }
 
 void init_Pilha(void){
-    Pilha pilha = malloc(sizeof(Pilha));
+    Pilha *pilha = malloc(sizeof(Pilha));
     pilha->cabeça = NULL;
     pilha->size = 0;
 }
