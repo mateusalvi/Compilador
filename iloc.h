@@ -10,7 +10,7 @@ struct iloc_operation {
     char *r1, *r2, *r3;
 };
 
-typedef struct iloc_operation iloc_op;
+typedef struct iloc_operation iloc_operation;
 
 typedef struct iloc_operations_list {
     iloc_operation *operation;
