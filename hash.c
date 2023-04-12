@@ -16,15 +16,15 @@ static int desloc;
 	 return hash_value;
  }
  
-hash_table* create_table() {
-	 hash_table* ht= malloc(sizeof(hash_da_pilha));
+hash_da_pilha* create_table() {
+	 hash_da_pilha* ht= malloc(sizeof(hash_da_pilha));
 	 ht->desloc = 0;
 	 value_t* hash_table[TABLE_SIZE];
 	 for (int i=0; i < TABLE_SIZE; i++) {
 		 ht->hash_table[i] = NULL;
 	 }
 	 
-	 printf("inicializou tabela");
+	 
 	 return ht;
  }
  
@@ -41,6 +41,7 @@ hash_table* create_table() {
 	 
 	 bool hash_table_insert(value_t *hash_table[TABLE_SIZE], value_t *s) {
 		 if (s == NULL) return false;
+		 printf("%s", s->value.valueChar);
 		 int index = hash(s->value.valueChar);
 		 if (hash_table[index] != NULL) {
 			 return false;
