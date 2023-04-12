@@ -20,6 +20,7 @@ extern value_t * hash_table[TABLE_SIZE];
 extern iloc_operations_list *iloc_list;
 Pilha* stack;
 iloc_operation *op;
+value_t value;
 
 }
 
@@ -242,9 +243,9 @@ Ret : TK_PR_RETURN Expr { $$ = asd_new("return"); asd_add_child($$, $2); op = ne
 	;
 
 FuncCall : ID '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); if(search_Pilha(stack,$1->value.value.valueChar) == NULL) { return ERR_UNDECLARED; }	
-									  else{print_table(); valor_lexico value = search_Pilha(stack,$1->value.value.valueChar);iloc_list = new_iloc_operations_list(); op = new_iloc_operation("jumpI", NULL,NULL, value->value_rot) ; append_iloc_operation(iloc_list,op); $$->code = iloc_list; }  }
+									  else{print_table(); value = search_Pilha(stack,$1->value.value.valueChar);iloc_list = new_iloc_operations_list(); op = new_iloc_operation("jumpI", NULL,NULL, value->value_rot) ; append_iloc_operation(iloc_list,op); $$->code = iloc_list; }  }
 
-	| ID '(' ')' { $$ = $1; if(search_Pilha(stack,$1->value.value.valueChar) == NULL) { return ERR_UNDECLARED; } else{ print_table(); valor_lexico value = search_Pilha(stack,$1->value.value.valueChar);iloc_list = new_iloc_operations_list(); op = new_iloc_operation("jumpI", NULL,NULL, value->value_rot) ; append_iloc_operation(iloc_list,op); $$->code = iloc_list;}  }
+	| ID '(' ')' { $$ = $1; if(search_Pilha(stack,$1->value.value.valueChar) == NULL) { return ERR_UNDECLARED; } else{ print_table(); value = search_Pilha(stack,$1->value.value.valueChar);iloc_list = new_iloc_operations_list(); op = new_iloc_operation("jumpI", NULL,NULL, value->value_rot) ; append_iloc_operation(iloc_list,op); $$->code = iloc_list;}  }
 	;
 
 
