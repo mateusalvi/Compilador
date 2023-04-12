@@ -22,7 +22,7 @@ hash_da_pilha* create_table() {
 	 value_t* hash_table[TABLE_SIZE];
 	 for (int i=0; i < TABLE_SIZE; i++) {
 		 ht->hash_table[i] = NULL;
-		 print("%d\n", i);
+		 printf("%d\n", i);
 	 }
 	 
 	 
