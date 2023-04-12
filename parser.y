@@ -216,8 +216,7 @@ Flow : TK_PR_WHILE '(' Expr ')' Block { $$ = asd_new("while"); asd_add_child($$,
 												op = new_iloc_operation("cmp_NE", $3->temp,$$->temp, opaco) ; append_iloc_operation(iloc_list,op);
 												concat_lista(iloc_list, $5->code);
 												op = new_iloc_operation("cbr", opaco,label_verdade, label_falso); append_iloc_operation(iloc_list,op);
-												op = new_iloc_operation("no
-												p", NULL,NULL, label_falso) ; append_iloc_operation(iloc_list,op);
+												op = new_iloc_operation("nop", NULL,NULL, label_falso) ; append_iloc_operation(iloc_list,op);
 												$$->code = iloc_list;}
 	| TK_PR_IF '(' Expr ')' TK_PR_THEN Block  { $$ = asd_new("if"); asd_add_child($$, $3); if($6){ asd_add_child($$, $6); } 
 												char *opaco; char *label_verdade,*label_falso,*label_depois; label_verdade = new_rot(); label_falso = new_rot(); label_depois = new_rot(); 
