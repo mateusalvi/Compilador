@@ -19,7 +19,8 @@ Pilha* create_Pilha(){
 
 void push(Pilha* Pilha, hash_da_pilha* table){
     Nodo* new_element = malloc(sizeof(Nodo));
-	memcpy(new_element->hash->hash_table , table, sizeof(table));
+	new_element->hash = malloc(sizeof(hash_da_pilha));
+	memcpy(new_element->hash, table, sizeof(table));
     new_element->next = Pilha->cabeça;
     Pilha->cabeça = new_element;
     Pilha->tamanho+=1;
