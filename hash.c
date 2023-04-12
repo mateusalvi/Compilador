@@ -57,6 +57,7 @@ hash_da_pilha* create_table() {
 	 
 	 value_t *hash_table_lookup (value_t* hash_table[TABLE_SIZE],char *key) {
 		 int index = hash(key);
+		 printf("%d", index);
 		 if (hash_table[index] != NULL &&
 		 strncmp(hash_table[index]->value.valueChar, key, TABLE_SIZE)==0) {
 			 return hash_table[index];
