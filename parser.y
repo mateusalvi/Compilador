@@ -19,6 +19,7 @@ extern void *arvore;
 extern value_t * hash_table[TABLE_SIZE];
 extern iloc_operations_list *iloc_list;
 Pilha* stack;
+iloc_operation *op;
 
 }
 
@@ -130,7 +131,7 @@ Dec : Type VarList ';' { if($2){ $$ = $2; } else{$$ = NULL; }  }
     ;
 
 VarList : ID',' VarList {  $$ = $1; asd_add_child($$,$3);  if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha* hp = pop(stack); hash_table_insert(hp,&($1->value)); print_table();}} // replicar em todas as inserções na tabela
-		| ID{ $$ = $1;  if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(hp,&($1->value)); print_table();}   }
+		| ID{ $$ = $1;  if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha* hp = pop(stack); hash_table_insert(hp,&($1->value)); print_table();}   }
 		| ID'[' ArrayDim ']' ',' VarList { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $6);   if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);}  }
 		| ID'[' ArrayDim ']' { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3);  if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);}  }
 		;
@@ -150,10 +151,10 @@ ArrayDim : Expr '^' ArrayDim  { $$ = asd_new("^"); asd_add_child($$,$1); asd_add
     ;
 
 Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); $$->value = $1; print_table(); $$->temp = new_temp(); op = new_iloc_operation("loadI", "r1",NULL, $$->temp); append_iloc_operation(iloc_list,op); }
-    | TK_LIT_FLOAT { $$ = asd_new(create_leaf($1)); $$->value = $1; print_table(); $$->temp = new_temp(); hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);}
-    | TK_LIT_FALSE { $$ = asd_new(create_leaf($1)); $$->value = $1; print_table(); $$->temp = new_temp(); hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);}
-    | TK_LIT_TRUE { $$ = asd_new(create_leaf($1)); $$->value = $1; print_table(); $$->temp = new_temp(); hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);}
-    | TK_LIT_CHAR { $$ = asd_new(create_leaf($1)); $$->value = $1; print_table(); $$->temp = new_temp(); hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);}
+    | TK_LIT_FLOAT { $$ = asd_new(create_leaf($1)); $$->value = $1; print_table(); $$->temp = new_temp(); hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1.value)); push(stack,hp);}
+    | TK_LIT_FALSE { $$ = asd_new(create_leaf($1)); $$->value = $1; print_table(); $$->temp = new_temp(); hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1.value)); push(stack,hp);}
+    | TK_LIT_TRUE { $$ = asd_new(create_leaf($1)); $$->value = $1; print_table(); $$->temp = new_temp(); hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1.value)); push(stack,hp);}
+    | TK_LIT_CHAR { $$ = asd_new(create_leaf($1)); $$->value = $1; print_table(); $$->temp = new_temp(); hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1.value)); push(stack,hp);}
     ;
 
 Func : ID PushTable '(' ')' Block PopTable { $$ = $1; if($5){ asd_add_child($$,$5); }; if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; exit(4);} else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);
