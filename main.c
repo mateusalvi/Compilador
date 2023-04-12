@@ -7,6 +7,7 @@
 #include "asd.h"
 #include "hash.h"
 #include "iloc.h"
+#include "stack.h"
 
 
 
@@ -17,12 +18,14 @@ iloc_operations_list *iloc_list;
 void *arvore = NULL;
 void asd_print_graphviz (asd_tree_t *arvore);
 void asd_free (asd_tree_t *arvore); 
+Pilha* stack;
+hash_da_pilha *hp;
 
 
 int main (int argc, char **argv)
 {
 
-  init_hash_table();
+  init();
   int ret = yyparse(); 
  // print_iloc_list(iloc_list);
   asd_print(arvore);
