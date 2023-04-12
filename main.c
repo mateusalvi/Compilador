@@ -14,6 +14,7 @@
 
 extern int yyparse(void);
 extern int yylex_destroy(void);
+extern void init(void);
 iloc_operations_list *iloc_list;
 void *arvore = NULL;
 void asd_print_graphviz (asd_tree_t *arvore);
