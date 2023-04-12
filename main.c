@@ -17,7 +17,9 @@ extern int yylex_destroy(void);
 iloc_operations_list *iloc_list;
 void *arvore = NULL;
 void asd_print_graphviz (asd_tree_t *arvore);
-void asd_free (asd_tree_t *arvore); 
+void asd_free (asd_tree_t *arvore);
+iloc_operation *op;
+value_t *value; 
 Pilha* stack;
 hash_da_pilha *hp;
 
@@ -29,7 +31,6 @@ int main (int argc, char **argv)
   int ret = yyparse(); 
  // print_iloc_list(iloc_list);
   asd_print(arvore);
-  print_code_tree(arvore);
   //void print_table();
   arvore = NULL;
   yylex_destroy();

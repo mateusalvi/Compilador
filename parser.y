@@ -18,8 +18,8 @@ extern int get_line_number();
 extern void *arvore;
 extern value_t * hash_table[TABLE_SIZE];
 extern iloc_operations_list *iloc_list;
-iloc_operation *op;
-value_t *value;
+extern iloc_operation *op;
+extern value_t *value;
 extern Pilha* stack;
 extern hash_da_pilha *hp;
 
