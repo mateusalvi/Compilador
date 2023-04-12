@@ -14,6 +14,7 @@ Pilha* create_Pilha(){
     Pilha* pilha = malloc(sizeof(Pilha));
     pilha->cabeça = NULL;
     pilha->tamanho = 0;
+	printf("pilha criada e inicializada!");
     return pilha;
 }
 
