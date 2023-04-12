@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include "asd.h"
-#define TABLE_SIZE 20
+#define TABLE_SIZE 1021
 
 #define ERR_UNDECLARED 10 //2.2
 #define ERR_DECLARED 11 //2.2

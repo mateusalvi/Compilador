@@ -22,7 +22,6 @@ hash_table* create_table() {
 	 value_t* hash_table[TABLE_SIZE];
 	 for (int i=0; i < TABLE_SIZE; i++) {
 		 ht->hash_table[i] = NULL;
-		 printf("%d\n", i);
 	 }
 	 
 	 printf("inicializou tabela");
@@ -42,7 +41,6 @@ hash_table* create_table() {
 	 
 	 bool hash_table_insert(value_t *hash_table[TABLE_SIZE], value_t *s) {
 		 if (s == NULL) return false;
-		 printf("%s", s->value.valueChar);
 		 int index = hash(s->value.valueChar);
 		 if (hash_table[index] != NULL) {
 			 return false;
