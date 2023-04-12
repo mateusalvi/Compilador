@@ -130,7 +130,7 @@ Dec : Type VarList ';' { if($2){ $$ = $2; } else{$$ = NULL; }  }
     ;
 
 VarList : ID',' VarList {  $$ = $1; asd_add_child($$,$3);  if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha* hp = pop(stack); hash_table_insert(hp,&($1->value)); print_table();}} // replicar em todas as inserções na tabela
-		| ID{ $$ = $1;  if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(&($1->value)); print_table();}   }
+		| ID{ $$ = $1;  if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_table_insert(hp,&($1->value)); print_table();}   }
 		| ID'[' ArrayDim ']' ',' VarList { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $6);   if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,$1->value); push(stack,hp);}  }
 		| ID'[' ArrayDim ']' { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3);  if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,$1->value); push(stack,hp);}  }
 		;
@@ -149,7 +149,7 @@ ArrayDim : Expr '^' ArrayDim  { $$ = asd_new("^"); asd_add_child($$,$1); asd_add
 	| Expr { $$ = $1; }
     ;
 
-Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); $$->value = $1; print_table(); $$->temp = new_temp(); iloc_operation *op = new_iloc_operation("loadI", "r1",NULL, $$->temp); append_iloc_operation(iloc_list,op); }
+Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); $$->value = $1; print_table(); $$->temp = new_temp(); *op = new_iloc_operation("loadI", "r1",NULL, $$->temp); append_iloc_operation(iloc_list,op); }
     | TK_LIT_FLOAT { $$ = asd_new(create_leaf($1)); $$->value = $1; print_table(); $$->temp = new_temp(); hash_da_pilha *hp = pop(stack); hash_table_insert(hp,$1->value); push(stack,hp);}
     | TK_LIT_FALSE { $$ = asd_new(create_leaf($1)); $$->value = $1; print_table(); $$->temp = new_temp(); hash_da_pilha *hp = pop(stack); hash_table_insert(hp,$1->value); push(stack,hp);}
     | TK_LIT_TRUE { $$ = asd_new(create_leaf($1)); $$->value = $1; print_table(); $$->temp = new_temp(); hash_da_pilha *hp = pop(stack); hash_table_insert(hp,$1->value); push(stack,hp);}
@@ -157,8 +157,8 @@ Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); $$->value = $1; print_table();
     ;
 
 Func : ID PushTable '(' ')' Block PopTable { $$ = $1; if($5){ asd_add_child($$,$5); }; if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; exit(4);} else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,$1->value); push(stack,hp);
-       $1->value->value_rot = strdup(new_rot()); iloc_operations_list *iloc_list = new_iloc_operations_list(); iloc_operation *op = new_iloc_operation("nop", NULL,NULL, $1->value->value_rot) ; append_iloc_operation(iloc_list,op); $$.code = iloc_list; print_table();} }
-	| ID PushTable '(' ParamList ')' Block PopTable { $$ = $1; if($4){ asd_add_child($$,$4); }; if($6){ asd_add_child($$,$6); }; if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,$1->value); push(stack,hp); $1->value->value_rot = strdup(new_rot()); iloc_operations_list *iloc_list = new_iloc_operations_list(); iloc_operation *op = new_iloc_operation("nop", NULL,NULL, $1->value->value_rot) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list,$6->code) $$.code = iloc_list; print_table();} }
+       $1->value->value_rot = strdup(new_rot()); iloc_operations_list *iloc_list = new_iloc_operations_list(); *op = new_iloc_operation("nop", NULL,NULL, $1->value->value_rot) ; append_iloc_operation(iloc_list,op); $$.code = iloc_list; print_table();} }
+	| ID PushTable '(' ParamList ')' Block PopTable { $$ = $1; if($4){ asd_add_child($$,$4); }; if($6){ asd_add_child($$,$6); }; if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,$1->value); push(stack,hp); $1->value->value_rot = strdup(new_rot()); iloc_operations_list *iloc_list = new_iloc_operations_list(); *op = new_iloc_operation("nop", NULL,NULL, $1->value->value_rot) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list,$6->code) $$.code = iloc_list; print_table();} }
 	;
 
 PushTable:  %empty { hash_da_pilha* hp = create_table(); push(stack,hp);}
@@ -204,136 +204,136 @@ Atrib : ID '=' Expr { $$ = asd_new("="); asd_add_child($$, $1); asd_add_child($$
 Flow : TK_PR_WHILE '(' Expr ')' Block { $$ = asd_new("while"); asd_add_child($$, $3); if($5){ asd_add_child($$, $5); }
 												char *label_verdade,*label_falso,*label_depois; label_verdade = new_rot(); label_falso = new_rot(); label_depois = new_rot(); 
 												$$->temp = new_temp(); char *tempoopaco = new_temp(); iloc_operations_list *iloc_list = new_iloc_operations_list(); 
-												iloc_operation *op = new_iloc_operation("nop", NULL,NULL, label_verdade) ; append_iloc_operation(iloc_list,op);
-												iloc_operation *op = new_iloc_operation("loadI", "0",NULL, $$->temp) ; append_iloc_operation(iloc_list,op); 
-												iloc_operation *op = new_iloc_operation("cmp_NE", $3->temp,$$->temp, opaco) ; append_iloc_operation(iloc_list,op);
+												*op = new_iloc_operation("nop", NULL,NULL, label_verdade) ; append_iloc_operation(iloc_list,op);
+												*op = new_iloc_operation("loadI", "0",NULL, $$->temp) ; append_iloc_operation(iloc_list,op); 
+												*op = new_iloc_operation("cmp_NE", $3->temp,$$->temp, opaco) ; append_iloc_operation(iloc_list,op);
 												concat_lista(iloc_list, $5->code);
-												iloc_operation *op = new_iloc_operation("cbr", opaco,label_verdade, label_falso); append_iloc_operation(iloc_list,op);
-												iloc_operation *op = new_iloc_operation("nop", NULL,NULL, label_falso) ; append_iloc_operation(iloc_list,op);
+												*op = new_iloc_operation("cbr", opaco,label_verdade, label_falso); append_iloc_operation(iloc_list,op);
+												*op = new_iloc_operation("nop", NULL,NULL, label_falso) ; append_iloc_operation(iloc_list,op);
 												$$.code = iloc_list;}
 	| TK_PR_IF '(' Expr ')' TK_PR_THEN Block  { $$ = asd_new("if"); asd_add_child($$, $3); if($6){ asd_add_child($$, $6); } 
 												char *label_verdade,*label_falso,*label_depois; label_verdade = new_rot(); label_falso = new_rot(); label_depois = new_rot(); 
 												$$->temp = new_temp(); char *tempoopaco = new_temp();  iloc_operations_list *iloc_list = new_iloc_operations_list(); 
-												iloc_operation *op = new_iloc_operation("loadI", "0",NULL, $$->temp) ; append_iloc_operation(iloc_list,op); 
-												iloc_operation *op = new_iloc_operation("cmp_NE", $3->temp,$$->temp, opaco) ; append_iloc_operation(iloc_list,op);
-												iloc_operation *op = new_iloc_operation("cbr", opaco,label_verdade, label_falso) ; append_iloc_operation(iloc_list,op);
-												iloc_operation *op = new_iloc_operation("nop", NULL,NULL, label_verdade) ; append_iloc_operation(iloc_list,op);
+												*op = new_iloc_operation("loadI", "0",NULL, $$->temp) ; append_iloc_operation(iloc_list,op); 
+												*op = new_iloc_operation("cmp_NE", $3->temp,$$->temp, opaco) ; append_iloc_operation(iloc_list,op);
+												*op = new_iloc_operation("cbr", opaco,label_verdade, label_falso) ; append_iloc_operation(iloc_list,op);
+												*op = new_iloc_operation("nop", NULL,NULL, label_verdade) ; append_iloc_operation(iloc_list,op);
 												concat_lista(iloc_list, $6->code);
-												iloc_operation *op = new_iloc_operation("jumpI", NULL,NULL, label_depois) ; append_iloc_operation(iloc_list,op);
-												iloc_operation *op = new_iloc_operation("nop", NULL,NULL, label_falso) ; append_iloc_operation(iloc_list,op);
+												*op = new_iloc_operation("jumpI", NULL,NULL, label_depois) ; append_iloc_operation(iloc_list,op);
+												*op = new_iloc_operation("nop", NULL,NULL, label_falso) ; append_iloc_operation(iloc_list,op);
 												$$.code = iloc_list; } 
 	| TK_PR_IF '(' Expr ')' TK_PR_THEN Block TK_PR_ELSE Block { $$ = asd_new("if"); asd_add_child($$, $3); if($6){ asd_add_child($$, $6); }; if($8){ asd_add_child($$, $8); } 
 																char *label_verdade,*label_falso,*label_depois; label_verdade = new_rot(); label_falso = new_rot(); label_depois = new_rot(); 
 																$$->temp = new_temp(); char *tempoopaco = new_temp();  iloc_operations_list *iloc_list = new_iloc_operations_list(); 
-																iloc_operation *op = new_iloc_operation("loadI", "0",NULL, $$->temp) ; append_iloc_operation(iloc_list,op); 
-																iloc_operation *op = new_iloc_operation("cmp_NE", $3->temp,$3->temp, opaco) ; append_iloc_operation(iloc_list,op);
-																iloc_operation *op = new_iloc_operation("cbr", opaco,label_verdade, label_falso) ; append_iloc_operation(iloc_list,op);
-																iloc_operation *op = new_iloc_operation("nop", NULL,NULL, label_verdade) ; append_iloc_operation(iloc_list,op);
+																*op = new_iloc_operation("loadI", "0",NULL, $$->temp) ; append_iloc_operation(iloc_list,op); 
+																*op = new_iloc_operation("cmp_NE", $3->temp,$3->temp, opaco) ; append_iloc_operation(iloc_list,op);
+																*op = new_iloc_operation("cbr", opaco,label_verdade, label_falso) ; append_iloc_operation(iloc_list,op);
+																*op = new_iloc_operation("nop", NULL,NULL, label_verdade) ; append_iloc_operation(iloc_list,op);
 																concat_lista(iloc_list, $6->code);
-																iloc_operation *op = new_iloc_operation("jumpI", NULL,NULL, label_depois) ; append_iloc_operation(iloc_list,op);
+																*op = new_iloc_operation("jumpI", NULL,NULL, label_depois) ; append_iloc_operation(iloc_list,op);
 																concat_lista(iloc_list, $8->code);
-																iloc_operation *op = new_iloc_operation("nop", NULL,NULL, label_falso) ; append_iloc_operation(iloc_list,op);
-																iloc_operation *op = new_iloc_operation("nop", NULL,NULL, label_depois) ; append_iloc_operation(iloc_list,op);
+																*op = new_iloc_operation("nop", NULL,NULL, label_falso) ; append_iloc_operation(iloc_list,op);
+																*op = new_iloc_operation("nop", NULL,NULL, label_depois) ; append_iloc_operation(iloc_list,op);
 																$$.code = iloc_list;}
 	;
 
-Ret : TK_PR_RETURN Expr { $$ = asd_new("return"); asd_add_child($$, $2); iloc_operation *op = new_iloc_operation("jump", NULL ,NULL, $2->temp) ; append_iloc_operation(iloc_list,op); $$.code = iloc_list; } // Para o comando de retorno deve ser utilizado o lexema correspondente. ???
+Ret : TK_PR_RETURN Expr { $$ = asd_new("return"); asd_add_child($$, $2); *op = new_iloc_operation("jump", NULL ,NULL, $2->temp) ; append_iloc_operation(iloc_list,op); $$.code = iloc_list; } // Para o comando de retorno deve ser utilizado o lexema correspondente. ???
 	;
 
 FuncCall : ID '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); if(search_stack(stack,$1->value.value.valueChar) == NULL) { return ERR_UNDECLARED; }	
-									  else{print_table(); valor_lexico value = search_stack(stack,$1->value.value.valueChar); loc_list = new_iloc_operations_list(); iloc_operation *op = new_iloc_operation("jumpI", NULL,NULL, value->value_rot) ; append_iloc_operation(iloc_list,op); $$.code = iloc_list; }  }
+									  else{print_table(); valor_lexico value = search_stack(stack,$1->value.value.valueChar); loc_list = new_iloc_operations_list(); *op = new_iloc_operation("jumpI", NULL,NULL, value->value_rot) ; append_iloc_operation(iloc_list,op); $$.code = iloc_list; }  }
 
-	| ID '(' ')' { $$ = $1; if(search_stack(stack,$1->value.value.valueChar) == NULL) { return ERR_UNDECLARED; } else{ print_table(); valor_lexico value = search_stack(stack,$1->value.value.valueChar); loc_list = new_iloc_operations_list(); iloc_operation *op = new_iloc_operation("jumpI", NULL,NULL, value->value_rot) ; append_iloc_operation(iloc_list,op); $$.code = iloc_list;}  }
+	| ID '(' ')' { $$ = $1; if(search_stack(stack,$1->value.value.valueChar) == NULL) { return ERR_UNDECLARED; } else{ print_table(); valor_lexico value = search_stack(stack,$1->value.value.valueChar); loc_list = new_iloc_operations_list(); *op = new_iloc_operation("jumpI", NULL,NULL, value->value_rot) ; append_iloc_operation(iloc_list,op); $$.code = iloc_list;}  }
 	;
 
 
 
 Expr : Expr TK_OC_OR T  { $$ = asd_new("||"); asd_add_child($$, $1); asd_add_child($$, $3); 
-											  $$->temp = new_temp(); iloc_operations_list *iloc_list = new_iloc_operations_list(); iloc_operation *op = new_iloc_operation("or", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list, $1.code); concat_lista(iloc_list, $3.code); $$.code = iloc_list; }
+											  $$->temp = new_temp(); iloc_operations_list *iloc_list = new_iloc_operations_list(); *op = new_iloc_operation("or", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list, $1.code); concat_lista(iloc_list, $3.code); $$.code = iloc_list; }
 	| T { $$ = $1; }
 T : T TK_OC_AND F { $$ = asd_new("&&"); asd_add_child($$, $1); asd_add_child($$, $3); 
-										$$->temp = new_temp(); iloc_operations_list *iloc_list = new_iloc_operations_list(); iloc_operation *op = new_iloc_operation("and", $1->temp,$3->temp, $$->temp) ; concat_lista(iloc_list, $1.code); concat_lista(iloc_list, $3.code); append_iloc_operation(iloc_list,op); $$.code = iloc_list;}
+										$$->temp = new_temp(); iloc_operations_list *iloc_list = new_iloc_operations_list(); *op = new_iloc_operation("and", $1->temp,$3->temp, $$->temp) ; concat_lista(iloc_list, $1.code); concat_lista(iloc_list, $3.code); append_iloc_operation(iloc_list,op); $$.code = iloc_list;}
 	| F { $$ = $1; }
 F : F TK_OC_EQ G { $$ = asd_new("=="); asd_add_child($$, $1); asd_add_child($$, $3); 
 									   $$->temp = new_temp(); char *label_verdade,*label_falso,*label_depois; label_verdade = new_rot(); label_falso = new_rot(); label_depois = new_rot(); iloc_operations_list *iloc_list;
-									  iloc_operation *op = new_iloc_operation("cmp_EQ", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation("cbr", $$->temp,label_verdade, label_falso) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation(label_verdade, "loadI","1", $$->temp) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation("jumpI", NULL,NULL, label_depois) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation(label_falso, "loadI","0", $$->temp) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation("nop", label_depois,NULL, NULL) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation("cmp_EQ", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation("cbr", $$->temp,label_verdade, label_falso) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation(label_verdade, "loadI","1", $$->temp) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation("jumpI", NULL,NULL, label_depois) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation(label_falso, "loadI","0", $$->temp) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation("nop", label_depois,NULL, NULL) ; append_iloc_operation(iloc_list,op);
 									   concat_lista(iloc_list, $1->code);
 									   concat_lista(iloc_list, $3->code);
 									   $$->code = iloc_list;}
 	| F TK_OC_NE G { $$ = asd_new("!="); asd_add_child($$, $1); asd_add_child($$, $3); 
 										$$->temp = new_temp(); char *label_verdade,*label_falso,*label_depois; label_verdade = new_rot(); label_falso = new_rot(); label_depois = new_rot(); iloc_operations_list *iloc_list;
-									  iloc_operation *op = new_iloc_operation("cmp_NE", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation("cbr", $$->temp,label_verdade, label_falso) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation(label_verdade, "loadI","1", $$->temp) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation("jumpI", NULL,NULL, label_depois) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation(label_falso, "loadI","0", $$->temp) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation("nop", label_depois,NULL, NULL) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation("cmp_NE", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation("cbr", $$->temp,label_verdade, label_falso) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation(label_verdade, "loadI","1", $$->temp) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation("jumpI", NULL,NULL, label_depois) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation(label_falso, "loadI","0", $$->temp) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation("nop", label_depois,NULL, NULL) ; append_iloc_operation(iloc_list,op);
 									   concat_lista(iloc_list, $1->code);
 									   concat_lista(iloc_list, $3->code);
 									   $$->code = iloc_list;}
 	| G { $$ = $1; }
 G : G TK_OC_LE I { $$ = asd_new("<=");  asd_add_child($$, $1); asd_add_child($$, $3); 
 										$$->temp = new_temp(); char *label_verdade,*label_falso,*label_depois; label_verdade = new_rot(); label_falso = new_rot(); label_depois = new_rot(); iloc_operations_list *iloc_list;
-									  iloc_operation *op = new_iloc_operation("cmp_LE", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation("cbr", $$->temp,label_verdade, label_falso) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation(label_verdade, "loadI","1", $$->temp) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation("jumpI", NULL,NULL, label_depois) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation(label_falso, "loadI","0", $$->temp) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation("nop", label_depois,NULL, NULL) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation("cmp_LE", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation("cbr", $$->temp,label_verdade, label_falso) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation(label_verdade, "loadI","1", $$->temp) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation("jumpI", NULL,NULL, label_depois) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation(label_falso, "loadI","0", $$->temp) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation("nop", label_depois,NULL, NULL) ; append_iloc_operation(iloc_list,op);
 									   concat_lista(iloc_list, $1->code);
 									   concat_lista(iloc_list, $3->code);
 									   $$->code = iloc_list;}
 	| G TK_OC_GE I { $$ = asd_new(">=");	asd_add_child($$, $1); asd_add_child($$, $3); 
 											$$->temp = new_temp(); char *label_verdade,*label_falso,*label_depois; label_verdade = new_rot(); label_falso = new_rot(); label_depois = new_rot(); iloc_operations_list *iloc_list;
-									  iloc_operation *op = new_iloc_operation("cmp_GE", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation("cbr", $$->temp,label_verdade, label_falso) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation(label_verdade, "loadI","1", $$->temp) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation("jumpI", NULL,NULL, label_depois) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation(label_falso, "loadI","0", $$->temp) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation("nop", label_depois,NULL, NULL) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation("cmp_GE", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation("cbr", $$->temp,label_verdade, label_falso) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation(label_verdade, "loadI","1", $$->temp) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation("jumpI", NULL,NULL, label_depois) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation(label_falso, "loadI","0", $$->temp) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation("nop", label_depois,NULL, NULL) ; append_iloc_operation(iloc_list,op);
 									   concat_lista(iloc_list, $1->code);
 									   concat_lista(iloc_list, $3->code);
 									   $$->code = iloc_list;}
 	| G '>' I { $$ = asd_new(">"); asd_add_child($$, $1); asd_add_child($$, $3); 
 										$$->temp = new_temp(); char *label_verdade,*label_falso,*label_depois; label_verdade = new_rot(); label_falso = new_rot(); label_depois = new_rot(); iloc_operations_list *iloc_list;
-									  iloc_operation *op = new_iloc_operation("cmp_GT", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation("cbr", $$->temp,label_verdade, label_falso) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation(label_verdade, "loadI","1", $$->temp) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation("jumpI", NULL,NULL, label_depois) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation(label_falso, "loadI","0", $$->temp) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation("nop", label_depois,NULL, NULL) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation("cmp_GT", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation("cbr", $$->temp,label_verdade, label_falso) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation(label_verdade, "loadI","1", $$->temp) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation("jumpI", NULL,NULL, label_depois) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation(label_falso, "loadI","0", $$->temp) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation("nop", label_depois,NULL, NULL) ; append_iloc_operation(iloc_list,op);
 									   concat_lista(iloc_list, $1->code);
 									   concat_lista(iloc_list, $3->code);
 									   $$->code = iloc_list;}
 	| G '<' I { $$ = asd_new("<"); asd_add_child($$, $1); asd_add_child($$, $3); 
 										$$->temp = new_temp(); char *label_verdade,*label_falso,*label_depois; label_verdade = new_rot(); label_falso = new_rot(); label_depois = new_rot(); iloc_operations_list *iloc_list;
-									  iloc_operation *op = new_iloc_operation("cmp_LT", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation("cbr", $$->temp,label_verdade, label_falso) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation(label_verdade, "loadI","1", $$->temp) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation("jumpI", NULL,NULL, label_depois) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation(label_falso, "loadI","0", $$->temp) ; append_iloc_operation(iloc_list,op);
-									  iloc_operation *op = new_iloc_operation("nop", label_depois,NULL, NULL) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation("cmp_LT", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation("cbr", $$->temp,label_verdade, label_falso) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation(label_verdade, "loadI","1", $$->temp) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation("jumpI", NULL,NULL, label_depois) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation(label_falso, "loadI","0", $$->temp) ; append_iloc_operation(iloc_list,op);
+									  *op = new_iloc_operation("nop", label_depois,NULL, NULL) ; append_iloc_operation(iloc_list,op);
 									   concat_lista(iloc_list, $1->code);
 									   concat_lista(iloc_list, $3->code);
 									   $$->code = iloc_list;}
 	| I { $$ = $1; }
 I : I '+' J { $$ = asd_new("+"); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $3);
-								 $$->temp = new_temp(); iloc_operations_list *iloc_list = new_iloc_operations_list(); iloc_operation *op = new_iloc_operation("add", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list, $1.code); concat_lista(iloc_list, $3.code); $$.code = iloc_list; 
+								 $$->temp = new_temp(); iloc_operations_list *iloc_list = new_iloc_operations_list(); *op = new_iloc_operation("add", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list, $1.code); concat_lista(iloc_list, $3.code); $$.code = iloc_list; 
 								 } //$1.cod 
 	| I '-' J { $$ = asd_new("-");  asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $3);
-									$$->temp = new_temp(); iloc_operations_list *iloc_list = new_iloc_operations_list(); iloc_operation *op = new_iloc_operation("sub", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list, $1.code); concat_lista(iloc_list, $3.code); $$.code = iloc_list;
+									$$->temp = new_temp(); iloc_operations_list *iloc_list = new_iloc_operations_list(); *op = new_iloc_operation("sub", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list, $1.code); concat_lista(iloc_list, $3.code); $$.code = iloc_list;
 									}
 	| J { $$ = $1; }
 J : J '*' K { $$ = asd_new("*");	asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $3);
-									$$->temp = new_temp(); iloc_operations_list *iloc_list = new_iloc_operations_list(); iloc_operation *op = new_iloc_operation("mult", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list, $1.code); concat_lista(iloc_list, $3.code); $$.code = iloc_list;
+									$$->temp = new_temp(); iloc_operations_list *iloc_list = new_iloc_operations_list(); *op = new_iloc_operation("mult", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list, $1.code); concat_lista(iloc_list, $3.code); $$.code = iloc_list;
 									}
 	| J '/' K { $$ = asd_new("/");  asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $3);
-									$$->temp = new_temp(); iloc_operations_list *iloc_list = new_iloc_operations_list(); iloc_operation *op = new_iloc_operation("div", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list, $1.code); concat_lista(iloc_list, $3.code); $$.code = iloc_list; 
+									$$->temp = new_temp(); iloc_operations_list *iloc_list = new_iloc_operations_list(); *op = new_iloc_operation("div", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list, $1.code); concat_lista(iloc_list, $3.code); $$.code = iloc_list; 
 									}
 	| J '%' K { $$ = asd_new("%"); asd_add_child($$, $1); asd_add_child($$, $3); 
 	}

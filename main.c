@@ -17,7 +17,7 @@ iloc_operations_list *iloc_list;
 void *arvore = NULL;
 void asd_print_graphviz (asd_tree_t *arvore);
 void asd_free (asd_tree_t *arvore); 
-
+iloc_operation *op;
 
 int main (int argc, char **argv)
 {
