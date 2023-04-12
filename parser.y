@@ -158,8 +158,8 @@ Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); $$->value = $1; print_table();
     ;
 
 Func : ID PushTable '(' ')' Block PopTable { $$ = $1; if($5){ asd_add_child($$,$5); }; if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; exit(4);} else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);
-       $1->value.value_rot = strdup(new_rot()); iloc_operations_list *iloc_list = new_iloc_operations_list(); op = new_iloc_operation("nop", NULL,NULL, $1->value->value_rot) ; append_iloc_operation(iloc_list,op); $$->code = iloc_list; print_table();} }
-	| ID PushTable '(' ParamList ')' Block PopTable { $$ = $1; if($4){ asd_add_child($$,$4); }; if($6){ asd_add_child($$,$6); }; if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp); $1->value->value_rot = strdup(new_rot()); iloc_operations_list *iloc_list = new_iloc_operations_list(); op = new_iloc_operation("nop", NULL,NULL, $1->value->value_rot) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list,$6->code) $$->code = iloc_list; print_table();} }
+       $1->value.value_rot = strdup(new_rot()); iloc_operations_list *iloc_list = new_iloc_operations_list(); op = new_iloc_operation("nop", NULL,NULL, $1->value.value_rot) ; append_iloc_operation(iloc_list,op); $$->code = iloc_list; print_table();} }
+	| ID PushTable '(' ParamList ')' Block PopTable { $$ = $1; if($4){ asd_add_child($$,$4); }; if($6){ asd_add_child($$,$6); }; if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp); $1->value.value_rot = strdup(new_rot()); iloc_operations_list *iloc_list = new_iloc_operations_list(); op = new_iloc_operation("nop", NULL,NULL, $1->value.value_rot) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list,$6->code) $$->code = iloc_list; print_table();} }
 	;
 
 PushTable:  %empty { hash_da_pilha* hp = create_table(); push(stack,hp);}
