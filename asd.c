@@ -32,10 +32,6 @@ void asd_free(asd_tree_t *tree)
     free(tree->label);
     free(tree);
   }
-  else
-  {
-    printf("Erro: %s recebeu parâmetro tree = %p.\n", __FUNCTION__, tree);
-  }
 }
 
 void asd_free_node(asd_tree_t *tree)

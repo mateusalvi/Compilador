@@ -19,7 +19,7 @@ extern void *arvore;
 extern value_t * hash_table[TABLE_SIZE];
 extern iloc_operations_list *iloc_list;
 extern iloc_operation *op;
-extern value_t *value;
+value_t *value;
 extern Pilha* stack;
 extern hash_da_pilha *hp;
 
@@ -200,7 +200,7 @@ DecLocal: Type VarListLocal { if($2){ $$ = $2; } }
 VarListLocal : ID ',' VarListLocal { $$ = $3;  if(search_Pilha(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);}  }
         | ID TK_OC_LE Lit ',' VarListLocal { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $5);   if(search_Pilha(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);}  }
 		| ID TK_OC_LE Lit { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3);  if(search_Pilha(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);}   }
-		| 
+		| ID { $$ = $1;  if(search_Pilha(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);}   }
 		;
 
 
