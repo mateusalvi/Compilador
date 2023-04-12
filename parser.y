@@ -200,7 +200,7 @@ DecLocal: Type VarListLocal { if($2){ $$ = $2; } }
 VarListLocal : ID ',' VarListLocal { $$ = $3;  if(search_Pilha(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);}  }
         | ID TK_OC_LE Lit ',' VarListLocal { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $5);   if(search_Pilha(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);}  }
 		| ID TK_OC_LE Lit { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3);  if(search_Pilha(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);}   }
-		| ID { $$ = $1;  if(search_Pilha(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);}   }
+		| ID { $$ = $1; printf("%s",$1->value.value.valueChar);  if(search_Pilha(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);}   }
 		;
 
 
