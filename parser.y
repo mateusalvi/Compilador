@@ -326,17 +326,17 @@ G : G TK_OC_LE I { $$ = asd_new("<=");  asd_add_child($$, $1); asd_add_child($$,
 									   $$->code = iloc_list;}
 	| I { $$ = $1; }
 I : I '+' J { $$ = asd_new("+"); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $3);
-								 $$->temp = new_temp(); iloc_operations_list *iloc_list = new_iloc_operations_list(); op = new_iloc_operation("add", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list, $1.code); concat_lista(iloc_list, $3.code); $$->code = iloc_list; 
+								 $$->temp = new_temp(); iloc_operations_list *iloc_list = new_iloc_operations_list(); op = new_iloc_operation("add", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list, $1->code); concat_lista(iloc_list, $3->code); $$->code = iloc_list; 
 								 } //$1.cod 
 	| I '-' J { $$ = asd_new("-");  asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $3);
-									$$->temp = new_temp(); iloc_operations_list *iloc_list = new_iloc_operations_list(); op = new_iloc_operation("sub", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list, $1.code); concat_lista(iloc_list, $3.code); $$->code = iloc_list;
+									$$->temp = new_temp(); iloc_operations_list *iloc_list = new_iloc_operations_list(); op = new_iloc_operation("sub", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list, $1->code); concat_lista(iloc_list, $3->code); $$->code = iloc_list;
 									}
 	| J { $$ = $1; }
 J : J '*' K { $$ = asd_new("*");	asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $3);
-									$$->temp = new_temp(); iloc_operations_list *iloc_list = new_iloc_operations_list(); op = new_iloc_operation("mult", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list, $1.code); concat_lista(iloc_list, $3.code); $$->code = iloc_list;
+									$$->temp = new_temp(); iloc_operations_list *iloc_list = new_iloc_operations_list(); op = new_iloc_operation("mult", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list, $1->code); concat_lista(iloc_list, $3->code); $$->code = iloc_list;
 									}
 	| J '/' K { $$ = asd_new("/");  asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $3);
-									$$->temp = new_temp(); iloc_operations_list *iloc_list = new_iloc_operations_list(); op = new_iloc_operation("div", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list, $1.code); concat_lista(iloc_list, $3.code); $$->code = iloc_list; 
+									$$->temp = new_temp(); iloc_operations_list *iloc_list = new_iloc_operations_list(); op = new_iloc_operation("div", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list, $1->code); concat_lista(iloc_list, $3->code); $$->code = iloc_list; 
 									}
 	| J '%' K { $$ = asd_new("%"); asd_add_child($$, $1); asd_add_child($$, $3); 
 	}
