@@ -74,32 +74,3 @@ void concat_lista(iloc_operations_list *list1 ,iloc_operations_list *list2)
 	  list2 = list2->next;
 	}
 }
-
-void print_iloc_operations_list(iloc_operations_list *list, char* filename) {
-    FILE *fp;
-    fp = fopen(filename, "w");
-
-    if (fp == NULL) {
-        printf("Erro ao abrir arquivo %s.\n", filename);
-        return;
-    }
-
-    fprintf(fp, "Lista de Operações:\n");
-    iloc_operations_list *current = list;
-    while (current != NULL) {
-        iloc_operation *operation = current->operation;
-        fprintf(fp, "%s");
-        current = current->next;
-    }
-
-    fclose(fp);
-}
-
-
-
-void print_code_tree(void* arvore){
-    asd_tree_t *tree = (asd_tree_t *) arvore;
-	print_list_ilocs(tree->code);
-	print_iloc_operations_list(tree->code,"saida");
-
-}
