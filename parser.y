@@ -130,10 +130,10 @@ Dec : Type VarList ';' { if($2){ $$ = $2; } else{$$ = NULL; }  }
     | Type Func { $$ = $2; }
     ;
 
-VarList : ID',' VarList {  $$ = $1; asd_add_child($$,$3);  if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha* hp = pop(stack); hash_table_insert(hp,&($1->value)); print_table();}} // replicar em todas as inserções na tabela
-		| ID{ $$ = $1;  if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha* hp = pop(stack); hash_table_insert(hp,&($1->value)); print_table();}   }
-		| ID'[' ArrayDim ']' ',' VarList { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $6);   if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);}  }
-		| ID'[' ArrayDim ']' { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3);  if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);}  }
+VarList : ID',' VarList {  $$ = $1; asd_add_child($$,$3);  if(search_Pilha(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha* hp = pop(stack); hash_table_insert(hp,&($1->value)); print_table();}} // replicar em todas as inserções na tabela
+		| ID{ $$ = $1;  if(search_Pilha(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha* hp = pop(stack); hash_table_insert(hp,&($1->value)); print_table();}   }
+		| ID'[' ArrayDim ']' ',' VarList { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $6);   if(search_Pilha(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);}  }
+		| ID'[' ArrayDim ']' { $$ = asd_new("[]"), asd_add_child($$, $1); asd_add_child($$, $3);  if(search_Pilha(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);}  }
 		;
 
 
@@ -157,9 +157,9 @@ Lit : TK_LIT_INT { $$ = asd_new(create_leaf($1)); $$->value = $1; print_table();
     | TK_LIT_CHAR { $$ = asd_new(create_leaf($1)); $$->value = $1; print_table(); $$->temp = new_temp(); hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1.value)); push(stack,hp);}
     ;
 
-Func : ID PushTable '(' ')' Block PopTable { $$ = $1; if($5){ asd_add_child($$,$5); }; if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; exit(4);} else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);
+Func : ID PushTable '(' ')' Block PopTable { $$ = $1; if($5){ asd_add_child($$,$5); }; if(search_Pilha(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; exit(4);} else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);
        $1->value.value_rot = strdup(new_rot()); iloc_operations_list *iloc_list = new_iloc_operations_list(); op = new_iloc_operation("nop", NULL,NULL, $1->value.value_rot) ; append_iloc_operation(iloc_list,op); $$->code = iloc_list; print_table();} }
-	| ID PushTable '(' ParamList ')' Block PopTable { $$ = $1; if($4){ asd_add_child($$,$4); }; if($6){ asd_add_child($$,$6); }; if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp); $1->value.value_rot = strdup(new_rot()); iloc_operations_list *iloc_list = new_iloc_operations_list(); op = new_iloc_operation("nop", NULL,NULL, $1->value.value_rot) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list,$6->code) $$->code = iloc_list; print_table();} }
+	| ID PushTable '(' ParamList ')' Block PopTable { $$ = $1; if($4){ asd_add_child($$,$4); }; if($6){ asd_add_child($$,$6); }; if(search_Pilha(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp); $1->value.value_rot = strdup(new_rot()); iloc_operations_list *iloc_list = new_iloc_operations_list(); op = new_iloc_operation("nop", NULL,NULL, $1->value.value_rot) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list,$6->code) $$->code = iloc_list; print_table();} }
 	;
 
 PushTable:  %empty { hash_da_pilha* hp = create_table(); push(stack,hp);}
@@ -191,15 +191,15 @@ Command : Flow { $$ = $1; }
 	
 DecLocal: Type VarListLocal { if($2){ $$ = $2; } }
 
-VarListLocal : ID ',' VarListLocal { $$ = $3;  if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);}  }
-        | ID TK_OC_LE Lit ',' VarListLocal { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $5);   if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);}  }
-		| ID TK_OC_LE Lit { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3);  if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);}   }
-		| ID { $$ = $1;  if(search_stack(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);}   }
+VarListLocal : ID ',' VarListLocal { $$ = $3;  if(search_Pilha(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);}  }
+        | ID TK_OC_LE Lit ',' VarListLocal { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3); asd_add_child($$, $5);   if(search_Pilha(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);}  }
+		| ID TK_OC_LE Lit { $$ = asd_new("<="); asd_add_child($$, $1); asd_add_child($$, $3);  if(search_Pilha(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);}   }
+		| ID { $$ = $1;  if(search_Pilha(stack,$1->value.value.valueChar) != NULL) { return ERR_DECLARED; } else{hash_da_pilha *hp = pop(stack); hash_table_insert(hp,&($1->value)); push(stack,hp);}   }
 		;
 
 
-Atrib : ID '=' Expr { $$ = asd_new("="); asd_add_child($$, $1); asd_add_child($$,$3); if(search_stack(stack,$1->value.value.valueChar) == NULL) { exit(ERR_UNDECLARED); }}
-	| ID '[' ArrayDim ']' '=' Expr { $$ = asd_new("="); asd_tree_t *col = asd_new("[]"); asd_add_child($$, col); asd_add_child($$, $6); asd_add_child(col, $1); asd_add_child(col,$3); if(search_stack(stack,$1->value.value.valueChar) == NULL) { return ERR_UNDECLARED; exit(ERR_UNDECLARED);}}
+Atrib : ID '=' Expr { $$ = asd_new("="); asd_add_child($$, $1); asd_add_child($$,$3); if(search_Pilha(stack,$1->value.value.valueChar) == NULL) { exit(ERR_UNDECLARED); }}
+	| ID '[' ArrayDim ']' '=' Expr { $$ = asd_new("="); asd_tree_t *col = asd_new("[]"); asd_add_child($$, col); asd_add_child($$, $6); asd_add_child(col, $1); asd_add_child(col,$3); if(search_Pilha(stack,$1->value.value.valueChar) == NULL) { return ERR_UNDECLARED; exit(ERR_UNDECLARED);}}
 	;
 
 Flow : TK_PR_WHILE '(' Expr ')' Block { $$ = asd_new("while"); asd_add_child($$, $3); if($5){ asd_add_child($$, $5); }
@@ -241,10 +241,10 @@ Flow : TK_PR_WHILE '(' Expr ')' Block { $$ = asd_new("while"); asd_add_child($$,
 Ret : TK_PR_RETURN Expr { $$ = asd_new("return"); asd_add_child($$, $2); op = new_iloc_operation("jump", NULL ,NULL, $2->temp) ; append_iloc_operation(iloc_list,op); $$->code = iloc_list; } // Para o comando de retorno deve ser utilizado o lexema correspondente. ???
 	;
 
-FuncCall : ID '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); if(search_stack(stack,$1->value.value.valueChar) == NULL) { return ERR_UNDECLARED; }	
-									  else{print_table(); valor_lexico value = search_stack(stack,$1->value.value.valueChar);iloc_list = new_iloc_operations_list(); op = new_iloc_operation("jumpI", NULL,NULL, value->value_rot) ; append_iloc_operation(iloc_list,op); $$->code = iloc_list; }  }
+FuncCall : ID '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); if(search_Pilha(stack,$1->value.value.valueChar) == NULL) { return ERR_UNDECLARED; }	
+									  else{print_table(); valor_lexico value = search_Pilha(stack,$1->value.value.valueChar);iloc_list = new_iloc_operations_list(); op = new_iloc_operation("jumpI", NULL,NULL, value->value_rot) ; append_iloc_operation(iloc_list,op); $$->code = iloc_list; }  }
 
-	| ID '(' ')' { $$ = $1; if(search_stack(stack,$1->value.value.valueChar) == NULL) { return ERR_UNDECLARED; } else{ print_table(); valor_lexico value = search_stack(stack,$1->value.value.valueChar);iloc_list = new_iloc_operations_list(); op = new_iloc_operation("jumpI", NULL,NULL, value->value_rot) ; append_iloc_operation(iloc_list,op); $$->code = iloc_list;}  }
+	| ID '(' ')' { $$ = $1; if(search_Pilha(stack,$1->value.value.valueChar) == NULL) { return ERR_UNDECLARED; } else{ print_table(); valor_lexico value = search_Pilha(stack,$1->value.value.valueChar);iloc_list = new_iloc_operations_list(); op = new_iloc_operation("jumpI", NULL,NULL, value->value_rot) ; append_iloc_operation(iloc_list,op); $$->code = iloc_list;}  }
 	;
 
 
