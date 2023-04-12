@@ -20,7 +20,6 @@ typedef struct value
   int key;
   int type;
   int tamanho;
-  int desloc;
   union literal value;
 } value_t;
 
