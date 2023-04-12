@@ -20,7 +20,7 @@ extern value_t * hash_table[TABLE_SIZE];
 extern iloc_operations_list *iloc_list;
 Pilha* stack;
 iloc_operation *op;
-value_t value;
+value_t *value;
 hash_da_pilha *hp;
 
 }
