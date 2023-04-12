@@ -204,7 +204,7 @@ Atrib : ID '=' Expr { $$ = asd_new("="); asd_add_child($$, $1); asd_add_child($$
 	;
 
 Flow : TK_PR_WHILE '(' Expr ')' Block { $$ = asd_new("while"); asd_add_child($$, $3); if($5){ asd_add_child($$, $5); }
-												char *label_verdade,*label_falso,*label_depois; label_verdade = new_rot(); label_falso = new_rot(); label_depois = new_rot(); 
+												char *opaco; char *label_verdade,*label_falso,*label_depois; label_verdade = new_rot(); label_falso = new_rot(); label_depois = new_rot(); 
 												$$->temp = new_temp(); char *tempoopaco = new_temp(); iloc_operations_list *iloc_list = new_iloc_operations_list(); 
 												op = new_iloc_operation("nop", NULL,NULL, label_verdade) ; append_iloc_operation(iloc_list,op);
 												op = new_iloc_operation("loadI", "0",NULL, $$->temp) ; append_iloc_operation(iloc_list,op); 
