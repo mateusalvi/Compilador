@@ -215,7 +215,7 @@ Flow : TK_PR_WHILE '(' Expr ')' Block { $$ = asd_new("while"); asd_add_child($$,
 												op = new_iloc_operation("nop", NULL,NULL, label_falso) ; append_iloc_operation(iloc_list,op);
 												$$->code = iloc_list;}
 	| TK_PR_IF '(' Expr ')' TK_PR_THEN Block  { $$ = asd_new("if"); asd_add_child($$, $3); if($6){ asd_add_child($$, $6); } 
-												char *label_verdade,*label_falso,*label_depois; label_verdade = new_rot(); label_falso = new_rot(); label_depois = new_rot(); 
+												char *opaco; char *label_verdade,*label_falso,*label_depois; label_verdade = new_rot(); label_falso = new_rot(); label_depois = new_rot(); 
 												$$->temp = new_temp(); char *tempoopaco = new_temp();  iloc_operations_list *iloc_list = new_iloc_operations_list(); 
 												op = new_iloc_operation("loadI", "0",NULL, $$->temp) ; append_iloc_operation(iloc_list,op); 
 												op = new_iloc_operation("cmp_NE", $3->temp,$$->temp, opaco) ; append_iloc_operation(iloc_list,op);
@@ -226,7 +226,7 @@ Flow : TK_PR_WHILE '(' Expr ')' Block { $$ = asd_new("while"); asd_add_child($$,
 												op = new_iloc_operation("nop", NULL,NULL, label_falso) ; append_iloc_operation(iloc_list,op);
 												$$->code = iloc_list; } 
 	| TK_PR_IF '(' Expr ')' TK_PR_THEN Block TK_PR_ELSE Block { $$ = asd_new("if"); asd_add_child($$, $3); if($6){ asd_add_child($$, $6); }; if($8){ asd_add_child($$, $8); } 
-																char *label_verdade,*label_falso,*label_depois; label_verdade = new_rot(); label_falso = new_rot(); label_depois = new_rot(); 
+																char *opaco; char *label_verdade,*label_falso,*label_depois; label_verdade = new_rot(); label_falso = new_rot(); label_depois = new_rot(); 
 																$$->temp = new_temp(); char *tempoopaco = new_temp();  iloc_operations_list *iloc_list = new_iloc_operations_list(); 
 																op = new_iloc_operation("loadI", "0",NULL, $$->temp) ; append_iloc_operation(iloc_list,op); 
 																op = new_iloc_operation("cmp_NE", $3->temp,$3->temp, opaco) ; append_iloc_operation(iloc_list,op);
@@ -252,10 +252,10 @@ FuncCall : ID '(' ExprList ')' { $$ = $1; asd_add_child($$, $3); if(search_Pilha
 
 
 Expr : Expr TK_OC_OR T  { $$ = asd_new("||"); asd_add_child($$, $1); asd_add_child($$, $3); 
-											  $$->temp = new_temp(); iloc_operations_list *iloc_list = new_iloc_operations_list(); op = new_iloc_operation("or", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list, $1.code); concat_lista(iloc_list, $3.code); $$->code = iloc_list; }
+											  $$->temp = new_temp(); iloc_operations_list *iloc_list = new_iloc_operations_list(); op = new_iloc_operation("or", $1->temp,$3->temp, $$->temp) ; append_iloc_operation(iloc_list,op); concat_lista(iloc_list, $1->code); concat_lista(iloc_list, $3->code); $$->code = iloc_list; }
 	| T { $$ = $1; }
 T : T TK_OC_AND F { $$ = asd_new("&&"); asd_add_child($$, $1); asd_add_child($$, $3); 
-										$$->temp = new_temp(); iloc_operations_list *iloc_list = new_iloc_operations_list(); op = new_iloc_operation("and", $1->temp,$3->temp, $$->temp) ; concat_lista(iloc_list, $1.code); concat_lista(iloc_list, $3.code); append_iloc_operation(iloc_list,op); $$->code = iloc_list;}
+										$$->temp = new_temp(); iloc_operations_list *iloc_list = new_iloc_operations_list(); op = new_iloc_operation("and", $1->temp,$3->temp, $$->temp) ; concat_lista(iloc_list, $1->code); concat_lista(iloc_list, $3->code); append_iloc_operation(iloc_list,op); $$->code = iloc_list;}
 	| F { $$ = $1; }
 F : F TK_OC_EQ G { $$ = asd_new("=="); asd_add_child($$, $1); asd_add_child($$, $3); 
 									   $$->temp = new_temp(); char *label_verdade,*label_falso,*label_depois; label_verdade = new_rot(); label_falso = new_rot(); label_depois = new_rot(); iloc_operations_list *iloc_list;
