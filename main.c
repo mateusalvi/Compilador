@@ -22,7 +22,6 @@ void asd_free (asd_tree_t *arvore);
 iloc_operation *op;
 value_t *value; 
 Pilha* stack;
-hash_da_pilha *hp;
 
 
 int main (int argc, char **argv)
