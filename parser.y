@@ -166,7 +166,7 @@ Func : ID PushTable '(' ')' Block PopTable { $$ = $1; if($5){ asd_add_child($$,$
 														$$->code = iloc_list; print_table();} }
 	;
 
-PushTable:  %empty { hash_da_pilha *hp = create_table(); push(stack,hp);}
+PushTable:  %empty { hash_da_pilha *hp = (hash_da_pilha*) create_table(); push(stack,hp);}
 
 PopTable:  %empty { hash_da_pilha *hp = pop(stack);}
 
@@ -370,6 +370,6 @@ int yyerror(char *err){
 
 void init(){
     stack = create_Pilha();
-	hash_da_pilha *hp = create_table();
+	hash_da_pilha *hp = (hash_da_pilha*) create_table();
 	push(stack,hp);
 }
