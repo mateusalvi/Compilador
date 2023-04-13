@@ -7,7 +7,7 @@ typedef struct nodo {
 }Nodo;
 	
 	typedef struct pilha {
-		Nodo *cabeça;
+		Nodo *cabeca;
 		int tamanho;
 	}Pilha;
 	
