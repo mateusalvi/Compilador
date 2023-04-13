@@ -24,7 +24,7 @@ hash_da_pilha* create_table() {
 		 ht->hash_table[i] = NULL;
 	 }
 	 
-	 printf("a is of type %s\n", typeof(ht));
+	 printf("e is of type %s\n", sizeof(ht) == sizeof(hash_da_pilha) ? "hash" : "unknown");
 	 return ht;
  }
  
